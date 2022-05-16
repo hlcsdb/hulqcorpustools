@@ -1,0 +1,3 @@
+include ./hulqcorpusresources/graphemes/*.json
+include ./hulqcorpusresources/wordlists/*.txt
+global-exclude *.pyc
