@@ -1,5 +1,5 @@
 from collections import Counter
-from ...hulqcorpusresources.wordlists import HulqWordlists
+import hulqcorpusresources.
 from pathlib import Path
 import regex as re
 
@@ -72,10 +72,10 @@ def write_frequency_to_txt(output_filepath: Path, counted_words: list[tuple]):
             output_file.write(i[0] + '\t' + str(i[1]) + '\n')
 
 def open_hukari_peter_wordlist_from_df():
-    return HulqWordlists.hukari_peter_xlsx_df
+    return wl.HulqWordlists.hukari_peter_xlsx_df
 
 if __name__ == "__main__":
 
-    print(HulqWordlists)
+    print(wl.HulqWordlists)
     # cool = open_hukari_peter_wordlist_from_df()
     
