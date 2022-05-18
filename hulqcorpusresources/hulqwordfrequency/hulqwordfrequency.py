@@ -1,5 +1,5 @@
 from collections import Counter
-import hulqcorpusresources.
+from .. import wordlists
 from pathlib import Path
 import regex as re
 
