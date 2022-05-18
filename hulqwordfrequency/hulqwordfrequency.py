@@ -1,10 +1,9 @@
 from collections import Counter
-import hulqcorpusresources.wordlists
+from ...hulqcorpusresources.wordlists import HulqWordlists
 from pathlib import Path
 import regex as re
 
 text_corpus = Path(__file__).resolve().parent / 'data' / 'Texts-corpus-ZG8.txt'
-
 hulqletters = re.compile(r'a-zA-Z’')
 rl = re.compile('([aeiou][\.|\-]){2,}')
 strip_punctuation = re.compile('[\.|,|?|“|"|”|\[|\]|1|2|3|4|5|6|7|8|9|0|\(|\)]')
@@ -21,7 +20,7 @@ def strip_rl_and_punc(word: str) -> str:
     
     return(word_sub(word))
 
-def count_corpus(open_file: Path, **kwargs):
+def count_corpus(open_file: Path, **kwargs) -> Counter:
     """counts the incidence of each word in the corpus
 
     Arguments:
@@ -35,6 +34,8 @@ def count_corpus(open_file: Path, **kwargs):
         words = Counter()
         # counting a couple for testing purposes
         line_limit = kwargs.get('line_limit')
+
+        # why did i do this at 2
         line_count = 2
         
         for line in open_file:
@@ -70,7 +71,11 @@ def write_frequency_to_txt(output_filepath: Path, counted_words: list[tuple]):
         for i in counted_words.most_common():
             output_file.write(i[0] + '\t' + str(i[1]) + '\n')
 
-
+def open_hukari_peter_wordlist_from_df():
+    return HulqWordlists.hukari_peter_xlsx_df
 
 if __name__ == "__main__":
-    cool = hulqcorpusresources.wordlists.Wordlists()
+
+    print(HulqWordlists)
+    # cool = open_hukari_peter_wordlist_from_df()
+    
