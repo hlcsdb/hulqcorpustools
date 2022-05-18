@@ -48,31 +48,25 @@ class HulqWordlists():
         xlsx_wordlists = {'xlsx_wordlists': [i for i in xlsx_paths]}
         return xlsx_wordlists
 
-    def open_xlsx_dict(xlsx_path: Path, *args):
+    def open_xlsx_dict(xlsx_path: Path, *args) -> pd.DataFrame:
         """
-        # TODO: save 
-        
         opens a dict from an xlsx file into a pandas df
-
         Arguments:
-            xlsx_path -- _description_
+            xlsx_path -- path to the xlsx file
+
+
 
         Returns:
-            _description_
+            xlsx_df -- a pandas df
         """
         xlsx_df = pd.read_excel(xlsx_path)
 
         return xlsx_df
 
-    wordlist_paths = get_wordlist_paths()
-    xlsx_paths = get_xlsx_paths()
+    hukari_peter_xlsx_path = get_xlsx_paths().get('xlsx_wordlists')[0]
+    hukari_peter_xlsx_df = open_xlsx_dict(hukari_peter_xlsx_path)
 
-    hukari_peter_df = open_xlsx_dict(xlsx_paths.get('xlsx_wordlists')[0])
-
-
-    
 
 if __name__ == '__main__':
-    hukari_peter_xlsx = HulqWordlists.hukari_peter_df
-    cool = hukari_peter_xlsx.get(['LEXEME - curly ’unuhw'])
-    print(cool)
+    hukari_peter_xlsx_path = HulqWordlists.hukari_peter_xlsx_df
+    print(hukari_peter_xlsx_path)
