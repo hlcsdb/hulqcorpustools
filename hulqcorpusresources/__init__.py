@@ -1,1 +1,0 @@
-from hwordlists import HulqWordlists
