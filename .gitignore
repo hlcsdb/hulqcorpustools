@@ -1,6 +1,7 @@
 .DS_Store
 *.pyc
 __pypackages__/
+*Texts-corpus*.txt
 
 # Distribution / packaging
 .Python
