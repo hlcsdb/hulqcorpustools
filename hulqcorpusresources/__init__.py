@@ -1,1 +1,1 @@
-import graphemes, wordlists
+from hwordlists import HulqWordlists
