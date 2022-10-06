@@ -1,6 +1,8 @@
+# Local
 .DS_Store
 *.pyc
 __pypackages__/
+__pycache__/
 *Texts-corpus*.txt
 
 # Distribution / packaging
