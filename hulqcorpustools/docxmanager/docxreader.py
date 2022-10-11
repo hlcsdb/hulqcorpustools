@@ -24,7 +24,7 @@ class CorpusDocx(docx.document.Document):
         self.stem = docx_path.stem
         self.versionless_stem = self._get_version(self.filename)[0]
         self.version = self._get_version(self.filename)[1]
-        
+
         try:
             self.Document = docx.Document(docx_path)
         except BadZipFile as error:
@@ -38,8 +38,12 @@ class CorpusDocx(docx.document.Document):
         ):
         _version_re = re.compile('(.*)([A-Z]{2,4})([1-9]{1,4})(?:\.docx|$)')
         _version_parse = _version_re.search(_docx_filename)
+
+        if not _version_parse:
+            return(None, None)
         _versionless_stem = _version_parse[1]
         _version = F'{_version_parse[2]}{_version_parse[3]}'
+
         return (_versionless_stem, _version)
 
     def _get_paragraph_text(
@@ -61,11 +65,11 @@ class CorpusDocx(docx.document.Document):
 
 if __name__ == "__main__":
     corpus_docx_list = list(CorpusDocx(_corpus_docx) for _corpus_docx in Path(os.environ.get('CORPUS_TEST_DATA_FOLDER')).glob('*.docx'))
-
-    print(corpus_docx_list[0].Document.__getattribute__)
-
-    print(CorpusDocx().__)
     
+    for i in corpus_docx_list:
+        for paragraph in i.Document.paragraphs:
+            print(paragraph.text, paragraph.style.name)
+            # print(paragraph.text, paragraph.style.name)
     # print([_docx.filename for _docx in corpus_docx_list])
     # first_docx = corpus_docx_list.__next__()
     # print(first_docx.filename)
