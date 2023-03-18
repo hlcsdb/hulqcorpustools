@@ -1,6 +1,0 @@
-[submodule "hulqcorpustools/hulqcorpusresources"]
-	path = hulqcorpustools/hulqcorpusresources
-	url = https://github.com/hlcsdb/hulqcorpusresources
-[submodule "hulqcorpustools/hulqtransliterator"]
-	path = hulqcorpustools/hulqtransliterator
-	url = https://github.com/hlcsdb/hulqtransliterator
