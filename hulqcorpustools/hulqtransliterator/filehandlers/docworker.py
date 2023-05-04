@@ -19,7 +19,7 @@ from flashtext import KeywordProcessor
 from pathlib import Path
 import os
 
-from ..resources.constants import FileFormat, GraphemesDict, TransliterandFile
+from ...resources.constants import FileFormat, GraphemesDict, TransliterandFile
 # from resources.wordlists import get_wordlist_paths
 from ..transliterator import replaceengine as repl
 

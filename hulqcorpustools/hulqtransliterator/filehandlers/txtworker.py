@@ -4,7 +4,7 @@ replacing each line and writing it to file'''
 from flashtext import KeywordProcessor
 from pathlib import Path
 
-from ..resources.constants import FileFormat, TransliterandFile
+from ...resources.constants import FileFormat, TransliterandFile
 from ..transliterator import replaceengine as repl
 
 

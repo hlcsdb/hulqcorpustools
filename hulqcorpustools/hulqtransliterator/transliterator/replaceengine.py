@@ -4,7 +4,7 @@ with another
 '''
 
 import regex as re
-from ..resources.constants import FileFormat, GraphemesDict
+from ...resources.constants import FileFormat, GraphemesDict
 
 def transliterate_string_replace(
     linestring,

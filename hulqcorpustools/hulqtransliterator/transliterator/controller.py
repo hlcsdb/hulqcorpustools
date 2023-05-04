@@ -12,8 +12,8 @@ import os
 
 import importlib.resources
 
-from ..resources import wordlists as wl
-from ..resources.constants import FileFormat, TransliterandFile, GraphemesDict
+from ...resources import wordlists as wl
+from ...resources.constants import FileFormat, TransliterandFile, GraphemesDict
 from ..filehandlers import docworker, txtworker
 from . import replaceengine as repl
 

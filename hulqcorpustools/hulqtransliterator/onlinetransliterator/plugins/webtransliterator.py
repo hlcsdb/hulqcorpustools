@@ -1,5 +1,5 @@
-from .. import transliterator
-from ...resources.constants import FileFormat
+from ... import transliterator
+from ....resources.constants import FileFormat
 
 def web_transliterate_string(hulq_string: str,
                             source_format = (FileFormat | str),
