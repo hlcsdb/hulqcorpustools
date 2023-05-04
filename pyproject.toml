@@ -1,7 +1,16 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = [
+"flashtext",
+"flask",
+"gunicorn",
+"python-docx",
+"regex",
+"setuptools>=61.0",
+"wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages]
+find = {}
 
 [tool.pytest.ini_options]
 minversion="6.0"
@@ -9,3 +18,12 @@ addopts = "-ra -q"
 testpaths = [
     "tests"
 ]
+
+[project]
+name = "hulqcorpustools_goodzack"
+version = "0.0.3"
+authors = [
+    { name="Zack Gilkison", email="zack.gilkison@gmail.com" },
+]
+description = "some corpus tools for working on Hul’q’umi’num’"
+readme = "README.md"

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>transliterator</title>
+    </head>
+    
+
+    <body>
+        <h3>test text</h3>
+        <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n  ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p>
+        <p>nəcʔaʔ skʷeyəl cə stʔe k̓ʷə x̌ʷqʷəlʔqʷəlʔiwən ni:n təwʔ scekʷəl kʷs ʔənθəs tʔatʔaθət.</p>
+        <p>nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin tuw’ stsekwul kws ’unthus t’at’athut.</p>
+        <form method="post">
+            <textarea autofocus id="input-text" name="input-text"  cols="40", placeholder="put text to transliterate here" rows="6">
+            {%- if transliterator_form.get('input') -%}
+            {{ transliterator_form.get('input') }}
+            {%- else -%}hello there{% endif %}</textarea><br/>
+
+            <select name="source-format-selection" id="source-format-selection">
+            {%- for format in source_formats -%}
+            <option
+                value="{{ format.get('value') }}"
+                name="{{ format.get('name') }}"
+            {%- if transliterator_form.get('source_format') == format.get('value') -%} selected{% endif %}>
+            {{ format.get('name') }}</option>
+            {% endfor %}
+                <!-- default values and names:
+                <option value="Straight">Straight</option>
+                <option value="APA Unicode">APA Unicode</option>
+                <option value="Orthography">Practical Orthography</option> -->
+            </select><br/>
+
+            <select name="target-format-selection" id="target-format-selection">
+            {%- for format in target_formats -%}
+            <option
+                value="{{ format.get('value') }}"
+                name="{{ format.get('name') }}"
+                {%- if transliterator_form.get('target_format') == format.get('value') -%} selected{% endif%}>
+                {{ format.get('name') }}</option>
+            {% endfor %}
+            <!-- default values and names:
+                <option value="APA Unicode">APA Unicode</option>
+                <option value="Orthography">Practical Orthography</option> -->
+            </select>
+            
+            <br/>
+            <textarea id= "output-text" cols="40" rows="6" type="transliterated-text" readonly>
+                {%- if transliterator_form.get('output') -%}
+                {{ transliterator_form.get('output') }}
+                {%- else -%}
+                {% endif %}
+            </textarea><br/>
+            <button type="submit" id="transliterate-button" >transliterate </button>
+            
+        </form>
+
+        {# <script src="{{ transliterator_js }}"></script> #}
+    </body>
+</html>

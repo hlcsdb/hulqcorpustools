@@ -1,0 +1,22 @@
+body {
+    background-color: blanchedalmond;
+}
+h1 {
+    color: #606060;
+    text-align: center;
+}
+div.form-example {
+    font-size: 20pt;
+}
+div.label {
+    font-size: 8pt;
+    font: 'Comic Sans';
+}
+div.present-submission {
+    color: red;
+    font-family: "Papyrus"
+}
+div.submission {
+    color: steelblue;
+    font-family: "Comic Sans MS", "Papyrus"
+}
