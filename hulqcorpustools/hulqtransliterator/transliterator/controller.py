@@ -39,9 +39,12 @@ class FileController():
         
         self.search_method = kwargs.get('search_method')
         self.font_search = kwargs.get('font')
-        self.docx_list_controller(self.docx_files)    
-    
-        pass
+
+        if self.docx_files:
+            self.docx_list_controller(self.docx_files)    
+
+        if self.txt_files:
+            self.txt_list_controller(self.txt_files)
 
     @classmethod
     def file_processor(
@@ -123,17 +126,18 @@ class FileController():
         # for i in docx_list:
         #     docworker.transliterate_docx_font(i, font=kwargs.get('font', None))
 
-def txt_list_controller(
-    txt_list: set,
-    **kwargs
-    ):
+    @classmethod
+    def txt_list_controller(
+        txt_list: set,
+        **kwargs
+        ):
 
-    update_wordlists = kwargs.get('update')
-    source_format = txt_list[0].source_format
-    keywordprocessors = collect_keywordprocessors(source_format)
+        update_wordlists = kwargs.get('update')
+        source_format = txt_list[0].source_format
+        keywordprocessors = collect_keywordprocessors(source_format)
 
-    for i in txt_list:
-        txtworker.transliterate_txt_wordlist(i, keywordprocessors, update_wordlists=update_wordlists)
+        for i in txt_list:
+            txtworker.transliterate_txt_wordlist(i, keywordprocessors, update_wordlists=update_wordlists)
 
 def string_processor(
     source_string: str,
@@ -262,85 +266,5 @@ def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
     
 
 if __name__ == "__main__":
-    pass
-    # def test_docx_class():
-    #     source_format = FileFormat.ORTHOGRAPHY
-    #     target_format = FileFormat.APAUNICODE
-
-    #     source_file_test = Path('/Users/goodzack/Desktop/testtransl/spring story copy.docx',)
-
-    #     cool = TransliterandFile(source_file_test, source_format, target_format)
-
-    #     nice = TransliterandFile(source_file_test, source_format, target_format,
-    #                             target_folder='~/Downloads')
+    ...
     
-
-    # def test_txt():
-    #     """call this fn to test how transliterator works with
-    #     some single text file"""
-
-    #     source_format = FileFormat.STRAIGHT
-    #     target_format = FileFormat.APAUNICODE
-
-    #     default_input_folder = Path(__file__).parent / 'tests' / 'input'
-    #     source_test_file_name = 'straight-test1'
-    #     source_test_extension = '.txt'
-    #     source_test_file_path = Path(default_input_folder / source_test_file_name).with_suffix(source_test_extension)
-
-    #     default_output_folder = Path(__file__).parent  / 'tests'/ 'output'
-    #     target_test_file_name = Path(source_test_file_name + ' '
-    #                                 + source_format + ' to ' + target_format
-    #                                 + ' transliterated').with_suffix(
-    #                                 source_test_extension)
-    #     target_test_file_path = default_output_folder / target_test_file_name
-        
-    #     file_processor(
-    #         source_test_file_path, 
-    #         target_test_file_path, 
-    #         source_format, 
-    #         target_format
-    #         )
-        
-    # def test_straight_ortho_wordlist():
-    #     """ for testing transliterate by wordlist """
-    #     source_format = FileFormat.ORTHOGRAPHY
-    #     target_format = FileFormat.APAUNICODE
-    #     ### put a test file here
-    #     source_file_one = Path('/Users/goodzack/code/hulqtransliterator/tests/input/spring story copy.docx')
-    #     source_file_two = Path('/Users/goodzack/code/hulqtransliterator/tests/input/apa-test-docx-pt1.docx')
-    #     source_list = [TransliterandFile(source_file_one, source_format, target_format),
-    #                     TransliterandFile(source_file_two, source_format, target_format)]
-
-    #     docx_list_controller(source_list)
-
-    # def test_docx_transliterate():
-    #     """call this fn to test how transliterator works with
-    #     some single docx file"""
-
-    #     source_format = FileFormat.STRAIGHT
-    #     target_format = FileFormat.ORTHOGRAPHY
-
-    #     default_input_folder = Path(__file__).parent / 'tests' / 'input'
-    #     source_test_file_name = 'straight-word-doc-test'
-    #     source_test_extension = '.docx'
-    #     source_test_file_path = Path(default_input_folder / source_test_file_name).with_suffix(source_test_extension)
-
-    #     default_output_folder = Path(__file__).parent  / 'tests'/ 'output'
-    #     # target_test_file_name = Path(source_test_file_name + ' '
-    #     #                             + ffs(source_format)
-    #     #                             + ' to '
-    #     #                             + ffs(target_format)
-    #     #                             + ' transliterated').with_suffix(
-    #     #                             source_test_extension)
-    #     # target_test_file_path = default_output_folder / target_test_file_name
-        
-    #     target_test_file_path = default_output_folder
-
-    #     file_processor(
-    #         source_test_file_path, 
-    #         target_test_file_path, 
-    #         source_format, 
-    #         target_format,
-    #         )
-
-    # test_straight_ortho_wordlist()

@@ -40,7 +40,7 @@ class FileFormat(Enum):
         '''in case the value gets turned to a string-- 
         turn it back to this class'''
 
-        args = [i.casefold() for i in args]
+        args = [i.casefold().replace(' ', '') for i in args]
 
         if 'straight'.casefold() in args or 'fileformat.straight'.casefold() in args:
             cls = FileFormat.STRAIGHT
