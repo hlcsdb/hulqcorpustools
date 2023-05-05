@@ -1,13 +1,15 @@
 
-from importlib import resources as imp_resources
+from importlib.resources import files
+from hulqcorpustools.resources.constants import FileFormat
 
-from . import wordlistsdata
-from .constants import FileFormat
+wordlist_package = files(__package__) / 'wordlistsdata'
+wordlists= wordlist_package.iterdir()
 
 class Wordlist():
 
     # ENGLISH_WORDLIST_TEXT = imp_resources.read_text(wordlistsdata, "english-wordlist.txt")
 
+    @staticmethod
     def load_wordlist_text(
         wordlist_format: str|FileFormat) -> str:
         """_summary_
@@ -15,16 +17,18 @@ class Wordlist():
         ***REMOVED***rguments:
             wordlist_format -- _description_
         """
-
+        
         if type(wordlist_format) == FileFormat:
             wordlist_format = wordlist_format.to_string()
 
         if wordlist_format == 'english':
-            return imp_resources.read_text(wordlistsdata, "english-wordlist.txt")
+            return open(wordlist_package.joinpath('english-wordlist.txt'))
 
         else:
             _filename = f"hulq-wordlist-{wordlist_format}.txt"
-            return imp_resources.read_text(wordlistsdata, _filename)
+            return open(wordlist_package.joinpath(_filename))
+
+    
 
     ENGLISH_WORDLIST_TEXT = load_wordlist_text("english")
     ORTHOGRAPHY_WORDLIST_TEXT = load_wordlist_text("orthography")
@@ -35,4 +39,5 @@ class Wordlist():
 
 
 if __name__ == "__main__":
-    ...
+    for i in Wordlist.APA_UNICODE_WORDLIST_TEXT:
+        print(i)

@@ -1,7 +1,6 @@
-include ./hulqcorpusresources/graphemes/*.json
-include ./hulqcorpusresources/wordlists/*.txt
-graft onlinetransliterator/plugins
-graft onlinetransliterator/router
-graft onlinetransliterator/static
-graft onlinetransliterator/templates
+recursive-include **/resources/**/*.json
+recursive-include **/resources/**/*.txt
+graft hulqcorpustools/hulqtransliterator/onlinetransliterator/plugins
+graft hulqcorpustools/hulqtransliterator/onlinetransliterator/static
+graft hulqcorpustools/hulqtransliterator/onlinetransliterator/templates
 global-exclude *.pyc

@@ -1,6 +1,6 @@
 from flask import Blueprint, Flask, request, render_template, url_for, redirect
 
-from .plugins.webtransliterator import web_transliterate_string
+from .plugins.onlinetransliteratorengine import _transliterate_string
 
 bp = Blueprint('onlinetransliterator', __name__, url_prefix = '/')
 
@@ -23,7 +23,7 @@ def transliterator():
         selected_source_format = request.form['source-format-selection']
         selected_target_format = request.form['target-format-selection']
         
-        transliterator_output_text = web_transliterate_string(transliterator_input_text, selected_source_format, selected_target_format)
+        transliterator_output_text = _transliterate_string(transliterator_input_text, selected_source_format, selected_target_format)
         
         transliterator_form = \
             {'input': transliterator_input_text,

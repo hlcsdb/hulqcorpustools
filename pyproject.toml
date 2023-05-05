@@ -1,10 +1,5 @@
 [build-system]
 requires = [
-"flashtext",
-"flask",
-"gunicorn",
-"python-docx",
-"regex",
 "setuptools>=61.0",
 "wheel"]
 build-backend = "setuptools.build_meta"
@@ -22,10 +17,23 @@ testpaths = [
 ]
 
 [project]
-name = "hulqcorpustools_goodzack"
+name = "hulqcorpustools"
 version = "0.0.4"
 authors = [
     { name="Zack Gilkison", email="zack.gilkison@gmail.com" },
 ]
 description = "some corpus tools for working on Hul’q’umi’num’"
 readme = "README.md"
+dependencies = [
+    "flashtext",
+    "flask",
+    "gunicorn",
+    "python-docx",
+    "regex"
+    ]
+
+[project.optional-dependencies]
+    transliteratiorgui = ["tkinter"]
+    wordfrequency = ["pandas"]
+
+[project.scripts]

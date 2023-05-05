@@ -1,7 +1,7 @@
-from ... import transliterator
-from ....resources.constants import FileFormat
+from hulqcorpustools.hulqtransliterator.transliterator import controller
+from hulqcorpustools.resources.constants import FileFormat
 
-def web_transliterate_string(hulq_string: str,
+def _transliterate_string(hulq_string: str,
                             source_format = (FileFormat | str),
                             target_format = (FileFormat | str)):
 
@@ -12,4 +12,4 @@ def web_transliterate_string(hulq_string: str,
         target_format = FileFormat.from_string(target_format)
         
     
-    return transliterator.controller.string_processor(hulq_string, source_format, target_format)
+    return controller.string_processor(hulq_string, source_format, target_format)

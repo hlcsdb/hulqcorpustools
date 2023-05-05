@@ -2,7 +2,7 @@ from enum import Enum, auto
 import json
 import os
 from pathlib import Path
-from .graphemes import loaded_graphemes
+from hulqcorpustools.resources.graphemes import loaded_graphemes
 
 class FileFormat(Enum):
     """possible text formats for a doc to be in
@@ -202,3 +202,7 @@ class TransliterandFile():
         self.target_path = Path(self.target_dir / self.target_filename)
 
         return(self.target_path)
+    
+if __name__ == "__main__":
+    # print(loaded_graphemes)
+    ...
