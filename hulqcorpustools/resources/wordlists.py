@@ -1,9 +1,10 @@
 
+from pathlib import Path
 from importlib.resources import files
 from hulqcorpustools.resources.constants import FileFormat
 
 wordlist_package = files(__package__) / 'wordlistsdata'
-wordlists= wordlist_package.iterdir()
+wordlist_paths = {Path(wordlist_path).stem : wordlist_path for wordlist_path in wordlist_package.iterdir()}
 
 class Wordlist():
 
@@ -32,7 +33,7 @@ class Wordlist():
 
     ENGLISH_WORDLIST_TEXT = load_wordlist_text("english")
     ORTHOGRAPHY_WORDLIST_TEXT = load_wordlist_text("orthography")
-    APA_UNICODE_WORDLIST_TEXT = load_wordlist_text("APA-unicode")
+    APA_UNICODE_WORDLIST_TEXT = load_wordlist_text("APAunicode")
     STRAIGHT_WORDLIST_TEXT = load_wordlist_text("straight")
     
     # HULQ_WORDLISTS = (load_wordlist_text(_file_format) for _file_format in FileFormat.HULQ_FORMATS)

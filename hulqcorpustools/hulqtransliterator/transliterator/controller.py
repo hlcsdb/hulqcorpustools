@@ -12,7 +12,7 @@ import os
 
 import importlib.resources
 
-from hulqcorpustools.resources import wordlists as wl
+from hulqcorpustools.resources.wordlists import wordlist_paths
 from hulqcorpustools.resources.constants import FileFormat, TransliterandFile, GraphemesDict
 from hulqcorpustools.hulqtransliterator.filehandlers import docworker, txtworker
 from . import replaceengine as repl
@@ -22,7 +22,13 @@ from . import replaceengine as repl
 
 class FileController():
     
-    def __init__(self, separated_file_list: dict, **kwargs):
+    def __init__(
+            self,
+            docx_files = (list | None),
+            txt_files = (list | None),
+            source_format = (FileFormat | str | None),
+            target_format = (FileFormat | str | None),
+            **kwargs):
         """thing that directs files where they need to go
         and deals with certain  kwargs
 
@@ -34,110 +40,89 @@ class FileController():
             search method to use
             font -- in the case of the font search, which font to search by
         """
-        self.docx_files = separated_file_list.get('docx') # Type: set(TransliterandFile)
-        self.txt_files = separated_file_list.get('txt') # Type: set(TransliterandFile)
+        self.docx_files = docx_files
+        self.txt_files = txt_files
+        self.source_format = source_format
+
+        self.target_format = target_format
         
         self.search_method = kwargs.get('search_method')
         self.font_search = kwargs.get('font')
 
-        if self.docx_files:
-            self.docx_list_controller(self.docx_files)    
+        if type(self.source_format) == str:
+            self.source_format = FileFormat().from_string(self.source_format)
 
-        if self.txt_files:
-            self.txt_list_controller(self.txt_files)
-
-    @classmethod
-    def file_processor(
-        cls,
-        separated_file_list: dict,
-        **kwargs):
-        """give this sucker a list of txt files and a list of .docx files
-        and it sends it to where it needs to go
-        
-        Arguments:
-            separated_file_list: a dict with a list each of docx and txt
-            e.g. {'docx':[file1, file2, ...]}
-
-        kwargs:
-            target_destination: where the file is supposed to go; defaults to same
-            folder as source file if empty
-            font: a target font when processing .docx files
-        """
-
-        # what happened to the file to put in filename: straight to APA, etc.
-
-        print(separated_file_list)
-        search_type = kwargs.get('search_type')
-
-        if search_type == 'Font':
-            _font = kwargs.get('font')
-            cls.docx_list_controller(separated_file_list['docx'], font=_font)
-
-        elif search_type == 'Wordlist':
-            cls.docx_list_controller(separated_file_list['docx'])
+        if type(self.target_format) == str:
+            self.source_format = FileFormat().from_string(self.target_format)
 
 
-        # if separated_file_list.get('docx'):
-        #     docx_list_controller(list(separated_file_list.get('docx')))
-        # if separated_file_list.get('txt'):
-        #     txt_list_controller(list(separated_file_list.get('txt')))
-
-    @classmethod
-    def docx_list_controller(
-        cls,
-        docx_list: set(),
-        **kwargs
+    def transliterate_docx(
+        self
         ):
         """manages the list of docx files
 
-        Arguments:
-            doc_list -- a set of TransliterandFiles referring to .docx
-            source_format -- a FileFormat giving format of the source ifle
-            target_format -- a FileFormat giving format of the target file
         Kwargs:
             update-wordlist: updates the Hul’q’umi’num’ wordlists with what gets found
+        Returns:
+            transliterated_files: a list of Paths the transliterated docx files
         """ 
 
-        # source_formats = (i.source_format for i in docx_list)
-        # print(source_formats)
-        # update_wordlists = kwargs.get('update_wordlists')
-        # keywordprocessors = {prepare_keywordprocessor(i) for i in source_formats}
-        # keywordprocessors = prepare_keywordprocessor(source_format,
-                                # update_wordlists=update_wordlists)
+        if self.docx_files is None:
+            return []
 
-        keywordprocessors =  collect_keywordprocessors([FileFormat.STRAIGHT, FileFormat.ORTHOGRAPHY])
+        transliterated_docx_files = []
 
-        source_format = kwargs.get('sourceformat')
-        target_format = kwargs.get('targetformat')
+        keywordprocessors =  collect_keywordprocessors(
+            self.source_format,
+            self.target_format,
+            )
 
-        if kwargs.get('sourceformat') is None:
-            source_format = FileFormat.ORTHOGRAPHY
-        
-        if kwargs.get('targetformat') is None:
-            target_format = FileFormat.APAUNICODE
+        for i in self.docx_files:
+            docx_transliterand = TransliterandFile(
+                i,
+                self.source_format,
+                self.target_format
+                )
 
-        
+            transliterated_docx_files.append(
+                docworker.transliterate_docx_wordlist(docx_transliterand, keywordprocessors))
 
-        for i in docx_list:
-            doc_transliterand = TransliterandFile(i, source_format, target_format)
+        return transliterated_docx_files
 
-            docworker.transliterate_docx_wordlist(doc_transliterand, keywordprocessors)
-
-        # for i in docx_list:
-        #     docworker.transliterate_docx_font(i, font=kwargs.get('font', None))
-
-    @classmethod
-    def txt_list_controller(
-        txt_list: set,
-        **kwargs
+    def transliterate_txt(
+        self
         ):
+        """transliterate a list of txt files
 
-        update_wordlists = kwargs.get('update')
-        source_format = txt_list[0].source_format
-        keywordprocessors = collect_keywordprocessors(source_format)
+        NOTE: for now I think the only reason why there is a separate function
+        is to have accounted for the possibility of the "font" search capability
+        which should probably be deprecated
+        """
+        if self.txt_files is None:
+            return []
 
-        for i in txt_list:
-            txtworker.transliterate_txt_wordlist(i, keywordprocessors, update_wordlists=update_wordlists)
+        transliterated_txt_files = []
+
+        keywordprocessors = collect_keywordprocessors(
+            self.source_format,
+            self.target_format
+            )
+
+        for i in self.txt_files:
+            txt_transliterand = TransliterandFile(
+                i,
+                self.source_format,
+                self.target_format
+                )
+            
+            transliterated_txt_files.append(
+                txtworker.transliterate_txt_wordlist(
+                txt_transliterand,
+                keywordprocessors
+                )
+                )
+
+        return transliterated_txt_files
 
 def string_processor(
     source_string: str,
@@ -152,25 +137,21 @@ def string_processor(
         target_format)
     return transliterated_string
 
-def collect_keywordprocessors(file_formats: list[FileFormat]):
+def collect_keywordprocessors(*file_formats):
     
-    _collected = dict()
+    collected_kps = dict()
     english_keywordprocessor = prepare_engkeywordprocessor()
-    hulq_keywordprocessors = {file_format.to_string() : prepare_hulqkeywordprocessor(file_format) for file_format in file_formats}
+    collected_kps.update({"english": english_keywordprocessor})
+    for i in file_formats:
+        hulq_keywordprocessor = prepare_hulqkeywordprocessor(i)
+        collected_kps.update({i.to_string(): hulq_keywordprocessor})
 
-    # print(hulq_keywordprocessors)
-    _collected.update({"english": english_keywordprocessor})
-    _collected.update(hulq_keywordprocessors)
-
-    return _collected
+    return collected_kps
     
-
 
 
 def prepare_engkeywordprocessor():
-
-    wordlist_paths = importlib.resources.files(wl)
-    eng_wordlist_filepath = Path(wordlist_paths / "words_alpha_vowels_longer_words.txt")
+    eng_wordlist_filepath = wordlist_paths.get("words_alpha_vowels_longer_words")
 
     eng_keywordprocessor = KeywordProcessor()
     eng_keywordprocessor.add_keyword_from_file(eng_wordlist_filepath)
@@ -187,15 +168,6 @@ def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
         updated
     """
 
-    file_format_name = file_format.to_string()
-    wordlist_paths = importlib.resources.files(wl)
-
-    hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}.txt'
-    hulq_wordlist_filepath = Path(wordlist_paths / hulq_wordlist_filename)
-
-    # initialize keywordprocessor    
-    hulq_keywordprocessor = KeywordProcessor()
-
     def get_non_word_boundary_chars(text_format: FileFormat):
         """gets all of the characters that might not be in [a-zA-Z] or whatever
 
@@ -204,6 +176,16 @@ def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
         """
         non_word_boundary_chars = (i for i in GraphemesDict(text_format).source_format_characters)
         return non_word_boundary_chars
+
+    file_format_name = file_format.to_string()
+    hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}'
+    hulq_wordlist_filepath = wordlist_paths.get(hulq_wordlist_filename)
+
+    hulq_keywordprocessor = KeywordProcessor()
+    hulq_keywordprocessor.set_non_word_boundaries(get_non_word_boundary_chars(file_format))
+    hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
+    return hulq_keywordprocessor
+
 
     for i in get_non_word_boundary_chars(file_format):
         hulq_keywordprocessor.add_non_word_boundary(i)

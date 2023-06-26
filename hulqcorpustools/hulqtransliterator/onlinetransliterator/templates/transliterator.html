@@ -1,64 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>transliterator</title>
-    </head>
-    
 
-    <body>
-        <h2>test strings</h2>
-        <p>the following are strings of text in various encodings to test the transliterator on</p>
-        <h3>Straight</h3>
-        <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n  ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p>
-        <h3>APA Unicode</h3>
-        <p>nəcʔaʔ skʷeyəl cə stʔe k̓ʷə x̌ʷqʷəlʔqʷəlʔiwən ni:n təwʔ scekʷəl kʷs ʔənθəs tʔatʔaθət.</p>
-        <h3>Practical orthography</h3>
-        <p>nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin tuw’ stsekwul kws ’unthus t’at’athut.</p>
-        <form method="post">
-            <textarea autofocus id="input-text" name="input-text"  cols="40", placeholder="put text to transliterate here" rows="6">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='transliterator.css') }}" />
+    <title>transliterator</title>
+</head>
+
+<body>
+    <header>
+        <h1>Hul’q’umi’num’ transliterator</h1>
+        <p>This site can transliterate text from one way of writing Hul’q’umi’num’ to another.</p>
+    </header>
+
+    <div class="all-transliterators-container">
+
+        <div class="transliterator-container">
+            <h2 name="string-transliterator">String transliterator</h2>
+
+            <form method="post">
+                <div class="text-box-and-format-selection-container">
+                    <label for="source-format-selection">
+                        Input text
+                    </label><br />
+
+                    <select class="format-selection" name="source-format-selection" id="source-format-selection">
+                        {%- for format in source_formats -%}
+                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" {%- if
+                            transliterator_form.get('source_format')==format.get('value') -%} selected{% endif %}>
+                            {{ format.get('name') }}</option>
+                        {% endfor %}
+                    </select><br />
+
+                    <textarea autofocus id="input-text" name="input-text" rows="6">
             {%- if transliterator_form.get('input') -%}
             {{ transliterator_form.get('input') }}
-            {%- else -%}hello there{% endif %}</textarea><br/>
+            {%- else -%}’uy’ skweyul si’em’{% endif %}</textarea><br />
 
-            <select name="source-format-selection" id="source-format-selection">
-            {%- for format in source_formats -%}
-            <option
-                value="{{ format.get('value') }}"
-                name="{{ format.get('name') }}"
-            {%- if transliterator_form.get('source_format') == format.get('value') -%} selected{% endif %}>
-            {{ format.get('name') }}</option>
-            {% endfor %}
-                <!-- default values and names:
-                <option value="Straight">Straight</option>
-                <option value="APA Unicode">APA Unicode</option>
-                <option value="Orthography">Practical Orthography</option> -->
-            </select><br/>
+                </div>
 
-            <select name="target-format-selection" id="target-format-selection">
-            {%- for format in target_formats -%}
-            <option
-                value="{{ format.get('value') }}"
-                name="{{ format.get('name') }}"
-                {%- if transliterator_form.get('target_format') == format.get('value') -%} selected{% endif%}>
-                {{ format.get('name') }}</option>
-            {% endfor %}
-            <!-- default values and names:
-                <option value="APA Unicode">APA Unicode</option>
-                <option value="Orthography">Practical Orthography</option> -->
-            </select>
-            
-            <br/>
-            <textarea id= "output-text" cols="40" rows="6" type="transliterated-text" readonly>
-                {%- if transliterator_form.get('output') -%}
-                {{ transliterator_form.get('output') }}
-                {%- else -%}
-                {% endif %}
-            </textarea><br/>
-            <button type="submit" id="transliterate-button" >transliterate </button>
-            
-        </form>
+                <div class="text-box-and-format-selection-container">
+                    <label for="target-format-selection">
+                        Output text
+                    </label><br />
+                    <select class="format-selection" name="target-format-selection" id="target-format-selection">
+                        {%- for format in target_formats -%}
+                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" {%- if
+                            transliterator_form.get('target_format')==format.get('value') -%} selected{% endif%}>
+                            {{ format.get('name') }}</option>
+                        {% endfor %}
+                    </select><br />
 
-        {# <script src="{{ transliterator_js }}"></script> #}
-    </body>
+                    <textarea id="output-text" rows="6" type="transliterated-text"
+                        readonly>{%- if transliterator_form.get('output') -%}{{ transliterator_form.get('output') }}{%- else -%}{% endif %}</textarea><br />
+
+                    <button
+                    type="submit"
+                    id="string-transliterate"
+                    name="string-transliterate"
+                    value="string-transliterate">Transliterate</button>
+
+
+                    
+                </div>
+            </form>
+                    <button
+                    id="button-2"
+                    onclick="readText()"></button>
+            <h3>Test text</h3>
+            <h4>Straight</h4>
+            <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p>
+            <h4>APA Unicode</h4>
+            <p>nəc̓aʔ skʷeyəl cə st̓e k̓ʷə x̌ʷqʷəl̓qʷəl̓iwən ni:n təw̓ scekʷəl kʷs ʔənθəs t̓at̓aθət.</p>
+            <h4>Practical orthography</h4>
+            <p>nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin tuw’ stsekwul kws ’unthus t’at’athut.</p>
+        </div> <!-- string transliterator -->
+
+
+        <div class="transliterator-container">
+
+            <h2>File transliterator</h2>
+            <p>Transliterate all of the Hul’q’umi’num’ in .docx and .txt files.</p>
+
+            <form enctype="multipart/form-data" method="post">
+                <input type="file" name="transliterate-file" multiple accept=".docx,.txt"><br />
+                <button
+                    type="submit"
+                    id="upload-transliterator-files"
+                    name="upload-transliterator-files"
+                    value="upload-transliterator-files">Submit</button>
+            </form>
+            <p>(coming soon)</p>
+
+
+
+        </div>
+
+    <script>
+        function readText() {
+            inputText = document.getElementById("input-text")
+            console.log(inputText)
+        }
+    </script>
+
+    </div>
+
+</body>
+
 </html>

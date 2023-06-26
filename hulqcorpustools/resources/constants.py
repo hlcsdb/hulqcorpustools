@@ -151,10 +151,11 @@ class TransliterandFile():
         transliterated into
     '''
     def __init__(self, 
-    source_path: Path, 
+    source_path: Path | str, 
     source_format: FileFormat, 
     target_format: FileFormat,
     **kwargs):
+        source_path = Path(source_path)
         self.source_path = source_path
         self.source_filename = source_path.name
         self.source_dir = source_path.parent

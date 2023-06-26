@@ -2,36 +2,45 @@ from flask import Blueprint, Flask, request, render_template, url_for, redirect
 
 from .plugins.onlinetransliteratorengine import _transliterate_string
 
-bp = Blueprint('onlinetransliterator', __name__, url_prefix = '/')
+bp = Blueprint('onlinetransliterator', __name__, url_prefix = '/', static_url_path='', static_folder='')
+
+ALLOWED_EXTENSIONS = {'txt', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route("/transliterator", methods=['GET', 'POST'])
 def transliterator():
-
+    anchor = ""
     transliterator_form = request.form
 
     source_formats = [
-            {'name': 'Straight', 'value': 'Straight'},
+            {'name': 'Practical Orthography', 'value': 'Orthography'},
             {'name': 'APA Unicode', 'value': 'APA Unicode'},
-            {'name': 'Practical Orthography', 'value': 'Orthography'}]
+            {'name': 'Straight', 'value': 'Straight'}]
     target_formats = [
             {'name': 'APA Unicode', 'value': 'APA Unicode'},
             {'name': 'Practical Orthography', 'value': 'Orthography'}]
 
     if request.method == 'POST':
-        transliterator_input_text = request.form['input-text']
         
-        selected_source_format = request.form['source-format-selection']
-        selected_target_format = request.form['target-format-selection']
-        
-        transliterator_output_text = _transliterate_string(transliterator_input_text, selected_source_format, selected_target_format)
-        
-        transliterator_form = \
-            {'input': transliterator_input_text,
-             'source_format': selected_source_format,
-             'target_format': selected_target_format,
-             'output': transliterator_output_text}
+        if 'string-transliterate' in request.form:
+            transliterator_input_text = request.form['input-text']
+            
+            selected_source_format = request.form['source-format-selection']
+            selected_target_format = request.form['target-format-selection']
+            
+            transliterator_output_text = _transliterate_string(transliterator_input_text, selected_source_format, selected_target_format)
+            
+            transliterator_form = \
+                {'input': transliterator_input_text,
+                'source_format': selected_source_format,
+                'target_format': selected_target_format,
+                'output': transliterator_output_text}
 
     return render_template('transliterator.html',
         transliterator_form=transliterator_form,
         source_formats=source_formats,
-        target_formats=target_formats)
+        target_formats=target_formats,
+        anchor=anchor)
+

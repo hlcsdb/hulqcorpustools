@@ -203,7 +203,6 @@ def transliterate_docx_wordlist(
     source_keywordprocessor = keywordprocessors.get(transliterand.source_format.to_string())
     target_keywordprocessor = keywordprocessors.get(transliterand.target_format.to_string())
     eng_keywordprocessor = keywordprocessors.get('english')
-    print(transliterand.target_path)
 
     for par in document.paragraphs:
         par_text = par.text    
@@ -229,6 +228,7 @@ def transliterate_docx_wordlist(
                 source_keywordprocessor.add_keywords_from_list(par_text.replace('.','').split())
 
     document.save(transliterand.target_path)
+    return transliterand.target_path
 
     # TODO: make a running list of new words to put in the new_wordlist
     # it will be more efficient probably to bring the wordlist in
