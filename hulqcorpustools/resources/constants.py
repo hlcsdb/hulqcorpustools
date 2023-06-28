@@ -195,11 +195,9 @@ class TransliterandFile():
         Arguments:
             target_folder: a Path to the desired output folder
         """
-        print(target_dir)
         if target_dir is None:
             self.target_dir = self.source_dir
         
-        print(self.target_dir)
         self.target_path = Path(self.target_dir / self.target_filename)
 
         return(self.target_path)

@@ -64,9 +64,7 @@
                     
                 </div>
             </form>
-                    <button
-                    id="button-2"
-                    onclick="readText()"></button>
+
             <h3>Test text</h3>
             <h4>Straight</h4>
             <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p>
@@ -83,25 +81,58 @@
             <p>Transliterate all of the Hul’q’umi’num’ in .docx and .txt files.</p>
 
             <form enctype="multipart/form-data" method="post">
-                <input type="file" name="transliterate-file" multiple accept=".docx,.txt"><br />
+                <input type="file" name="transliterate-file" multiple accept=".docx,.txt">
+                
+                <select 
+                    class="format-selection"
+                    name="source-format-selection"
+                    id="source-format-selection">
+                    {%- for format in source_formats -%}
+                        <option
+                            value="{{ format.get('value') }}"
+                            name="{{ format.get('name') }}"
+                            {%- if
+                                transliterator_form.get("source_format") == format.get("value") -%}
+                            selected
+                            {% endif %}>
+                        {{ format.get('name') }}</option>
+                    {% endfor %}
+                </select>
+                <label for="source-format-selection">source format</label>
+                <select
+                    class="format-selection"
+                    name="target-format-selection"
+                    id="target-format-selection">
+                        {%- for format in target_formats -%}
+                        <option
+                            value="{{ format.get('value') }}"
+                            name="{{ format.get('name') }}"
+                            {%- if
+                                transliterator_form.get("target_format") == format.get("value") -%}
+                            selected
+                            {% endif%}>
+                        {{ format.get('name') }}</option>
+                    {% endfor %}
+                    </select>
                 <button
                     type="submit"
                     id="upload-transliterator-files"
                     name="upload-transliterator-files"
                     value="upload-transliterator-files">Submit</button>
+
+                {%- if
+                    transliterator_form.get('transliterated_docx') -%}
+                    {%- for transliterated_docx_name, transliterated_docx_path in transliterator_form.get('transliterated_docx').items() -%}
+                    <a href="{{ url_for('.download_transliterated_file', filename=transliterated_docx_name) }}">
+                    your file: {{ transliterated_file_name }}
+                    </a>
+                    {% endfor %}
+                    {% endif %}
             </form>
-            <p>(coming soon)</p>
 
 
 
         </div>
-
-    <script>
-        function readText() {
-            inputText = document.getElementById("input-text")
-            console.log(inputText)
-        }
-    </script>
 
     </div>
 
