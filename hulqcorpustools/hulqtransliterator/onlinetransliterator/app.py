@@ -1,12 +1,17 @@
 
-import logging
+import os
+
 from flask import Flask, render_template, url_for
 from markupsafe import escape
 
 app = Flask(__name__)
 
-app.config["APPLICATION_ROOT"] = "/apps"
-app.config['UPLOAD_FOLDER'] = app.root_path + "/uploads/"
+app.config['APPLICATION_ROOT'] = '/apps'
+app.config['UPLOAD_FOLDER'] = os.environ.get('TRANSLITERATOR_UPLOADS_FOLDER')
+
+# if transliterator folder not put in env: use root path of app
+if app.config == None:
+    app.config['UPLOAD_FOLDER'] = app.root_path + "/uploads/"
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
