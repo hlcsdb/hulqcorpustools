@@ -31,21 +31,17 @@ def transliterate_string_replace(
 
     working_dict = GraphemesDict(source_format, target_format).correspondence_dict
     substrings = sorted(working_dict, key=len, reverse=True)
-    # substrings = list(working_dict)
+    print(substrings)
     regexp = re.compile('|'.join(map(re.escape, substrings)))
     
-    # if source_format == FileFormat.ORTHOGRAPHY:
-    #     linestring = glottalized_resonant_reverter(linestring)
-    # else:
-    #     pass
-    
+    if source_format == FileFormat.ORTHOGRAPHY:
+        linestring = glottalized_resonant_reverter(linestring)
+
     transliterated_line = regexp.sub(
         lambda match: working_dict[match.group(0)], linestring)
 
     if target_format == FileFormat.ORTHOGRAPHY:
         transliterated_line = glottalized_resonant_mover(transliterated_line)
-    else:
-        pass
 
     return transliterated_line
     
