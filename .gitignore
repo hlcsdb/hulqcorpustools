@@ -4,6 +4,7 @@
 __pypackages__/
 __pycache__/
 *Texts-corpus*.txt
+uploads/*
 
 # Distribution / packaging
 .Python
