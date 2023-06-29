@@ -11,7 +11,7 @@ Transliterate one of the various ways of writing Hul’q’umi’num’ into ano
 #### REAL FEATURES:
 
 - [ ] CLI
-- [ ] file transliterator online
+- [/] file transliterator online - need txt too
 
 #### NEW FEATURES?!:
 
