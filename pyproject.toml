@@ -12,7 +12,10 @@ find = {}
 
 [tool.pytest.ini_options]
 minversion="6.0"
-addopts = "-ra -q"
+addopts = [
+    "--import-mode=importlib",
+    "-ra -q"
+]
 testpaths = [
     "tests"
 ]
