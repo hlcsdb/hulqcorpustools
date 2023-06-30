@@ -20,24 +20,29 @@ from . import replaceengine as repl
 # TODO: use keyword processors in utils
 
 class FileController():
-    
+    """Class that prepares the KeywordProcessors and transliterates the list of
+    given files on demand.
+    """
     def __init__(
             self,
-            docx_files = (list | None),
-            txt_files = (list | None),
+            docx_files = (list[Path] | None),
+            txt_files = (list[Path] | None),
             source_format = (FileFormat | str | None),
             target_format = (FileFormat | str | None),
             **kwargs):
-        """thing that directs files where they need to go
-        and deals with certain  kwargs
+        """Prepare KeywordProcessors of the source format and target format 
+        and hold lists of files for transliterating upon request.
 
-        Arguments:
-            separated_file_list -- a dict of sets of the .docx and .txt
-            files separated
-        Keyword arguments:
-            search_method -- a str (later make this a literal) saying which
-            search method to use
-            font -- in the case of the font search, which font to search by
+        The reason docx files and txt files are both included in one controller
+        is so as to not load multiple KeywordProcessors as it can take
+        a few seconds each time it is initialized. The KPs can be loaded once
+        to transliterate all desired files.
+
+        
+        Kwargsuments:
+            docx_files -- a list of Paths to docx files to be transliterated
+            txt_files: a list of Paths to txt files to be transliterated
+            font  in the case of the font search, which font to search by
         """
         self.docx_files = docx_files
         self.txt_files = txt_files
