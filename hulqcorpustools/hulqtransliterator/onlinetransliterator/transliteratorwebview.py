@@ -3,14 +3,14 @@ from pathlib import Path
 from flask import Blueprint, current_app, request, render_template, url_for, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 
-from .plugins.onlinetransliteratorengine import _transliterate_string, _transliterate_file
+from .plugins.transliteratorwebcontroller import _transliterate_string, _transliterate_file
 
-bp = Blueprint('onlinetransliterator', __name__, url_prefix = '/', static_url_path='', static_folder='')
+transliterator_bp = Blueprint('transliterator', __name__, url_prefix = '/', static_url_path='', static_folder='')
 
 ALLOWED_EXTENSIONS = {'.txt', '.docx'}
 
-@bp.route("/transliterator", methods=['GET', 'POST'])
-def transliterator():
+@transliterator_bp.route("/transliterator", methods=['GET', 'POST'])
+def transliterator_page():
     anchor = ""
     transliterator_form = request.form
 
@@ -93,7 +93,7 @@ def file_transliterate(request):
 
     return transliterated_file_form
 
-@bp.route("/uploads/<filename>", methods=['GET', 'POST'])
+@transliterator_bp.route("/uploads/<filename>", methods=['GET', 'POST'])
 def download_transliterated_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 

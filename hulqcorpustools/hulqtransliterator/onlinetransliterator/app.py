@@ -23,8 +23,9 @@ def index():
         'index.html'
         )
 
-from . import onlinetransliterator
-app.register_blueprint(onlinetransliterator.bp)
+from . import transliteratorwebview, wordfrequencywebview
+app.register_blueprint(transliteratorwebview.transliterator_bp)
+app.register_blueprint(wordfrequencywebview.wordfrequency_bp)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

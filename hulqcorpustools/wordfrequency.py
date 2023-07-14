@@ -8,7 +8,6 @@ from docx import Document as construct_document
 from docx.document import Document
 
 from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
-from hulqcorpustools.utils import languagesusser
 from hulqcorpustools.resources.constants import FileFormat
 from hulqcorpustools.resources import wordlists
 

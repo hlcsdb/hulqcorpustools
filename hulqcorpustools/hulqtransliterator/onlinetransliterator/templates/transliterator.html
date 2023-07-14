@@ -3,26 +3,34 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='transliterator.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tools.css') }}" />
     <title>transliterator</title>
 </head>
 
 <body>
+    <nav class="top-bar">
+        <menu>
+            <li><a href="{{ url_for('index') }}">back to tools list</a></li>
+            <li><b>Transliterator</b></li>
+            <li><a href="{{ url_for('wordfrequency.word_frequency_page')}}">Word frequency</a></li>
+        </menu>
+    </nav>
     <header>
         <h1>Hul’q’umi’num’ transliterator</h1>
         <p>This site can transliterate text from one way of writing Hul’q’umi’num’ to another.</p>
     </header>
 
-    <div class="all-transliterators-container">
 
-        <div class="transliterator-container">
-            <h2 name="string-transliterator">String transliterator</h2>
+    <div class="tools-container">
 
-            <form method="post">
-                <div class="text-box-and-format-selection-container">
+        <div class="tool">
+            <h2 name="string-transliterator">Text transliterator</h2>
+            <p>Transliterate all of the text that you paste here.</p>
+            <form method="post" class="user-prompt-container">
+                <div class="format-row">
                     <label for="source-format-selection">
                         Input text
-                    </label><br />
+                    </label>
 
                     <select class="format-selection" name="source-format-selection" id="source-format-selection">
                         {%- for format in source_formats -%}
@@ -30,16 +38,14 @@
                             transliterator_form.get('source_format')==format.get('value') -%} selected{% endif %}>
                             {{ format.get('name') }}</option>
                         {% endfor %}
-                    </select><br />
-
-                    <textarea autofocus id="input-text" name="input-text" rows="6">
+                    </select>
+                </div>
+                    <textarea autofocus id="input-text" name="input-text">
             {%- if transliterator_form.get('input') -%}
             {{ transliterator_form.get('input') }}
             {%- else -%}’uy’ skweyul si’em’{% endif %}</textarea><br />
 
-                </div>
-
-                <div class="text-box-and-format-selection-container">
+                    <div class="format-row">
                     <label for="target-format-selection">
                         Output text
                     </label><br />
@@ -49,9 +55,9 @@
                             transliterator_form.get('target_format')==format.get('value') -%} selected{% endif%}>
                             {{ format.get('name') }}</option>
                         {% endfor %}
-                    </select><br />
-
-                    <textarea id="output-text" rows="6" type="transliterated-text"
+                    </select>
+                </div>
+                    <textarea id="output-text" type="transliterated-text"
                         readonly>{%- if transliterator_form.get('output') -%}{{ transliterator_form.get('output') }}{%- else -%}{% endif %}</textarea><br />
 
                     <button
@@ -62,27 +68,33 @@
 
 
                     
-                </div>
             </form>
-
-            <h3>Test text</h3>
-            <h4>Straight</h4>
-            <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p>
-            <h4>APA Unicode</h4>
-            <p>nəc̓aʔ skʷeyəl cə st̓e k̓ʷə x̌ʷqʷəl̓qʷəl̓iwən ni:n təw̓ scekʷəl kʷs ʔənθəs t̓at̓aθət.</p>
-            <h4>Practical orthography</h4>
+            <hr>
+            <h3>Sample text</h3>
+            <p>Use these sentences to test how the transliterator works.</p>
+            <div class="sample-text-holder">
+            <ul>
+                <li><h4>Straight</h4>
+                    <p>n;c÷a÷ skøey;l c; st÷e ˚ø; ≈øqø;l÷qø;l÷iw;n ni:n t;w÷ scekø;l køs ÷;nƒ;s t÷at÷aƒ;t.</p></li>
+                <li><h4>APA Unicode</h4>
+                    <p>nəc̓aʔ skʷeyəl cə st̓e k̓ʷə x̌ʷqʷəl̓qʷəl̓iwən ni:n təw̓ scekʷəl kʷs ʔənθəs t̓at̓aθət.</p></li>
+                <li><h4>Practical orthography</h4>
             <p>nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin tuw’ stsekwul kws ’unthus t’at’athut.</p>
-        </div> <!-- string transliterator -->
+                </li>
+            </ul>
+            </div>
+        </div>
 
 
-        <div class="transliterator-container">
+        <div class="tool">
 
             <h2>File transliterator</h2>
             <p>Transliterate all of the Hul’q’umi’num’ in .docx and .txt files.</p>
 
-            <form enctype="multipart/form-data" method="post">
-                <input type="file" name="transliterate-file" multiple accept=".docx,.txt">
-                
+            <form enctype="multipart/form-data" method="post" class="user-prompt-container">
+                    <input type="file" name="transliterate-file" multiple accept=".docx,.txt">
+                    <div class="format-row">
+                        <label for="source-format-selection">Input format</label>
                 <select 
                     class="format-selection"
                     name="source-format-selection"
@@ -97,8 +109,10 @@
                             {% endif %}>
                         {{ format.get('name') }}</option>
                     {% endfor %}
-                </select>
-                <label for="source-format-selection">source format</label>
+                    </select>
+                </div>
+                <div class="format-row">
+                <label for="target-format-selection">Output format</label>
                 <select
                     class="format-selection"
                     name="target-format-selection"
@@ -114,6 +128,7 @@
                         {{ format.get('name') }}</option>
                     {% endfor %}
                     </select>
+                    </div>
                 <button
                     type="submit"
                     id="upload-transliterator-files"
@@ -122,13 +137,15 @@
 
                 {%- if
                     transliterator_form.get('transliterated_docx') -%}
+                    <b>your file:</b>
                     {%- for transliterated_docx_name, transliterated_docx_path in transliterator_form.get('transliterated_docx').items() -%}
                     <a href="{{ url_for('.download_transliterated_file', filename=transliterated_docx_name) }}">
-                    your file: {{ transliterated_docx_name }}
+                    {{ transliterated_docx_name }}
                     </a>
                     {% endfor %}
                     {% endif %}
             </form>
+        </div>
 
 
 
