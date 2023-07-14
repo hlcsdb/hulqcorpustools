@@ -2,71 +2,47 @@
 from collections import Counter
 import json
 from pathlib import Path
-import regex as re
-from typing import Optional
+import re
 
-from flashtext import KeywordProcessor as kp
-import pandas as pd
+from docx import Document as construct_document
+from docx.document import Document
 
-import rawtextfixer
-from hulqcorpusresources.wordlists import hulq_wordlist
+from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
+from hulqcorpustools.utils import languagesusser
+from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.resources import wordlists
 
+_kp = HulqKeywordProcessors(eng=True)
 
-def count_corpus(text_corpus_path: Path, **kwargs) -> Counter:
-    """counts the incidence of each word in the corpus
+reg_str_pattern = re.compile(r"[\"\'\!\.\,\?\[\]\(\)\“\”\;]|LH\t|LE\t")
 
-    Arguments:
-        open_file -- path to the corpus
+class WordCounter():
 
-    kwargs:
-        number_of_lines -- the number of lines to consider; this is to limit number of calls (for testing purposes)
-        wordlist: Boolean -- if true, summon a keywordprocessor wordlist and check
-        whether each word is in the wordlist
-    """
+    def __init__(self):
+        self.kp = HulqKeywordProcessors()
 
-    # if the count is to be checked against the wordlist, initialize to check    
-    if kwargs.get('wordlist'):
-        wordlist_flag = True
-        wordlist_keywordprocessor = kp()
-        wordlist_keywordprocessor.add_non_word_boundary('’')
-        # for now: the wordlist is just the hp one
-        wordlist_keywordprocessor.add_keywords_from_list(
-            hulq_wordlist
-            )
-    else:
-        wordlist_flag = False
-        wordlist_keywordprocessor = []
+    def count_all_words_in_string(self, _str: str) -> Counter:
+        reg_str = re.sub(reg_str_pattern, "", _str)
+        count_words = Counter((i for i in reg_str.split()))
+
+        return count_words
     
-    with open(text_corpus_path, 'r') as open_file:
-        words = Counter()
-        # counting a couple for testing purposes
-        line_limit = kwargs.get('line_limit')
+    def count_all_hulq_words_in_string(self, _str: str) -> Counter:
+        count_words_apa = Counter(self.kp.apa_kp.extract_keywords(_str))
+        count_words_orthog = Counter(self.kp.orthog_kp.extract_keywords(_str))
 
-        # why did i do this at 2
-        line_count = 2
-        
-        for line in open_file:
-            if line[0:2] == 'LH':
-                line_list = line.split()
+        return max(count_words_apa, count_words_orthog, key=len)
+    
+    def count_all_words_in_docx(self, _docx: Path):
+        running_counter = Counter()
+        docx = construct_document(_docx)
+        for par in docx.paragraphs:
+            reg_par_text = re.sub(reg_str_pattern, "", par.text)
+            line_language = _kp.determine_language_from_text(reg_par_text)
+            if line_language == FileFormat.APAUNICODE or line_language == FileFormat.ORTHOGRAPHY:
+                running_counter.update(reg_par_text.split())
 
-                line_list = [rawtextfixer.strip_rl_and_punc(word) for word in line.split()]
-                # skip 'LH' and line number
-                for word in line_list:
-                    if word == 'LH' or \
-                    rawtextfixer.is_number.fullmatch(word) or \
-                    (wordlist_flag == True and word not in wordlist_keywordprocessor):
-                        continue
-                    elif words.get(word):
-                        words[word] += 1
-                    else:
-                        words.update({word:1})
-                
-                line_count += 1
-
-            if line_count == line_limit:
-                return words
-            
-        return words
+        return running_counter
 
 def write_frequency_to_txt(output_filepath: Path, counted_words: Counter):
     """writes the result of counting word frequency to a txt file
@@ -88,41 +64,3 @@ def write_frequency_to_json(output_filepath: Path, counted_words: Counter):
     """
     with open(output_filepath, 'w+') as open_file:
         json.dump(dict(counted_words.most_common()), open_file, ensure_ascii=False, indent=0)
-
-def add_wordlist_to_frequency_list(
-    corpus_count: Counter,
-    wordlist: pd.DataFrame) -> Counter:
-    """takes the counted corpus and adds everything from the established wordlist
-    to it, so if it's in the corpus, it's counted, but if it's in the wordlist,
-    it just gets a value of 1
-
-    Arguments:
-        corpus_count -- a Counter output from corpus_count fn
-        wordlist -- the pandas df of the excel wordlist
-
-    Returns:
-        changed corpus_count
-    """
-    corpus_count.update((i.strip() for i in wordlist))
-
-def build_frequency_json(
-    text_corpus_path: Path,
-    word_frequency_wordlist_path: Path,
-    wordlist: Optional[Path]):
-    """builds the frequency json
-
-    Arguments:
-        text_corpus -- path to text corpus
-    """
-    corpus_count = count_corpus(text_corpus_path, wordlist=True)
-    add_wordlist_to_frequency_list(corpus_count, wordlist)
-
-    #json output assumed to be in the same place as the wordlist
-    json_output_path = word_frequency_wordlist_path
-    write_frequency_to_json(corpus_count, json_output_path)
-
-if __name__ == "__main__":
-    corpus_data_path = Path(__file__).resolve().parent / 'corpusdata'
-    word_frequency_wordlist_data_path = corpus_data_path / 'word-frequency.json'
-    text_corpus_path = list(corpus_data_path.glob('*corpus*.txt'))[0]
-    build_frequency_json(text_corpus_path, word_frequency_wordlist_data_path, hulq_wordlist)

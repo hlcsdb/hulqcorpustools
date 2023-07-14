@@ -17,8 +17,7 @@ from hulqcorpustools.resources.constants import FileFormat, TransliterandFile, G
 from hulqcorpustools.hulqtransliterator.filehandlers import docworker, txtworker
 from . import replaceengine as repl
 
-# TODO: add feature to transliterate *only* hulq words
-# may take a much more substantial wordlist
+# TODO: use keyword processors in utils
 
 class FileController():
     
@@ -148,8 +147,6 @@ def collect_keywordprocessors(*file_formats):
 
     return collected_kps
     
-
-
 def prepare_engkeywordprocessor():
     eng_wordlist_filepath = wordlist_paths.get("words_alpha_vowels_longer_words")
 
@@ -184,68 +181,9 @@ def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
     hulq_keywordprocessor = KeywordProcessor()
     hulq_keywordprocessor.set_non_word_boundaries(get_non_word_boundary_chars(file_format))
     hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
-    return hulq_keywordprocessor
-
-
-    for i in get_non_word_boundary_chars(file_format):
-        hulq_keywordprocessor.add_non_word_boundary(i)
-    hulq_keywordprocessor.non_word_boundaries.remove('_')
-    hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
-
-    # add wordlists to keywordprocessors
-    hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
 
     return hulq_keywordprocessor
 
-    # if you are going to update the other wordlists
-    # def get_wordlists_for_update(source_format: FileFormat):
-    # if kwargs.get('update_wordlists'):
-    #     wordlists_to_update = get_wordlists_for_update(source_format)
-    # all_keyword_processors.update(wordlists_to_update)
-    # else:
-    #     wordlists_to_update = {}
-
-    # """prepares the wordlists into keyboardprocessors to update
-
-    # Arguments:
-    #     source_format -- a FileFormat of the source format
-
-    # Returns:
-    #     a dict {'x_keywordprocessor_update' : KeywordProcessor(x), 
-    #             {'y_keywordprocessor_update' : KeywordProcessor(y)}
-    #         for the two formats, ready to update
-    # """
-
-    # # get all the file formats in one set
-    # file_format_vals = {i.to_string() for i in FileFormat.file_formats()}
-
-    # # remove the source format (wordlist already opened up)
-    # file_format_vals.remove(source_format.to_string())
-    # unused_source_formats = {FileFormat.from_string(i) for i in file_format_vals}
-
-    # # collect the keyword processors with the other fileformats
-    # update_keywordprocessors = dict()
-    # for i in unused_source_formats:
-    #     wordlist_update_path = Path(__file__).parent / (
-    #                                 'resources/wordlists/hulq-wordlist-' +
-    #                                 i.to_string() +
-    #                                 '.txt')
-        
-    #     # make keywordprocessor for each
-    #     keywordprocessor_to_update = KeywordProcessor()
-    #     for j in get_non_word_boundary_chars(i):
-    #         keywordprocessor_to_update.add_non_word_boundary(j)
-    #     keywordprocessor_to_update.non_word_boundaries.remove('_')
-
-    #     # add whatever is in their wordlists
-    #     keywordprocessor_to_update.add_keyword_from_file(wordlist_update_path)
-    #     update_keywordprocessors.update(
-    #     {i.to_string() + '_keywordprocessor_to_update' : keywordprocessor_to_update})
-    
-    # return update_keywordprocessors
-
-    
-    
 
 if __name__ == "__main__":
     ...

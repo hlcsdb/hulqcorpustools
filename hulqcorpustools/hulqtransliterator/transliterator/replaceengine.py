@@ -31,7 +31,6 @@ def transliterate_string_replace(
 
     working_dict = GraphemesDict(source_format, target_format).correspondence_dict
     substrings = sorted(working_dict, key=len, reverse=True)
-    print(substrings)
     regexp = re.compile('|'.join(map(re.escape, substrings)))
     
     if source_format == FileFormat.ORTHOGRAPHY:
@@ -103,4 +102,3 @@ def glottalized_resonant_reverter(linestring):
 if __name__ == "__main__":
     test_string = '’i ’u ch ’uy’ ’ul’'
     tested = transliterate_string_replace(test_string, FileFormat.ORTHOGRAPHY, FileFormat.APAUNICODE)
-    print(tested)
