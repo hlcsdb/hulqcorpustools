@@ -39,7 +39,7 @@ class HulqKeywordProcessors():
             return non_word_boundary_chars
 
         file_format_name = file_format.to_string()
-        hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}'
+        hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}'.casefold()
         hulq_wordlist_filepath = wordlist_paths.get(hulq_wordlist_filename)
 
         hulq_keywordprocessor = KeywordProcessor()

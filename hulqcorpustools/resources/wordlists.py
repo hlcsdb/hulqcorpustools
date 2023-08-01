@@ -26,14 +26,14 @@ class Wordlist():
             return open(wordlist_package.joinpath('english-wordlist.txt'))
 
         else:
-            _filename = f"hulq-wordlist-{wordlist_format}.txt"
+            _filename = f"hulq-wordlist-{wordlist_format}.txt".casefold()
             return open(wordlist_package.joinpath(_filename))
 
     
 
     ENGLISH_WORDLIST_TEXT = load_wordlist_text("english")
     ORTHOGRAPHY_WORDLIST_TEXT = load_wordlist_text("orthography")
-    APA_UNICODE_WORDLIST_TEXT = load_wordlist_text("APAunicode")
+    APA_UNICODE_WORDLIST_TEXT = load_wordlist_text("apaunicode")
     STRAIGHT_WORDLIST_TEXT = load_wordlist_text("straight")
     
     # HULQ_WORDLISTS = (load_wordlist_text(_file_format) for _file_format in FileFormat.HULQ_FORMATS)
