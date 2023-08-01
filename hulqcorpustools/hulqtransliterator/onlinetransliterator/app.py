@@ -7,7 +7,6 @@ from markupsafe import escape
 
 app = Flask(__name__)
 
-app.config['APPLICATION_ROOT'] = '/apps'
 app.config['UPLOAD_FOLDER'] = os.environ.get('TRANSLITERATOR_UPLOADS_FOLDER')
 
 # if transliterator folder not put in env: use root path of app

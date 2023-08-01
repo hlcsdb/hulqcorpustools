@@ -351,6 +351,7 @@
             "Lemma": "˙"},
         "glottalizedResonant": false
     },
+    
     {
         "orthography": {
             "Characters": "t-s",
@@ -465,31 +466,16 @@
     },
     {
         "orthography": {
-            "Characters": "sh",
-            "Lemma": "sh"
-        },
-        "APAUnicode": {
-            "Characters": "š",
-            "Lemma": "š"
-        },
-        "straight": {
-            "Characters": "ß",
-            "Lemma": "ß"},
-        "glottalizedResonant": false
-    },
-
-    {
-        "orthography": {
             "Characters": "s-h",
             "Lemma": "s-h"
         },
         "APAUnicode": {
-            "Characters": "sx",
-            "Lemma": "sx"
+            "Characters": "sh",
+            "Lemma": "sh"
         },
         "straight": {
-            "Characters": "sx",
-            "Lemma": "sx"},
+            "Characters": "ß",
+            "Lemma": "ß"},
         "glottalizedResonant": false
     },
     {
