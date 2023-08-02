@@ -20,7 +20,6 @@ from pathlib import Path
 import os
 
 from ...resources.constants import FileFormat, GraphemesDict, TransliterandFile
-# from resources.wordlists import get_wordlist_paths
 from ..transliterator import replaceengine as repl
 
 def transliterate_docx_font(
@@ -182,7 +181,8 @@ def transliterate_docx_font(
     
 def transliterate_docx_wordlist(
     transliterand: TransliterandFile,
-    keywordprocessors: dict,
+    source_kp = KeywordProcessor,
+    eng_kp = KeywordProcessor,
     **kwargs):
     '''transliterates an entire docx file by wordlist
 
@@ -198,16 +198,12 @@ def transliterate_docx_wordlist(
     '''
 
     document = Document(transliterand.source_path)
-    # TODO: pull these kinds of things out and generalize them to .txt
 
-    source_keywordprocessor = keywordprocessors.get(transliterand.source_format.to_string())
-    target_keywordprocessor = keywordprocessors.get(transliterand.target_format.to_string())
-    eng_keywordprocessor = keywordprocessors.get('english')
 
     for par in document.paragraphs:
         par_text = par.text    
-        found_hulq_words = source_keywordprocessor.extract_keywords(par_text)
-        found_eng_words = eng_keywordprocessor.extract_keywords(par_text)
+        found_hulq_words = source_kp.extract_keywords(par_text)
+        found_eng_words = eng_kp.extract_keywords(par_text)
 
         # if there is more hulq than there is English -- replace
         if len(found_hulq_words) > len(found_eng_words) or len(found_eng_words) == 0:
@@ -221,11 +217,10 @@ def transliterate_docx_wordlist(
         if kwargs.get('update-wordlist') is True:
             update_new_wordlist(
                 transliterand.source_format,
-                source_keywordprocessor,
-                found_hulq_words,
-                keywordprocessors)
+                source_kp,
+                found_hulq_words)
             if len(found_hulq_words) > 2:
-                source_keywordprocessor.add_keywords_from_list(par_text.replace('.','').split())
+                source_kp.add_keywords_from_list(par_text.replace('.','').split())
 
     document.save(transliterand.target_path)
     return transliterand.target_path

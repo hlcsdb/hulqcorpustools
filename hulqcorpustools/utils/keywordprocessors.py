@@ -19,7 +19,18 @@ class HulqKeywordProcessors():
         if kwargs.get('eng') == True:
             self.eng_kp = self.prepare_engkeywordprocessor()
 
-    def prepare_hulqkeywordprocessor(self, file_format: FileFormat, **kwargs) -> dict:
+    def get_kp(self, file_format: FileFormat):
+        """get a KeywordProcessor based on file_format"""
+
+        if file_format == FileFormat.APAUNICODE:
+            return self.apa_kp
+        if file_format == FileFormat.ORTHOGRAPHY:
+            return self.orthog_kp
+        if file_format == FileFormat.STRAIGHT:
+            return self.straight_kp
+
+
+    def prepare_hulqkeywordprocessor(self, file_format: FileFormat, **kwargs) -> KeywordProcessor:
         """prepare a KeywordProcessor from a wordlist determined by FileFormat
 
         Arguments:

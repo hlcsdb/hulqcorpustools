@@ -31,7 +31,8 @@ def transliterate_txt(
 
 def transliterate_txt_wordlist(
     transliterand: TransliterandFile,
-    keyword_processors: dict,
+    source_kp: KeywordProcessor,
+    eng_kp: KeywordProcessor,
     **kwargs
     ):
     """_summary_
@@ -40,16 +41,13 @@ def transliterate_txt_wordlist(
         transliterand -- _description_
         keyword_processors -- _description_
     """
-    hulq_keywordprocessor = keyword_processors.get('hulq_keywordprocessor')
-    eng_keywordprocessor = keyword_processors.get('eng_keywordprocessor')
-
     with (
         open((transliterand.source_path), 'r+') as opened_source_file,
         open((transliterand.target_path), 'w+') as opened_target_file):
 
         for i in opened_source_file:
-            found_hulq_words = hulq_keywordprocessor.extract_keywords(i)
-            found_eng_words = eng_keywordprocessor.extract_keywords(i)
+            found_hulq_words = source_kp.extract_keywords(i)
+            found_eng_words = eng_kp.extract_keywords(i)
 
         if len(i) > len(found_eng_words) or len(found_eng_words) == 0:
             newi = repl.transliterate_string_replace(i, 

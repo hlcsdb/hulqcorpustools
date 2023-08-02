@@ -13,11 +13,14 @@ import os
 import importlib.resources
 
 from hulqcorpustools.resources.wordlists import wordlist_paths
+from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
 from hulqcorpustools.resources.constants import FileFormat, TransliterandFile, GraphemesDict
 from hulqcorpustools.hulqtransliterator.filehandlers import docworker, txtworker
 from . import replaceengine as repl
 
 # TODO: use keyword processors in utils
+
+_hulqkp = HulqKeywordProcessors(eng=True)
 
 class FileController():
     """Class that prepares the KeywordProcessors and transliterates the list of
@@ -76,10 +79,8 @@ class FileController():
 
         transliterated_docx_files = []
 
-        keywordprocessors =  collect_keywordprocessors(
-            self.source_format,
-            self.target_format,
-            )
+        source_kp = _hulqkp.get_kp(self.source_format)
+        eng_kp = _hulqkp.eng_kp
 
         for i in self.docx_files:
             docx_transliterand = TransliterandFile(
@@ -89,7 +90,10 @@ class FileController():
                 )
 
             transliterated_docx_files.append(
-                docworker.transliterate_docx_wordlist(docx_transliterand, keywordprocessors))
+                docworker.transliterate_docx_wordlist(
+                docx_transliterand,
+                source_kp,
+                eng_kp))
 
         return transliterated_docx_files
 
@@ -97,20 +101,11 @@ class FileController():
         self
         ):
         """transliterate a list of txt files
-
-        NOTE: for now I think the only reason why there is a separate function
-        is to have accounted for the possibility of the "font" search capability
-        which should probably be deprecated
         """
         if self.txt_files is None:
             return []
 
         transliterated_txt_files = []
-
-        keywordprocessors = collect_keywordprocessors(
-            self.source_format,
-            self.target_format
-            )
 
         for i in self.txt_files:
             txt_transliterand = TransliterandFile(
@@ -119,10 +114,14 @@ class FileController():
                 self.target_format
                 )
             
+            source_kp = _hulqkp.get_kp(self.source_format)
+            eng_kp = _hulqkp.eng_kp
+
             transliterated_txt_files.append(
                 txtworker.transliterate_txt_wordlist(
                 txt_transliterand,
-                keywordprocessors
+                source_kp,
+                eng_kp
                 )
                 )
 
@@ -141,53 +140,53 @@ def string_processor(
         target_format)
     return transliterated_string
 
-def collect_keywordprocessors(*file_formats):
+# def collect_keywordprocessors(*file_formats):
     
-    collected_kps = dict()
-    english_keywordprocessor = prepare_engkeywordprocessor()
-    collected_kps.update({"english": english_keywordprocessor})
-    for i in file_formats:
-        hulq_keywordprocessor = prepare_hulqkeywordprocessor(i)
-        collected_kps.update({i.to_string(): hulq_keywordprocessor})
+#     collected_kps = dict()
+#     english_keywordprocessor = prepare_engkeywordprocessor()
+#     collected_kps.update({"english": english_keywordprocessor})
+#     for i in file_formats:
+#         hulq_keywordprocessor = prepare_hulqkeywordprocessor(i)
+#         collected_kps.update({i.to_string(): hulq_keywordprocessor})
 
-    return collected_kps
+#     return collected_kps
     
-def prepare_engkeywordprocessor():
-    eng_wordlist_filepath = wordlist_paths.get("words_alpha_vowels_longer_words")
+# def prepare_engkeywordprocessor():
+#     eng_wordlist_filepath = wordlist_paths.get("words_alpha_vowels_longer_words")
 
-    eng_keywordprocessor = KeywordProcessor()
-    eng_keywordprocessor.add_keyword_from_file(eng_wordlist_filepath)
+#     eng_keywordprocessor = KeywordProcessor()
+#     eng_keywordprocessor.add_keyword_from_file(eng_wordlist_filepath)
 
-    return eng_keywordprocessor
+#     return eng_keywordprocessor
 
-def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
-    """opens up wordlists for transliteration
+# def prepare_hulqkeywordprocessor(file_format: FileFormat, **kwargs) -> dict:
+#     """opens up wordlists for transliteration
 
-    Arguments:
-        source_format -- the source format to be transliterated
-    Kwargs:
-        --update-wordlist: opens the other format wordlists if they are supposed to be
-        updated
-    """
+#     Arguments:
+#         source_format -- the source format to be transliterated
+#     Kwargs:
+#         --update-wordlist: opens the other format wordlists if they are supposed to be
+#         updated
+#     """
 
-    def get_non_word_boundary_chars(text_format: FileFormat):
-        """gets all of the characters that might not be in [a-zA-Z] or whatever
+#     def get_non_word_boundary_chars(text_format: FileFormat):
+#         """gets all of the characters that might not be in [a-zA-Z] or whatever
 
-        Arguments:
-            text_format -- a FileFormat of some source
-        """
-        non_word_boundary_chars = (i for i in GraphemesDict(text_format).source_format_characters)
-        return non_word_boundary_chars
+#         Arguments:
+#             text_format -- a FileFormat of some source
+#         """
+#         non_word_boundary_chars = (i for i in GraphemesDict(text_format).source_format_characters)
+#         return non_word_boundary_chars
 
-    file_format_name = file_format.to_string()
-    hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}'
-    hulq_wordlist_filepath = wordlist_paths.get(hulq_wordlist_filename)
+#     file_format_name = file_format.to_string()
+#     hulq_wordlist_filename = f'hulq-wordlist-{file_format_name}'
+#     hulq_wordlist_filepath = wordlist_paths.get(hulq_wordlist_filename)
 
-    hulq_keywordprocessor = KeywordProcessor()
-    hulq_keywordprocessor.set_non_word_boundaries(get_non_word_boundary_chars(file_format))
-    hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
+#     hulq_keywordprocessor = KeywordProcessor()
+#     hulq_keywordprocessor.set_non_word_boundaries(get_non_word_boundary_chars(file_format))
+#     hulq_keywordprocessor.add_keyword_from_file(hulq_wordlist_filepath)
 
-    return hulq_keywordprocessor
+#     return hulq_keywordprocessor
 
 
 if __name__ == "__main__":
