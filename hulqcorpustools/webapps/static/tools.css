@@ -5,6 +5,7 @@
         local("Andika"),
         url('Andika-Regular.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
     /* url('Andika-Bold.ttf') format('truetype'), */
 }
 
@@ -14,23 +15,8 @@
         local("Andika"),
         url('Andika-Bold.ttf') format('truetype');
     font-weight: bold;
+    font-display: swap;
 
-}
-
-@font-face {
-    font-family: Charis SIL;
-    src:
-        local("Charis SIL"),
-        url('CharisSIL-Regular.ttf');
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: Charis SIL;
-    src:
-        local("Charis SIL"),
-        url('CharisSIL-Bold.ttf');
-    font-weight: bold;
 }
 
 body {

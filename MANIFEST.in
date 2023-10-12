@@ -1,7 +1,7 @@
 recursive-include **/resources/**/ *.json
 recursive-include **/resources/**/ *.txt
-graft hulqcorpustools/hulqtransliterator/onlinetransliterator/plugins
-graft hulqcorpustools/hulqtransliterator/onlinetransliterator/static
-graft hulqcorpustools/hulqtransliterator/onlinetransliterator/templates
+graft hulqcorpustools/webapps/plugins
+graft hulqcorpustools/webapps/static
+graft hulqcorpustools/webapps/templates
 global-exclude *.pyc
 prune */__pycache__
