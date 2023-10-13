@@ -7,8 +7,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 include-package-data = true
 
-[tool.setuptools.packages]
-find = {}
+[tool.setuptools.package-data]
+static = ["*.ttf", "*.css"]
+templates = ["*.html"]
 
 [tool.pytest.ini_options]
 minversion="6.0"
@@ -22,7 +23,7 @@ testpaths = [
 
 [project]
 name = "hulqcorpustools"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
     { name="Zack Gilkison", email="zack.gilkison@gmail.com" },
 ]
@@ -37,7 +38,6 @@ dependencies = [
     ]
 
 [project.optional-dependencies]
-    transliteratiorgui = ["tkinter"]
     wordfrequency = ["pandas"]
 
 [project.scripts]
