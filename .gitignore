@@ -5,6 +5,8 @@ __pypackages__/
 __pycache__/
 *Texts-corpus*.txt
 uploads/*
+.*
+*-draft*
 
 # Distribution / packaging
 .Python
@@ -38,3 +40,4 @@ venv.bak/
 # Tests
 tests/
 .vscode/
+gunicorn_conf.py
