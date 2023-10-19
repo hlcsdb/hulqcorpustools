@@ -8,7 +8,6 @@ from markupsafe import escape
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOADS_FOLDER')
-
 # if transliterator folder not put in env: use root path of app
 if app.config == None:
     app.config['UPLOAD_FOLDER'] = app.root_path + "/uploads/"

@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import Blueprint, current_app, request, render_template, url_for, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 
-from .plugins.wordfrequencywebcontroller import get_word_frequency_text, get_word_frequency_file
+from .plugins.wordfrequencyapi import get_word_frequency_text, get_word_frequency_file
 
 wordfrequency_bp = Blueprint('wordfrequency', __name__, url_prefix = '/', static_url_path='', static_folder='')
 

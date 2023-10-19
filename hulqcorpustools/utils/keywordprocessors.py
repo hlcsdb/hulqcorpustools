@@ -85,16 +85,15 @@ class HulqKeywordProcessors():
 
         if len(_text.strip()) < 1:
             return None
-
-
-
         language_counter = Counter()
+        found_straight_words = self.straight_kp.extract_keywords(_text)
         found_apa_words = self.apa_kp.extract_keywords(_text)
         found_orthog_words = self.orthog_kp.extract_keywords(_text)
         found_english_words = self.eng_kp.extract_keywords(_text)
 
 
         language_counter.update({
+            FileFormat.STRAIGHT : len(found_straight_words),
             FileFormat.APAUNICODE : len(found_apa_words),
             FileFormat.ORTHOGRAPHY: len(found_orthog_words),
             'english': len(found_english_words)

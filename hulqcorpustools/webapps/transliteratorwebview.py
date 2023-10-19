@@ -1,19 +1,20 @@
 from pathlib import Path
 
 from flask import Blueprint, current_app, request, render_template, url_for, redirect, send_from_directory
+from flask.wrappers import Request, Response
 from werkzeug.utils import secure_filename
 
-from .plugins.transliteratorwebcontroller import _transliterate_string, _transliterate_file
+from .plugins import transliteratorapi as tr_api
 
 transliterator_bp = Blueprint('transliterator', __name__, url_prefix = '/', static_url_path='', static_folder='')
 
-ALLOWED_EXTENSIONS = {'.txt', '.docx'}
+ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
 @transliterator_bp.route("/transliterator", methods=['GET', 'POST'])
 def transliterator_page():
+
     anchor = ""
     transliterator_form = request.form
-
     source_formats = [
             {'name': 'Practical Orthography', 'value': 'Orthography'},
             {'name': 'APA Unicode', 'value': 'APA Unicode'},
@@ -23,12 +24,19 @@ def transliterator_page():
             {'name': 'Practical Orthography', 'value': 'Orthography'}]
 
     if request.method == 'POST':
-        
-        if 'string-transliterate' in request.form:
-            transliterator_form = string_transliterate(request)
 
-        if 'upload-transliterator-files' in request.form:
-            transliterator_form = file_transliterate(request)
+        if request.form.get('string-transliterate'):
+            transliterator_response = string_transliterate(request)
+
+        elif request.form.get('upload-transliterate'):
+            transliterator_response = file_transliterate(request)
+        
+        if type(transliterator_response) == Response:
+            ...
+
+        else:
+            transliterator_form = transliterator_response
+
 
     return render_template(
         'transliterator.html',
@@ -44,7 +52,7 @@ def string_transliterate(request):
     source_format = request.form['source-format-selection']
     target_format = request.form['target-format-selection']
     
-    transliterated_text = _transliterate_string(
+    transliterated_text = tr_api.transliterate_string(
     input_text,
     source_format,
     target_format
@@ -59,36 +67,52 @@ def string_transliterate(request):
 
     return transliterator_form
 
-def file_transliterate(request):
+def file_transliterate(request: Request):
+    uploaded_files_list = request.files.getlist('transliterate-files')
     source_format = request.form['source-format-selection']
     target_format = request.form['target-format-selection']
 
-    if 'transliterate-file' not in request.files:
+    if request.form.get('font-search-transliterate'):
+        font_search = True
+    else:
+        font_search = None
+
+    transliterator_form = request.form
+
+    if uploaded_files_list[0].filename == '':
         return redirect(request.url)
 
-    file = request.files['transliterate-file']
+    ...
+    for _file in uploaded_files_list:
+        _file.filename = secure_filename(_file.filename)
 
-    if allowed_file(file) is False:
-        return redirect(request.url)
+    uploaded_files_list = [_file for _file in uploaded_files_list if Path(_file.filename).suffix in ALLOWED_EXTENSIONS]
 
-    filename = secure_filename(file.filename)
     UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
     upload_dir = Path(UPLOAD_FOLDER)
-    upload_path = upload_dir.joinpath(filename)
-    file.save(upload_path)
+
+    uploaded_file_paths = []
+
+    for i in uploaded_files_list:
+        upload_path = Path(upload_dir.joinpath(i.filename))
+        i.save(upload_path)
+        uploaded_file_paths.append(upload_path)
     
-    transliterated_files = _transliterate_file(
-        upload_path,
+
+    transliterated_files = tr_api.transliterate_file_list(
+        uploaded_file_paths,
         source_format,
-        target_format
+        target_format,
+        font_search=font_search
         )
     
+    print(transliterated_files)
 
     transliterated_file_form = {
         'source_format': source_format,
         'target_format': target_format,
-        'transliterated_docx': transliterated_files.get('transliterated_docx'),
-        'transliterated_txt': transliterated_files.get('transliterated_txt')
+        'font_search': font_search,
+        'transliterated_files': transliterated_files
     }
 
     return transliterated_file_form
@@ -96,6 +120,7 @@ def file_transliterate(request):
 @transliterator_bp.route("/uploads/<filename>", methods=['GET', 'POST'])
 def download_transliterated_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
 
 def allowed_file(file):
     filename = Path(file.filename)

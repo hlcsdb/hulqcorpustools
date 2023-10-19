@@ -3,7 +3,7 @@ from pathlib import Path
 from hulqcorpustools.hulqtransliterator.transliterator import controller
 from hulqcorpustools.resources.constants import FileFormat
 
-def _transliterate_string(
+def transliterate_string(
         hulq_string: str,
         source_format = (FileFormat | str),
         target_format = (FileFormat | str)
@@ -28,17 +28,16 @@ def _transliterate_string(
     
     return controller.string_processor(hulq_string, source_format, target_format)
 
-def _transliterate_file(
-        file: (Path | str),
+def transliterate_file_list(
+        file_list: list[Path | str],
         source_format = (FileFormat | str),
-        target_format = (FileFormat | str)
-        ) -> dict[str: list[Path]]:
-    """Transliterate a single file that has been uploaded.
+        target_format = (FileFormat | str),
+        **kwargs) -> dict[str: list[Path]]:
+    """Transliterate multiple files that have been uploaded.
     The file is transliterated and saved in the same directory it exists in.
-    TODO: Deal with a list of files i.e. upload multiple files.
 
     Arguments:
-        file -- a Path (or str of a path) to a file.
+        file_list -- a Path (or str of a path) to a file.
         source_format -- the format of the initial text to be transliterated
             (default: {(FileFormat  |  str)})
         target_format -- the format to be transliterated into
@@ -50,8 +49,6 @@ def _transliterate_file(
 
     """
     
-    if type(file) == str:
-        file = Path(file)
 
     if type(source_format) == str:
         source_format = FileFormat.from_string(source_format)
@@ -59,30 +56,21 @@ def _transliterate_file(
     if type(target_format) == str:
         target_format = FileFormat.from_string(target_format)
 
-    docx_file_list = []
-    txt_file_list = []
-
-    if file.suffix[1:] == 'docx':
-        docx_file_list.append(file)
-
-    elif file.suffix[1:] == 'txt':
-        txt_file_list.append(file)
-
     file_controller = controller.FileController(
-        docx_file_list,
-        txt_file_list,
+        file_list,
         source_format=source_format,
-        target_format=target_format)
+        target_format=target_format,
+        font=kwargs.get('font')
+        )
     
-    transliterated_docx_files = {
-        i.name : str(i)  for i in file_controller.transliterate_docx()
+    transliterated_files = file_controller.transliterate_all_files()
+    ...
+    transliterated_files_dict = {
+        i.name : str(i)  for i in transliterated_files
     }
-    transliterated_txt_files = {
-        i.name : str(i) for i in file_controller.transliterate_txt()
-    }
+
+    # transliterated_txt_files = {
+    #     i.name : str(i) for i in file_controller.transliterate_txt_files()
+    # }
     
-    transliterated_files = {
-        'transliterated_docx': transliterated_docx_files,
-        'transliterated_txt': transliterated_txt_files
-        }
-    return transliterated_files
+    return transliterated_files_dict

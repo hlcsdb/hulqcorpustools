@@ -35,8 +35,9 @@
 
                     <select class="format-selection" name="source-format-selection" id="source-format-selection">
                         {%- for format in source_formats -%}
-                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" {%- if
-                            transliterator_form.get('source_format')==format.get('value') -%} selected{% endif %}>
+                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" 
+                         {%- if
+                            request.form.get('source_format') == format.get('value') -%} selected{% endif %}> 
                             {{ format.get('name') }}</option>
                         {% endfor %}
                     </select>
@@ -52,8 +53,9 @@
                     </label><br />
                     <select class="format-selection" name="target-format-selection" id="target-format-selection">
                         {%- for format in target_formats -%}
-                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" {%- if
-                            transliterator_form.get('target_format')==format.get('value') -%} selected{% endif%}>
+                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}"
+                        {%- if
+                            request.form.get('target_format') == format.get('value') -%} selected{% endif%}>
                             {{ format.get('name') }}</option>
                         {% endfor %}
                     </select>
@@ -93,7 +95,7 @@
             <p>Transliterate all of the Hul’q’umi’num’ in .docx and .txt files.</p>
 
             <form enctype="multipart/form-data" method="post" class="user-prompt-container">
-                    <input type="file" name="transliterate-file" multiple accept=".docx,.txt">
+                    <input type="file" name="transliterate-files" multiple accept=".docx,.txt,.doc">
                     <div class="format-row">
                         <label for="source-format-selection">Input format</label>
                 <select 
@@ -105,7 +107,7 @@
                             value="{{ format.get('value') }}"
                             name="{{ format.get('name') }}"
                             {%- if
-                                transliterator_form.get("source_format") == format.get("value") -%}
+                                request.form.get('source_format') == format.get('value') -%}
                             selected
                             {% endif %}>
                         {{ format.get('name') }}</option>
@@ -123,25 +125,27 @@
                             value="{{ format.get('value') }}"
                             name="{{ format.get('name') }}"
                             {%- if
-                                transliterator_form.get("target_format") == format.get("value") -%}
+                                request.form.get("target_format") == format.get("value") -%}
                             selected
                             {% endif%}>
                         {{ format.get('name') }}</option>
                     {% endfor %}
                     </select>
                     </div>
+                    <input type="checkbox" id="font-search-selection" name="font-search-selection" value="true">
+                    <label for="font-search-selection">Find <i>Straight</i> format by font</label>
                 <button
                     type="submit"
-                    id="upload-transliterator-files"
-                    name="upload-transliterator-files"
-                    value="upload-transliterator-files">Submit</button>
+                    id="upload-transliterate"
+                    name="upload-transliterate"
+                    value="True">Submit</button>
 
                 {%- if
-                    transliterator_form.get('transliterated_docx') -%}
-                    <b>your file:</b>
-                    {%- for transliterated_docx_name, transliterated_docx_path in transliterator_form.get('transliterated_docx').items() -%}
-                    <a href="{{ url_for('.download_transliterated_file', filename=transliterated_docx_name) }}">
-                    {{ transliterated_docx_name }}
+                    transliterator_form.get('transliterated_files') -%}
+                        <b>transliterated:</b>
+                    {%- for transliterated_file_name, transliterated_file_path in transliterator_form.get('transliterated_files').items() -%}
+                    <a href="{{ url_for('.download_transliterated_file', filename=transliterated_file_path) }}">
+                    {{ transliterated_file_name }}
                     </a>
                     {% endfor %}
                     {% endif %}

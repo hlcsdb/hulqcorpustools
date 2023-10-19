@@ -1,26 +1,132 @@
 '''
 takes either a .doc or .docx file and transliterates based on font
 or style
-
-in a .docx file, it currently searches by any instances of specific fonts
-when it's straight, the font is just Straight
-otherwise, it's whatever the user sets-- could just be Times New Roman if
-they've gone through their doc and changed everything they need transliterated 
-to TNR, but it defaults to BC Sans.
-
 TODO: write real tests and write test checking
     - for each file format to another
 '''
 
 
-from docx import Document
+from docx import Document as load_docx
+from docx.document import Document
 from docx.text import paragraph, run
+from docx import table
 from flashtext import KeywordProcessor
 from pathlib import Path
 import os
 
+from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
 from ...resources.constants import FileFormat, GraphemesDict, TransliterandFile
 from ..transliterator import replaceengine as repl
+
+class DocxTransliterator():
+
+
+
+    def transliterate_docx_wordlist(
+        transliterand: Path,
+        source_format = FileFormat,
+        target_format = FileFormat,
+        kps = HulqKeywordProcessors,
+        **kwargs):
+        '''transliterates an entire docx file by wordlist
+
+        Keyword arguments:
+            update_wordlist -- include this if you want to update the wordlist
+                            with words found in the transliterated lines
+            font_search -- include this 
+        '''
+
+        document = load_docx(transliterand)
+        out_filename = f'{transliterand.stem} {source_format.to_string()} to {source_format.to_string()} transliterated.docx'
+        out_path = transliterand.parent.joinpath(out_filename)
+        for par in document.paragraphs:
+            par_text_parts = par.text.split('\t')
+
+            for par_text_part in par_text_parts:
+                if kps.determine_language_from_text(par_text_part) != 'english':
+                    par_text_part = repl.transliterate_string_replace(
+                        par_text_part,
+                        source_format,
+                        target_format
+                    )
+
+                    par.text = '\t'.join(par_text_parts)
+
+        for table in document.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    if kps.determine_language_from_text(cell.text) != 'english':
+                        cell_text = repl.transliterate_string_replace(
+                            cell.text,
+                            source_format,
+                            target_format
+                        )
+                        cell.text = cell_text
+
+        document.save(out_path)
+        return out_path 
+
+    def transliterate_docx_font(
+        transliterand: Path,
+        source_format = FileFormat,
+        target_format = FileFormat
+        ):
+
+        document = load_docx(transliterand)
+        out_filename = f'{transliterand.stem} {source_format.to_string()} to {target_format.to_string()} transliterated.docx'
+        out_path = transliterand.parent.joinpath(out_filename)
+
+        for par in document.paragraphs:
+            if par.style.font.name == 'Straight':
+                par.text = repl.transliterate_string_replace(
+                    par.text,
+                    source_format,
+                    target_format)
+            else:
+                for run in par.runs:
+                    if run.font.name == 'Straight':
+                        run.text = repl.transliterate_string_replace(
+                            run.text,
+                            source_format,
+                            target_format
+                        )
+
+        for table in document.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        for run in paragraph.runs:
+                            if run.font.name == 'Straight':
+                                run.text = repl.transliterate_string_replace(
+                                    run.text,
+                                    source_format,
+                                    target_format
+                                )
+
+
+        document.save(out_path)
+        return(out_path)
+
+    def update_new_wordlist(
+        source_format: FileFormat,
+        current_keywordprocessor: KeywordProcessor,
+        new_keywords: list,
+        keywordprocessors_dict: dict):
+        """update the running wordlist with things that were transliterated
+
+        Arguments:
+            source_format -- the current source format (to get base wordlist folder)
+            current_keywordprocessor -- the current keyword processor (to get the keywords)
+            new_keywords -- all the found 
+        """
+        working_wordlist_filepath = Path(__file__).parent / ('resources/wordlists/new-hulq-wordlist-' +
+                                                        source_format.to_string() +
+                                                            '.txt')
+
+        current_keywords = current_keywordprocessor.get_all_keywords()
+        
+        set(new_keywords.get_all_keywords().keys())
+
 
 def transliterate_docx_font(
     transliterand: TransliterandFile, 
@@ -179,81 +285,6 @@ def transliterate_docx_font(
                     )
     transliterated.save(transliterand.target_path)        
     
-def transliterate_docx_wordlist(
-    transliterand: TransliterandFile,
-    source_kp = KeywordProcessor,
-    eng_kp = KeywordProcessor,
-    **kwargs):
-    '''transliterates an entire docx file by wordlist
-
-    Arguments:
-        transliterand: a TransliterandFile with the parameters
-        keywordprocessors: a dict of all the loaded
-        keyword processors
-        
-    
-    Keyword arguments:
-        update_wordlist -- include this if you want to update the wordlist
-                           with words found in the transliterated lines
-    '''
-
-    document = Document(transliterand.source_path)
-
-
-    for par in document.paragraphs:
-        par_text = par.text    
-        found_hulq_words = source_kp.extract_keywords(par_text)
-        found_eng_words = eng_kp.extract_keywords(par_text)
-
-        # if there is more hulq than there is English -- replace
-        if len(found_hulq_words) > len(found_eng_words) or len(found_eng_words) == 0:
-            par_text = repl.transliterate_string_replace(
-                par.text,
-                transliterand.source_format,
-                transliterand.target_format
-            )
-            par.text = par_text
-        
-        if kwargs.get('update-wordlist') is True:
-            update_new_wordlist(
-                transliterand.source_format,
-                source_kp,
-                found_hulq_words)
-            if len(found_hulq_words) > 2:
-                source_kp.add_keywords_from_list(par_text.replace('.','').split())
-
-    document.save(transliterand.target_path)
-    return transliterand.target_path
-
-    # TODO: make a running list of new words to put in the new_wordlist
-    # it will be more efficient probably to bring the wordlist in
-    # get the difference set ({a, b, c}, {b, c, d} = {d}) and write
-    # the difference set to the end of the file
-    # TODO: transliterate wordlist into each orthography
-    # TODO: clean it up nice (wrote this down and don't remember what it means)
-
-
-
-def update_new_wordlist(
-    source_format: FileFormat,
-    current_keywordprocessor: KeywordProcessor,
-    new_keywords: list,
-    keywordprocessors_dict: dict):
-    """update the running wordlist with things that were transliterated
-
-    Arguments:
-        source_format -- the current source format (to get base wordlist folder)
-        current_keywordprocessor -- the current keyword processor (to get the keywords)
-        new_keywords -- all the found 
-    """
-    working_wordlist_filepath = Path(__file__).parent / ('resources/wordlists/new-hulq-wordlist-' +
-                                                    source_format.to_string() +
-                                                        '.txt')
-
-    current_keywords = current_keywordprocessor.get_all_keywords()
-    
-    set(new_keywords.get_all_keywords().keys())
-
 if __name__ == "__main__":
 
 

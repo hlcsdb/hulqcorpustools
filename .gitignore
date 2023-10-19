@@ -41,3 +41,6 @@ venv.bak/
 tests/
 .vscode/
 gunicorn_conf.py
+dev_gunicorn.sh
+gunicorn-access.log
+gunicorn-error.log
