@@ -72,7 +72,7 @@ def file_transliterate(request: Request):
     source_format = request.form['source-format-selection']
     target_format = request.form['target-format-selection']
 
-    if request.form.get('font-search-transliterate'):
+    if request.form.get('font-search-selection'):
         font_search = True
     else:
         font_search = None
@@ -88,8 +88,8 @@ def file_transliterate(request: Request):
 
     uploaded_files_list = [_file for _file in uploaded_files_list if Path(_file.filename).suffix in ALLOWED_EXTENSIONS]
 
-    UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
-    upload_dir = Path(UPLOAD_FOLDER)
+    UPLOADS_FOLDER = current_app.config['UPLOADS_FOLDER']
+    upload_dir = Path(UPLOADS_FOLDER)
 
     uploaded_file_paths = []
 
@@ -103,7 +103,7 @@ def file_transliterate(request: Request):
         uploaded_file_paths,
         source_format,
         target_format,
-        font_search=font_search
+        font=font_search
         )
     
     print(transliterated_files)
@@ -115,11 +115,13 @@ def file_transliterate(request: Request):
         'transliterated_files': transliterated_files
     }
 
+    # print(url_for(transliterated_file_form.get('transliterated_files')[0]))
     return transliterated_file_form
+
 
 @transliterator_bp.route("/uploads/<filename>", methods=['GET', 'POST'])
 def download_transliterated_file(filename):
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    return send_from_directory(current_app.config['UPLOADS_FOLDER'], filename, as_attachment=True)
 
 
 def allowed_file(file):

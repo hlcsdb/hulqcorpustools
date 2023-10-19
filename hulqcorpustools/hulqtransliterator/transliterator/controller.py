@@ -82,7 +82,7 @@ class FileController():
             self.source_format = FileFormat().from_string(self.source_format)
 
         if type(self.target_format) == str:
-            self.source_format = FileFormat().from_string(self.target_format)
+            self.target_format = FileFormat().from_string(self.target_format)
 
     def transliterate_all_files(
             self,
@@ -111,7 +111,7 @@ class FileController():
             transliterated_files: a list of Paths the transliterated docx files
         """ 
 
-        if kwargs.get('font') == True:
+        if self.font_search == True:
             transliterated_docx_files = [
                 docworker.DocxTransliterator.transliterate_docx_font(
                     _file,

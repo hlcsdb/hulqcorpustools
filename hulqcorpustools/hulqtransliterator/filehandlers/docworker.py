@@ -37,7 +37,7 @@ class DocxTransliterator():
         '''
 
         document = load_docx(transliterand)
-        out_filename = f'{transliterand.stem} {source_format.to_string()} to {source_format.to_string()} transliterated.docx'
+        out_filename = f'{transliterand.stem} {source_format.to_string()} to {target_format.to_string()} transliterated.docx'
         out_path = transliterand.parent.joinpath(out_filename)
         for par in document.paragraphs:
             par_text_parts = par.text.split('\t')

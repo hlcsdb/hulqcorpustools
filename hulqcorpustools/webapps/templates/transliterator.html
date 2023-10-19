@@ -144,7 +144,7 @@
                     transliterator_form.get('transliterated_files') -%}
                         <b>transliterated:</b>
                     {%- for transliterated_file_name, transliterated_file_path in transliterator_form.get('transliterated_files').items() -%}
-                    <a href="{{ url_for('.download_transliterated_file', filename=transliterated_file_path) }}">
+                    <a href="{{ url_for('.download_transliterated_file', filename=transliterated_file_name) }}">
                     {{ transliterated_file_name }}
                     </a>
                     {% endfor %}
