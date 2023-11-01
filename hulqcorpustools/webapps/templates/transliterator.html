@@ -33,7 +33,7 @@
                         Input text
                     </label>
 
-                    <select class="format-selection" name="source-format-selection" id="source-format-selection">
+                    <select class="format-selection" name="source-format-selection" id="string-source-format-selection">
                         {%- for format in source_formats -%}
                         <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" 
                          {%- if
@@ -89,7 +89,7 @@
         </div>
 
 
-        <div class="tool">
+        <div class="tool" id="file-transliterator">
 
             <h2>File transliterator</h2>
             <p>Transliterate all of the Hul’q’umi’num’ in .docx and .txt files.</p>
@@ -101,7 +101,7 @@
                 <select 
                     class="format-selection"
                     name="source-format-selection"
-                    id="source-format-selection">
+                    id="file-source-format-selection">
                     {%- for format in source_formats -%}
                         <option
                             value="{{ format.get('value') }}"
@@ -132,8 +132,11 @@
                     {% endfor %}
                     </select>
                     </div>
-                    <input type="checkbox" id="font-search-selection" name="font-search-selection" value="true">
-                    <label for="font-search-selection">Find <i>Straight</i> format by font</label>
+                    <div id="font-search-section"
+                    style="display: none;">
+                        <input type="checkbox" id="font-search-selection" name="font-search-selection" value="true" >
+                        <label for="font-search-selection">Find <i>Straight</i> format by font</label>
+                    </div>
                 <button
                     type="submit"
                     id="upload-transliterate"
@@ -157,7 +160,20 @@
         </div>
 
     </div>
+    <script>
+        const fileFormatSelection = document.querySelector('#file-source-format-selection');
+        const fontSearchSelectionSection = document.querySelector('#font-search-section');
 
+        fileFormatSelection.addEventListener('change', (e) => {
+            if (fileFormatSelection.value == 'Straight') {
+                fontSearchSelectionSection.setAttribute('style', 'display: block');
+            } else {
+                fontSearchSelectionSection.setAttribute('style', 'display: none')
+            }
+        }
+        )
+
+    </script>
 </body>
 
 </html>
