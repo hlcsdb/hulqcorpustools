@@ -121,9 +121,6 @@ class FileController():
                 for _file in self.docx_files
             ]
         else:
-            source_kp = hulq_kp.get_kp(self.source_format)
-            eng_kp = hulq_kp.eng_kp
-
             transliterated_docx_files = [
                 docworker.DocxTransliterator.transliterate_docx_wordlist(
                     _file,

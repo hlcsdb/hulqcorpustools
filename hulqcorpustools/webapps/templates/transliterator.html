@@ -37,7 +37,7 @@
                         {%- for format in source_formats -%}
                         <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" 
                          {%- if
-                            request.form.get('source_format') == format.get('value') -%} selected{% endif %}> 
+                            transliterator_form.get('source_format') == format.get('value') -%} selected{% endif %}> 
                             {{ format.get('name') }}</option>
                         {% endfor %}
                     </select>
@@ -55,7 +55,7 @@
                         {%- for format in target_formats -%}
                         <option value="{{ format.get('value') }}" name="{{ format.get('name') }}"
                         {%- if
-                            request.form.get('target_format') == format.get('value') -%} selected{% endif%}>
+                            transliterator_form.get('target_format') == format.get('value') -%} selected{% endif %}>
                             {{ format.get('name') }}</option>
                         {% endfor %}
                     </select>
@@ -107,7 +107,7 @@
                             value="{{ format.get('value') }}"
                             name="{{ format.get('name') }}"
                             {%- if
-                                request.form.get('source_format') == format.get('value') -%}
+                                transliterator_form.get('source_format') == format.get('value') -%}
                             selected
                             {% endif %}>
                         {{ format.get('name') }}</option>
@@ -125,7 +125,7 @@
                             value="{{ format.get('value') }}"
                             name="{{ format.get('name') }}"
                             {%- if
-                                request.form.get("target_format") == format.get("value") -%}
+                                transliterator_form.get("target_format") == format.get("value") -%}
                             selected
                             {% endif%}>
                         {{ format.get('name') }}</option>
