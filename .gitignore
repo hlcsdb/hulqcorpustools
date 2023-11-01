@@ -44,3 +44,4 @@ gunicorn_conf.py
 dev_gunicorn.sh
 gunicorn-access.log
 gunicorn-error.log
+hulqcorpustools/resources/wordlistsdata/~$hukari-peter-parses.xlsx
