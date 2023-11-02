@@ -91,11 +91,9 @@ class FileController():
 
         all_transliterated_files = []
 
-        all_transliterated_files.extend(self.transliterate_docx_files(font=kwargs.get('font')))
+        all_transliterated_files.extend(self.transliterate_docx_files(
+            font=kwargs.get('font')))
         all_transliterated_files.extend(self.transliterate_txt_files())
-
-        # transliterated_docx_files = self.transliterate_docx_files(font=kwargs.get('font')) 
-        # transliterated_txt_files = self.transliterate_txt_files()
 
         return all_transliterated_files
 
@@ -116,7 +114,8 @@ class FileController():
                 docworker.DocxTransliterator.transliterate_docx_font(
                     _file,
                     self.source_format,
-                    self.target_format
+                    self.target_format,
+                    outdir=self.out_dir
                 )
                 for _file in self.docx_files
             ]
@@ -126,7 +125,8 @@ class FileController():
                     _file,
                     self.source_format,
                     self.target_format,
-                    hulq_kp)
+                    hulq_kp,
+                    outdir=self.out_dir)
                     for _file in self.docx_files
                 ]
             
@@ -145,7 +145,8 @@ class FileController():
                 self.source_format,
                 self.target_format,
                 hulq_kp.get_kp(self.source_format),
-                hulq_kp.eng_kp
+                hulq_kp.eng_kp,
+                outdir=self.out_dir
             )
 
             for _txt_file in self.txt_files
