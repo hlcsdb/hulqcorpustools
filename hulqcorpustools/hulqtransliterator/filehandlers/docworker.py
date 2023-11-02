@@ -38,10 +38,14 @@ class DocxTransliterator():
 
         document = load_docx(transliterand)
         out_filename = f'{transliterand.stem} {source_format.to_string()} to {target_format.to_string()} transliterated.docx'
-        out_path = transliterand.parent.joinpath(out_filename)
+
+        if (out_dir := kwargs.get('outdir')): # type: Path
+            out_path = out_dir.joinpath(out_filename)
+        else:
+            out_path = transliterand.parent.joinpath(out_filename)
         for par in document.paragraphs:
             par_text_parts = par.text.split('\t')
-
+            new_par_text_parts = []
             for par_text_part in par_text_parts:
                 if kps.determine_language_from_text(par_text_part) != 'english':
                     par_text_part = repl.transliterate_string_replace(
@@ -49,8 +53,17 @@ class DocxTransliterator():
                         source_format,
                         target_format
                     )
+                new_par_text_parts.append(par_text_part)
+            # for par_text_part in par_text_parts:
+            #     if kps.determine_language_from_text(par_text_part) != 'english':
+            #         par_text_part = repl.transliterate_string_replace(
+            #             par_text_part,
+            #             source_format,
+            #             target_format
+            #         )
 
-                    par.text = '\t'.join(par_text_parts)
+            par.text = '\t'.join(new_par_text_parts)
+            ...
 
         for table in document.tables:
             for row in table.rows:
