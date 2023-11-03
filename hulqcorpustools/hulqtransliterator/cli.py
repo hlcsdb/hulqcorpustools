@@ -46,7 +46,7 @@ def _cli_transliterate_string(_string: str, _source_format: FileFormat, _target_
         _source_format -- _description_
         _target_format -- _description_
     """
-    return controller.string_processor(_string, FileFormat.from_string(_source_format), FileFormat.from_string(_target_format))
+    return controller.string_transliterator(_string, FileFormat.from_string(_source_format), FileFormat.from_string(_target_format))
 
 if __name__ == "__main__":
     _transliterand_string_or_path = sys.argv[1]

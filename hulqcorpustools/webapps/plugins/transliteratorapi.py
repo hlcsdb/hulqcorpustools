@@ -26,7 +26,7 @@ def transliterate_string(
     if type(target_format) == str:
         target_format = FileFormat.from_string(target_format)
     
-    return controller.string_processor(hulq_string, source_format, target_format)
+    return controller.string_transliterator(hulq_string, source_format, target_format)
 
 def transliterate_file_list(
         file_list: list[Path | str],

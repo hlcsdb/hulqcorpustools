@@ -108,7 +108,7 @@ class TransliterandFileHandler(FileHandler):
         ]
         return transliterated_txt_files
 
-def string_processor(
+def string_transliterator(
     source_string: str,
     source_format: FileFormat,
     target_format: FileFormat):
