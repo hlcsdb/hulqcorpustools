@@ -29,6 +29,15 @@ class FileFormat(Enum):
     STRAIGHT = auto()
     APAUNICODE = auto()
     ORTHOGRAPHY = auto()
+    ENGLISH = auto()
+
+    @property
+    def is_hulq_format(self):
+        return self in {self.STRAIGHT, self.APAUNICODE, self.ORTHOGRAPHY}
+    
+    @property
+    def is_file_format(self):
+        return self in {self.STRAIGHT, self.APAUNICODE, self.ORTHOGRAPHY, self.ENGLISH}
 
     @staticmethod
     def file_formats():
@@ -52,7 +61,7 @@ class FileFormat(Enum):
         return cls
 
     def to_string(self):
-        if self == FileFormat.APAUNICODE:
+        if self == self.APAUNICODE:
             file_format_str = 'APAUnicode'
         else:
             file_format_str = self.name.lower()
