@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tools.css') }}" />
+  <title>Hul’q’umi’num’ Vocab Lookup</title>
+</head>
+<body  style="background-color: aliceblue;">
+  
+  <nav class="top-bar">
+    <menu>
+        <li><a href="{{ url_for('index') }}">back to tools list</a></li>
+        <li><a href="{{ url_for('transliterator.transliterator_page') }}">Transliterator</a></li>
+        <li><a href="{{ url_for('wordfrequency.word_frequency_page') }}">Word frequency</a></li>
+        <li><b>Vocab lookup</b></li>
+    </menu>
+  </nav>
+  <div>
+    <header>
+      <h1>Hul’q’umi’num’ vocab lookup</h1>
+    </header>
+    <p>
+      Look up words that appear in Hul’q’umi’num’ and get their dictionary definitions.
+    </p>
+  </div>
+  <div class="tools-container">
+
+    <div id="text-box" class="tool">
+      <h2>
+        Vocab lookup from text
+      </h2>
+      <form method="post" class="user-prompt-container">
+        <textarea autofocus id="input-text" name="input-text">
+          {%- if vocab_lookup -%}
+            {{ vocab_lookup['text_lookup'] }}
+            {%- else -%}
+              nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws tuw’ stsekwul kws ’unthus t’at’athut.
+            {%- endif -%}
+        </textarea>
+        <input type="radio" id="text-format-orthography" name="text-format" value="Orthography" checked/>
+        <label for="text-format-orthography">Practical orthography</label>
+        <input type="radio" id="text-format-apa" name="text-format" value="APAUnicode"/>
+        <label for="text-format-apa">APA Unicode</label>
+        <button
+          type="submit"
+          id="vocab-lookup-text"
+          name="vocab-lookup-text"
+          value="submit">submit</button>
+      </form>
+    </div>
+
+    <div class="tool">
+      <form enctype="multipart/form-data" method="post" class="user-prompt-container">
+        <input type="file" name="vocab-lookup-file" accept=".docx,.doc,.txt">
+        <button
+          type="file"
+          id="vocab-lookup-file"
+          name="vocab-lookup-file"
+          value="submit">submit file</button>
+      </form>
+    </div>
+
+
+  </div>
+  {%- if vocab_lookup -%}
+    {%- if vocab_lookup['vocab_found'] -%}
+    <div class="results">
+      <table>
+        <tr>
+        <th colspan="100">Found vocab</th>
+      </tr>
+        <tr>
+          <th>ID</th>
+          <th>Orthography</th>
+          <th>APA Unicode</th>
+          <th>Root</th>
+          <th>Parse</th>
+          <th>Definition</th>
+          <th>Notes</th>
+          <th>Count</th>
+        </tr>
+        {% for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() %}
+        <tr>
+          <td>{{ vocab_word_id }}</td>
+          <td>{{ vocab_word_value['ORTHOGRAPHY'] }}</td>
+          <td>{{ vocab_word_value['APAUNICODE'] }}</td>
+          <td>{{ vocab_word_value['ROOT'] }}</td>
+          <td>{{ vocab_word_value['PARSE'] }}</td>
+          <td>{{ vocab_word_value['DEFINITION'] }}</td>
+          <td>{{ vocab_word_value['NOTE'] }}</td>
+          <td>{{ vocab_word_value['COUNT'] }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {%- endif -%}
+      <h2>Known words</h2>
+      <p>
+      {% for known_word in vocab_lookup['known_words'] %}
+      {{ known_word }},
+      {% endfor %}
+      </p>
+      <h2>Unknown words</h2>
+      <p>
+        {% for unknown_word in vocab_lookup['unknown_words'] %}
+        <p>{{ unknown_word }}</p>
+        {% endfor %}
+      </p>
+  </div>
+  {%- endif -%}
+</body>
+</html>
