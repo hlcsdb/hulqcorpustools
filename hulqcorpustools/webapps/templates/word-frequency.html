@@ -13,6 +13,7 @@
         <li><a href="{{ url_for('index') }}">back to tools list</a></li>
         <li><a href="{{ url_for('transliterator.transliterator_page') }}">Transliterator</a></li>
         <li><b>Word frequency</b></li>
+        <li><a href="{{ url_for('vocablookup.vocab_lookup_page') }}">Vocab lookup</a></b></li>
     </menu>
   </nav>
 </div>
@@ -62,4 +63,6 @@
   </div>
             {%- endif -%}
 </menu>
+<footer>v{{ current_version }}</footer>
+</body>
 </html>

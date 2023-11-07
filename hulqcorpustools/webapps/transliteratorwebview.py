@@ -12,7 +12,7 @@ ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
 @transliterator_bp.route("/transliterator", methods=['GET', 'POST'])
 def transliterator_page():
-
+    current_version = current_app.config['CURRENT_VERSION']
     anchor = ""
     transliterator_form = request.form
     source_formats = [
@@ -43,7 +43,8 @@ def transliterator_page():
         transliterator_form=transliterator_form,
         source_formats=source_formats,
         target_formats=target_formats,
-        anchor=anchor
+        anchor=anchor,
+        current_version=current_version,
         )
 
 
