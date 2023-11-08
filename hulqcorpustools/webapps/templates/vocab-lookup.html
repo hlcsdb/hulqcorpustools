@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tools.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vocab.css') }}" />
   <title>Hul’q’umi’num’ Vocab Lookup</title>
 </head>
 <body  style="background-color: aliceblue;">
@@ -38,10 +39,19 @@
               nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws tuw’ stsekwul kws ’unthus t’at’athut.
             {%- endif -%}
         </textarea>
+
+        <div class="format-row">
         <input type="radio" id="text-format-orthography" name="text-format" value="Orthography" checked/>
-        <label for="text-format-orthography">Practical orthography</label>
-        <input type="radio" id="text-format-apa" name="text-format" value="APAUnicode"/>
+        <label for="text-format-orthography">Practical orthography</label><input type="radio" id="text-format-apa" name="text-format" value="APAUnicode"/>
         <label for="text-format-apa">APA Unicode</label>
+        </div>
+
+        <div class="format-row">
+          <input type="radio" id="display-table" value="display-table" name="results-display-form" checked>
+          <label for="return-table">Show results as table</label>
+          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-form">
+          <label for="return-paragraph">Show results as text</label>
+        </div>
         <button
           type="submit"
           id="vocab-lookup-text"
@@ -65,48 +75,85 @@
   </div>
   {%- if vocab_lookup -%}
     {%- if vocab_lookup['vocab_found'] -%}
-    <div class="results">
-      <table>
-        <tr>
-        <th colspan="100">Found vocab</th>
-      </tr>
-        <tr>
-          <th>ID</th>
-          <th>Orthography</th>
-          <th>APA Unicode</th>
-          <th>Root</th>
-          <th>Parse</th>
-          <th>Definition</th>
-          <th>Notes</th>
-          <th>Count</th>
-        </tr>
-        {% for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() %}
-        <tr>
-          <td>{{ vocab_word_id }}</td>
-          <td>{{ vocab_word_value['ORTHOGRAPHY'] }}</td>
-          <td>{{ vocab_word_value['APAUNICODE'] }}</td>
-          <td>{{ vocab_word_value['ROOT'] }}</td>
-          <td>{{ vocab_word_value['PARSE'] }}</td>
-          <td>{{ vocab_word_value['DEFINITION'] }}</td>
-          <td>{{ vocab_word_value['NOTE'] }}</td>
-          <td>{{ vocab_word_value['COUNT'] }}</td>
-        </tr>
+
+      {%- if vocab_lookup['results_display_form'] == 'display-table' -%}
+      <div class="results">
+        <table>
+          <caption>
+            Vocab words <a id="show-columns" href="#">show more</a>
+          </caption>
+
+          <tr>
+            <th>ID</th>
+            <th>Orthography</th>
+            <th>APA Unicode</th>
+            <th>Definition</th>
+            <th>Count</th>
+            <th class="advanced">Root</th>
+            <th class="advanced">Parse</th>
+            <th class="advanced">Notes</th>
+          </tr>
+          {% for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() %}
+          <tr>
+            <td>{{ vocab_word_id }}</td>
+            <td>{{ vocab_word_value['ORTHOGRAPHY'] }}</td>
+            <td>{{ vocab_word_value['APAUNICODE'] }}</td>
+            <td>{{ vocab_word_value['DEFINITION'] }}</td>
+            <td>{{ vocab_word_value['COUNT'] }}</td>
+            <td class="advanced">{{ vocab_word_value['ROOT'] }}</td>
+            <td class="advanced">{{ vocab_word_value['PARSE'] }}</td>
+            <td class="advanced">{{ vocab_word_value['NOTE'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% elif vocab_lookup['results_display_form'] == 'display-paragraph' %}
+        <div class="results">
+          {%- for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() -%}
+          <p><pre>{{ vocab_word_id }}&Tab;{{ vocab_word_value['ORTHOGRAPHY'] }}&Tab;{{ vocab_word_value['APAUNICODE'] }}&Tab;{{ vocab_word_value['DEFINITION'] }}&Tab;{{ vocab_word_value['COUNT'] }}</pre></p>
+          <p></p>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+        <h2>Known words</h2>
+        <p>
+        {% for known_word in vocab_lookup['known_words'] %}
+        {{ known_word }},
         {% endfor %}
-      </table>
-      {%- endif -%}
-      <h2>Known words</h2>
-      <p>
-      {% for known_word in vocab_lookup['known_words'] %}
-      {{ known_word }},
-      {% endfor %}
-      </p>
-      <h2>Unknown words</h2>
-      <p>
-        {% for unknown_word in vocab_lookup['unknown_words'] %}
-        <p>{{ unknown_word }}</p>
-        {% endfor %}
-      </p>
-  </div>
+        </p>
+        <h2>Unrecognized words</h2>
+        <p>
+          {% for unknown_word in vocab_lookup['unknown_words'] %}
+          {{ unknown_word }},
+          {% endfor %}
+        </p>
+    </div>
+
+
+  {%- endif -%}
+
+
   {%- endif -%}
 </body>
+<script>
+  const advancedColumns = document.querySelectorAll('.advanced');
+  const showMore = document.querySelector('#show-columns');
+  var columnsShowing = false
+  showMore.addEventListener('click', (e) => {
+    console.log(showMore.attributes['showing'])
+    if (columnsShowing == false) {
+      showMore.textContent = 'hide';
+      columnsShowing = true
+      for (const cell of advancedColumns) {
+        cell.style.display = 'table-cell'
+      }
+    } else {
+      showMore.textContent ='show more';
+      columnsShowing = false
+      for (const cell of advancedColumns) {
+        cell.style.display = 'none'
+      }
+      showMore.textContent = 'show more';
+    }
+  })
+</script>
 </html>

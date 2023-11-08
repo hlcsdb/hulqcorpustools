@@ -16,8 +16,7 @@ def vocab_lookup_page():
     request # type: Request
     if request.method == 'POST':
         vocab_lookup = vocablookupapi.handle_submission(request)
-        for i, j in vocab_lookup['vocab_found'].items():
-            print(i, j)
+
     else:
         vocab_lookup=""
     

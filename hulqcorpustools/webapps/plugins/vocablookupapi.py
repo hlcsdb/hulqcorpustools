@@ -23,6 +23,7 @@ class GroupedVocabLookups():
             _vl = GroupedVocabLookups.orthog_lookup
 
         _vl.collect_hulq_words_in_text(_text)
+        _vl.vocab.sort_values('COUNT')
         vocab_found = _vl.vocab.to_dict(orient='index')
         known_words = _vl.found_known_words
         unknown_words = _vl.found_unknown_words
@@ -35,7 +36,10 @@ class GroupedVocabLookups():
 
         return results
 
-    def lookup_file(_file):
+    def lookup_file(_file: str, text_format: str) -> dict:
+        text_format = FileFormat.from_string(text_format)
+
+        # if text_format == FileFOrmat.
         ...
 
     def format_vocab_return():
@@ -52,10 +56,12 @@ def handle_submission(_request: Request):
 def handle_text(_request: Request):
     text_lookup = _request.form.get('input-text')
     text_format = _request.form.get('text-format')
+    results_display_form = _request.form.get('results-display-form')
     lookup_results = GroupedVocabLookups.lookup_text(text_lookup, text_format)
     lookup_results.update({
         'text_lookup': text_lookup,
-        'text_format': text_format
+        'text_format': text_format,
+        'results_display_form': results_display_form
     })
     return lookup_results
     ...

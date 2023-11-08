@@ -25,7 +25,7 @@ class VocabLookup():
 
 
     def reg_word(self, _word: str) -> str:
-        return _word.strip(" ,.?![]()\"“”.…")
+        return _word.strip("— ,.?![]()\"“”.…–")
 
     def collect_hulq_words_in_textline(self, _textline: str):
         """get all hulq words from any line of text
