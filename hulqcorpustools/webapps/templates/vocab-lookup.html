@@ -41,15 +41,17 @@
         </textarea>
 
         <div class="format-row">
-        <input type="radio" id="text-format-orthography" name="text-format" value="Orthography" checked/>
-        <label for="text-format-orthography">Practical orthography</label><input type="radio" id="text-format-apa" name="text-format" value="APAUnicode"/>
+        <input type="radio" id="text-format-orthography" name="text-format" value="Orthography"
+          {%- if vocab_lookup['text_format'] != 'APAUnicode' -%} checked {%- endif -%}/>
+        <label for="text-format-orthography">Practical orthography</label>
+        <input type="radio" id="text-format-apa" name="text-format" value="APAUnicode" {%- if vocab_lookup['text_format'] == 'APAUnicode' -%} checked {%- endif -%}/>
         <label for="text-format-apa">APA Unicode</label>
         </div>
 
         <div class="format-row">
-          <input type="radio" id="display-table" value="display-table" name="results-display-form" checked>
+          <input type="radio" id="display-table" value="display-table" name="results-display-form" {%- if vocab_lookup['results_display_form'] != 'display-paragraph' -%} checked {%- endif -%}>
           <label for="return-table">Show results as table</label>
-          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-form">
+          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-form" {%- if vocab_lookup['results_display_form'] == 'display-paragraph' -%} checked {%- endif -%}>
           <label for="return-paragraph">Show results as text</label>
         </div>
         <button
@@ -116,15 +118,15 @@
         {%- endif -%}
         <h2>Known words</h2>
         <p>
-        {% for known_word in vocab_lookup['known_words'] %}
+        {% for known_word in vocab_lookup['known_words'][:-1] %}
         {{ known_word }},
-        {% endfor %}
+        {% endfor %} {{ vocab_lookup['known_words'][-1] }}
         </p>
         <h2>Unrecognized words</h2>
         <p>
-          {% for unknown_word in vocab_lookup['unknown_words'] %}
+          {% for unknown_word in vocab_lookup['unknown_words'][:-1] %}
           {{ unknown_word }},
-          {% endfor %}
+          {% endfor %} {{ vocab_lookup['unknown_words'][-1] }}
         </p>
     </div>
 
