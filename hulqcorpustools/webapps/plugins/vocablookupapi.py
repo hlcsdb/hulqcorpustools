@@ -29,8 +29,8 @@ class GroupedVocabLookups():
         unknown_words = _vl.found_unknown_words
         results = {
             'vocab_found': vocab_found,
-            'known_words': known_words,
-            'unknown_words': unknown_words
+            'known_words': list(known_words),
+            'unknown_words': list(unknown_words)
         }
         GroupedVocabLookups.orthog_lookup.reset_found_words()
 

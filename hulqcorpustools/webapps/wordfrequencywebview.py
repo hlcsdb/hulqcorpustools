@@ -1,11 +1,11 @@
 
 from pathlib import Path
 
-from flask import Blueprint, current_app, request, render_template, url_for, redirect, send_from_directory, Request
+from flask import Blueprint, current_app, request, render_template, url_for, redirect
+from flask.wrappers import Request, Response
 from werkzeug.utils import secure_filename
 
-from .plugins.wordfrequencyapi import get_word_frequency_text, get_word_frequency_file
-
+from .plugins import wordfrequencyapi as wf_api
 
 wordfrequency_bp = Blueprint('wordfrequency', __name__, url_prefix = '/', static_url_path='', static_folder='')
 
@@ -13,23 +13,25 @@ ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
 @wordfrequency_bp.route("/word-frequency", methods=['GET', 'POST'])
 def word_frequency_page():
-    current_version = current_app.config['CURRENT_VERSION']
     if request.method == 'POST':
         response_dict = handle_word_count_request(request)
         return render_template(
             'word-frequency.html', 
-            word_counts=word_counts)
-    return render_template('word-frequency.html', current_version=current_version)
+            word_count=response_dict['word_count'])
 
-def handle_word_count_request(_request: Request):
+    return render_template('word-frequency.html')
+
+def handle_word_count_request(_request: Request) -> dict:
     if _request.form.get('word-frequency-text'):
         word_count = wf_api.string_word_count(_request.form.get('input-text'))
 
     elif _request.form.get('word-frequency-file'):
-        count_from_file = handle_file_word_count_request(_request)
-        return count_from_file 
-
-def handle_file_word_count_request(_request: Request):
+        word_count = handle_file_word_count_request(_request)
+    
+    response_dict = {
+        'word_count': word_count
+    }
+    return response_dict
 
 def handle_file_word_count_request(_request: Request):
     uploaded_files_list = request.files.getlist('word-count-files')
