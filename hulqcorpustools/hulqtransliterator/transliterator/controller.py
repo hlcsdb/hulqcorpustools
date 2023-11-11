@@ -6,24 +6,17 @@ will be the place to pull out lines from .docx
 
 """
 
-from flashtext import KeywordProcessor
 from pathlib import Path
-import os
-import shutil
-import subprocess
 
-import importlib.resources
-
-from hulqcorpustools.resources.wordlists import wordlist_paths
 from hulqcorpustools.utils.files import FileHandler
 from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
-from hulqcorpustools.resources.constants import FileFormat, TransliterandFile, GraphemesDict
+from hulqcorpustools.resources.constants import FileFormat
 from hulqcorpustools.hulqtransliterator.filehandlers import docworker, txtworker
 from . import replaceengine as repl
 
-hulq_kp = HulqKeywordProcessors(eng=True)
+_kp = HulqKeywordProcessors(eng=True)
 
-class TransliteratorFileHandler(FileHandler):
+class TransliterandFileHandler(FileHandler):
     """Class that prepares the KeywordProcessors and transliterates the list of
     given files on demand.
     """
@@ -34,11 +27,7 @@ class TransliteratorFileHandler(FileHandler):
             target_format = (FileFormat | str | None),
             **kwargs):
         
-        self.doc_files = list(filter(lambda x: x.suffix =='.doc', files_list)) 
-        self.docx_files = list(filter(lambda x: x.suffix == '.docx' and x.stem[0] != "~", files_list))
-        self.txt_files = list(filter(lambda x: x.suffix == '.txt', files_list))
-        self.out_dir = kwargs.get('outdir')
-        self.tmp_dir = kwargs.get('tmpdir')
+        super().__init__(files_list)
 
         self.source_format = source_format
         self.target_format = target_format
@@ -92,13 +81,12 @@ class TransliteratorFileHandler(FileHandler):
                     _file,
                     self.source_format,
                     self.target_format,
-                    hulq_kp,
+                    _kp,
                     outdir=self.out_dir)
                     for _file in self.docx_files
                 ]
             
         return transliterated_docx_files
-
 
     def transliterate_txt_files(
         self
@@ -111,8 +99,8 @@ class TransliteratorFileHandler(FileHandler):
                 _txt_file,
                 self.source_format,
                 self.target_format,
-                hulq_kp.get_kp(self.source_format),
-                hulq_kp.eng_kp,
+                _kp.get_kp(self.source_format),
+                _kp.eng_kp,
                 outdir=self.out_dir
             )
 

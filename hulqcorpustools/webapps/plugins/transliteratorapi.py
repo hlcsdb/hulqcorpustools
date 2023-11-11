@@ -56,7 +56,7 @@ def transliterate_file_list(
     if type(target_format) == str:
         target_format = FileFormat.from_string(target_format)
 
-    file_controller = controller.FileController(
+    file_controller = controller.TransliterandFileHandler(
         file_list,
         source_format=source_format,
         target_format=target_format,
@@ -68,9 +68,5 @@ def transliterate_file_list(
     transliterated_files_dict = {
         i.name : str(i)  for i in transliterated_files
     }
-
-    # transliterated_txt_files = {
-    #     i.name : str(i) for i in file_controller.transliterate_txt_files()
-    # }
     
     return transliterated_files_dict
