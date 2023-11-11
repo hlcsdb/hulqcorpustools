@@ -39,7 +39,7 @@
     <h2>Word frequency in file</h2>
     <p>Upload a file here.</p>
   <form enctype="multipart/form-data" method="post" class="user-prompt-container">
-    <input type="file" name="word-count-file" accept=".docx,.txt">
+    <input type="file" name="word-count-files" accept=".docx,.txt,.doc" multiple>
     <button type="submit"
       id="word-frequency-file"
       name="word-frequency-file"
@@ -47,13 +47,19 @@
   </div>
 </form>
   </div>
+          {%- if word_count %}
   <div class="tool">
     <h2>Frequency results</h2>
     <div class="user-prompt-container">
-    <textarea id="return-count" name="return-count" readonly>
-      {%- if word_counts -%}{{ word_counts }}{%- else -%}{% endif %}
-    </textarea>
+      <table>
+      <th>Word</th><th>Count</th>
+        {%- for word, count in word_count -%}
+        <tr><td>{{ word }}</td>
+        <td>{{ count }}</td></tr>
+        {%- endfor -%}
+      </table>
   </div>
   </div>
+            {%- endif -%}
 </menu>
 </html>

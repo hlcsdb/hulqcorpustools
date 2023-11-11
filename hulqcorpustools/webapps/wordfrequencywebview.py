@@ -1,51 +1,62 @@
 
 from pathlib import Path
 
-from flask import Blueprint, current_app, request, render_template, url_for, redirect, send_from_directory
+from flask import Blueprint, current_app, request, render_template, url_for, redirect
+from flask.wrappers import Request, Response
 from werkzeug.utils import secure_filename
 
-from .plugins.wordfrequencyapi import get_word_frequency_text, get_word_frequency_file
+from .plugins import wordfrequencyapi as wf_api
 
 wordfrequency_bp = Blueprint('wordfrequency', __name__, url_prefix = '/', static_url_path='', static_folder='')
 
-ALLOWED_EXTENSIONS = {'.txt', '.docx'}
+ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
 @wordfrequency_bp.route("/word-frequency", methods=['GET', 'POST'])
 def word_frequency_page():
     if request.method == 'POST':
-        word_counts = handle_word_count_request(request)
+        response_dict = handle_word_count_request(request)
         return render_template(
             'word-frequency.html', 
-            word_counts=word_counts)
+            word_count=response_dict['word_count'])
+
     return render_template('word-frequency.html')
 
-def handle_word_count_request(_request: request):
+def handle_word_count_request(_request: Request) -> dict:
     if _request.form.get('word-frequency-text'):
-        return get_word_frequency_text(_request.form.get('input-text'))
+        word_count = wf_api.string_word_count(_request.form.get('input-text'))
 
     elif _request.form.get('word-frequency-file'):
-        count_from_file = handle_file_word_count_request(_request)
-        return count_from_file 
-
-def handle_file_word_count_request(_request):
-
-    if 'word-count-file' not in _request.files:
-        return redirect(_request.url)
+        word_count = handle_file_word_count_request(_request)
     
-    file = _request.files['word-count-file']
-    print(file)
-    if allowed_file(file) is False:
-        return redirect(_request.url)
+    response_dict = {
+        'word_count': word_count
+    }
+    return response_dict
+
+def handle_file_word_count_request(_request: Request):
+    uploaded_files_list = request.files.getlist('word-count-files')
     
-    filename = secure_filename(file.filename)
-    UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
-    upload_dir = Path(UPLOAD_FOLDER)
-    upload_path = upload_dir.joinpath(filename)
-    file.save(upload_path)
+    if uploaded_files_list[0].filename == '':
+        return redirect(_request.url)
 
-    counted_file = get_word_frequency_file(upload_path)
+    for _file in uploaded_files_list:
+        _file.filename = secure_filename(_file.filename)
 
-    return counted_file
+    uploaded_files_list = list(filter(allowed_file, uploaded_files_list))
+
+    UPLOADS_FOLDER = current_app.config['UPLOADS_FOLDER']
+    upload_dir = Path(UPLOADS_FOLDER)
+
+    uploaded_file_paths = []
+
+    for _file in uploaded_files_list:
+        upload_path = Path(upload_dir.joinpath(_file.filename))
+        _file.save(upload_path)
+        uploaded_file_paths.append(upload_path)
+
+    word_count = wf_api.file_word_count(uploaded_file_paths)
+
+    return word_count
 
 
 def allowed_file(file):

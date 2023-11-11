@@ -1,21 +1,16 @@
 
 from collections import Counter
-from hulqcorpustools import wordfrequency
+from pathlib import Path
 
-def get_word_frequency_text(_input_text: str):
-    print(_input_text)
-    _word_counter = wordfrequency.WordCounter()
-    count = _word_counter.count_all_words_in_string(_input_text) # type: Counter
+from hulqcorpustools.wordfrequency import WordCounter, WordCountFileHandler
 
-    return format_return_counts(count)
+def string_word_count(input_text: str) -> Counter:
+    _word_counter = WordCounter()
+    _word_count = _word_counter.count_all_hulq_words_in_string(input_text).most_common()
 
-def get_word_frequency_file(file_to_count):
-    
-    _word_counter = wordfrequency.WordCounter()
-    count = _word_counter.count_all_words_in_docx(file_to_count)
-    return format_return_counts(count) 
+    return _word_count
 
-def format_return_counts(word_count: Counter):
-    sorted_count = word_count.most_common()
-    sorted_count_str = '\n'.join([f'{counted_word[1]}\t{counted_word[0]}' for counted_word in sorted_count])
-    return sorted_count_str
+def file_word_count(_files: list[Path]) -> Counter:
+    _file_counter = WordCountFileHandler(_files)
+    _word_count = _file_counter.counter.total.most_common()
+    return _word_count
