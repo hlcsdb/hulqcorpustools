@@ -10,3 +10,6 @@ Converts .doc to .docx files if you upload them, but this requires libreoffice t
 
 ### Word frequency
 Gets word frequency of words in Hul’q’umi’num’.
+
+### Vocab lookup
+Looks up vocab in text and gives you definitions and frequency.

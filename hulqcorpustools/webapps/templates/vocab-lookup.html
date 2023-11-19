@@ -33,7 +33,7 @@
       </h2>
       <form method="post" class="user-prompt-container">
         <textarea autofocus id="input-text" name="input-text">
-          {%- if vocab_lookup -%}
+          {%- if vocab_lookup['text_lookup'] -%}
             {{ vocab_lookup['text_lookup'] }}
             {%- else -%}
               nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws tuw’ stsekwul kws ’unthus t’at’athut.
@@ -49,9 +49,9 @@
         </div>
 
         <div class="format-row">
-          <input type="radio" id="display-table" value="display-table" name="results-display-form" {%- if vocab_lookup['results_display_form'] != 'display-paragraph' -%} checked {%- endif -%}>
+          <input type="radio" id="display-table" value="display-table" name="results-display" {%- if vocab_lookup['results_display'] != 'display-paragraph' -%} checked {%- endif -%}>
           <label for="return-table">Show results as table</label>
-          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-form" {%- if vocab_lookup['results_display_form'] == 'display-paragraph' -%} checked {%- endif -%}>
+          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display" {%- if vocab_lookup['results_display'] == 'display-paragraph' -%} checked {%- endif -%}>
           <label for="return-paragraph">Show results as text</label>
         </div>
         <button
@@ -64,12 +64,30 @@
 
     <div class="tool">
       <form enctype="multipart/form-data" method="post" class="user-prompt-container">
-        <input type="file" name="vocab-lookup-file" accept=".docx,.doc,.txt">
+        <input type="file" name="vocab-lookup-files" multiple accept=".docx,.doc,.txt">
         <button
           type="file"
-          id="vocab-lookup-file"
-          name="vocab-lookup-file"
+          id="vocab-lookup-files"
+          name="vocab-lookup-files"
           value="submit">submit file</button>
+          <div class="format-row">
+            <input type="radio" id="text-format-orthography" name="text-format"
+            value="Orthography"
+            {%- if vocab_lookup['text_format'] != 'APAUnicode' -%} checked {%- endif -%}
+            />
+            <label for="text-format-orthography">Practical orthography</label>
+            <input type="radio" id="text-format-apa" name="text-format" value="Orthography" {%- if vocab_lookup['text_format'] == 'APAUnicode' -%} checked {%- endif -%} />
+            <label for="text-format-orthography">APA Unicode</label>
+          </div>
+
+
+        <div class="format-row">
+          <input type="radio" id="display-table" value="display-table" name="results-display" {%- if vocab_lookup['results_display'] != 'display-paragraph' -%} checked {%- endif -%}>
+          <label for="return-table">Show results as table</label>
+          <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display" {%- if vocab_lookup['results_display'] == 'display-paragraph' -%} checked {%- endif -%}>
+          <label for="return-paragraph">Show results as text</label>
+        </div>
+
       </form>
     </div>
 
@@ -77,12 +95,19 @@
   </div>
   {%- if vocab_lookup -%}
     {%- if vocab_lookup['vocab_found'] -%}
-
-      {%- if vocab_lookup['results_display_form'] == 'display-table' -%}
+      {%- if vocab_lookup['results_display'] == 'display-table' -%}
       <div class="results">
         <table>
           <caption>
-            Vocab words <a id="show-columns" href="#">show more</a>
+            Vocab words 
+            {% if vocab_lookup['file_names'] %} found in 
+            <ul>
+            {%- for file_name in vocab_lookup['file_names'] -%}
+            <li><i>{{ file_name }}</i></li>
+            {%- endfor -%}
+            {% endif %}
+          </ul>
+          <a id="show-columns" href="#">show more</a>
           </caption>
 
           <tr>
@@ -108,7 +133,7 @@
           </tr>
           {% endfor %}
         </table>
-        {% elif vocab_lookup['results_display_form'] == 'display-paragraph' %}
+        {% elif vocab_lookup['results_display'] == 'display-paragraph' %}
         <div class="results">
           {%- for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() -%}
           <p><pre>{{ vocab_word_id }}&Tab;{{ vocab_word_value['ORTHOGRAPHY'] }}&Tab;{{ vocab_word_value['APAUNICODE'] }}&Tab;{{ vocab_word_value['DEFINITION'] }}&Tab;{{ vocab_word_value['COUNT'] }}</pre></p>
@@ -116,7 +141,7 @@
           {%- endfor -%}
         </div>
         {%- endif -%}
-        <h2>Known words</h2>
+        <h2>Recognized words</h2>
         <p>
         {% for known_word in vocab_lookup['known_words'][:-1] %}
         {{ known_word }},
@@ -129,12 +154,8 @@
           {% endfor %} {{ vocab_lookup['unknown_words'][-1] }}
         </p>
     </div>
-
-
-  {%- endif -%}
-
-
-  {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
 </body>
 <script>
   const advancedColumns = document.querySelectorAll('.advanced');
