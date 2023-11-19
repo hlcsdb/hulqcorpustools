@@ -78,11 +78,8 @@ def file_transliterate(request: Request):
     else:
         font_search = None
 
-    transliterator_form = request.form
-
     if uploaded_files_list[0].filename == '':
         return redirect(request.url)
-
     ...
     for _file in uploaded_files_list:
         _file.filename = secure_filename(_file.filename)

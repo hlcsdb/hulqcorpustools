@@ -3,22 +3,15 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from docx import Document as load_docx
-from docx.document import Document
-
-from hulqcorpustools.resources.constants import FileFormat
-
 class FileHandler():
 
     def __init__(
             self,
-            files_list = (list[Path]),
-
+            files_list = (list[Path | str]),
             **kwargs):
 
-
         self.doc_files = list(filter(lambda x: x.suffix =='.doc', files_list)) 
-        self.docx_files = list(filter(lambda x: x.suffix == '.docx' and x.stem[0] != "~", files_list))
+        self.docx_files = list(filter(lambda x: x.suffix == '.docx' and x.stem[0] != "~", files_list)) # type: list[Path]
         self.txt_files = list(filter(lambda x: x.suffix == '.txt', files_list))
         self.out_dir = kwargs.get('outdir')
         self.tmp_dir = kwargs.get('tmpdir')
@@ -41,4 +34,3 @@ class FileHandler():
                 self.docx_files.extend(_new_docx_files)
             else:
                 print('libreoffice not installed! Skipping .doc files...')
-
