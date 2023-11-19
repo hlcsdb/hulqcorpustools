@@ -1,25 +1,8 @@
 [build-system]
 requires = [
-"setuptools>=61.0",
+"setuptools>=68.0",
 "wheel"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.package-data]
-static = ["*.ttf", "*.css"]
-templates = ["*.html"]
-
-[tool.pytest.ini_options]
-minversion="6.0"
-addopts = [
-    "--import-mode=importlib",
-    "-ra -q"
-]
-testpaths = [
-    "tests"
-]
 
 [project]
 name = "hulqcorpustools"
@@ -34,10 +17,24 @@ dependencies = [
     "flask",
     "gunicorn",
     "python-docx",
-    "regex"
+    "regex",
+    "pandas"
     ]
 
 [project.optional-dependencies]
     wordfrequency = ["pandas"]
 
 [project.scripts]
+
+[tool.setuptools.package-data]
+hulqcorpustools = ["*.ttf", "*.css", "*.html", "*.csv"]
+
+[tool.pytest.ini_options]
+minversion="6.0"
+addopts = [
+    "--import-mode=importlib",
+    "-ra -q"
+]
+testpaths = [
+    "tests"
+]

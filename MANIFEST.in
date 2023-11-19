@@ -1,5 +1,6 @@
 recursive-include **/resources/**/ *.json
 recursive-include **/resources/**/ *.txt
+graft hulqcorpustools/resources/wordlistsdata
 graft hulqcorpustools/webapps/plugins
 graft hulqcorpustools/webapps/static
 graft hulqcorpustools/webapps/templates
