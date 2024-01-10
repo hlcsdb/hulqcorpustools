@@ -122,7 +122,7 @@ class VocabFinder(_BaseVocabFinder):
         for table in file_docx.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    textline_list.append([cell.text])
+                    textline_list.extend([cell.text])
 
         self.find_hulq_words_in_text_list(textline_list)
 
