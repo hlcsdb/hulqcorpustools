@@ -1,3 +1,17 @@
 .advanced {
     display: none;
 }
+
+/* caption {
+    font-size: 20pt
+} */
+
+li.files-searched {
+    font-size: 12pt;
+    
+}
+
+div.table-info > * {
+    font-size: 10pt;
+    margin: 6px 6px;
+}

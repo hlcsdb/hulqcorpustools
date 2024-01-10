@@ -62,6 +62,8 @@
       </form>
     </div>
 
+
+    <!-- File submission form -->
     <div class="tool">
       <form enctype="multipart/form-data" method="post" class="user-prompt-container">
         <input type="file" name="vocab-lookup-files" multiple accept=".docx,.doc,.txt">
@@ -87,23 +89,23 @@
           <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display" {%- if vocab_lookup['results_display'] == 'display-paragraph' -%} checked {%- endif -%}>
           <label for="return-paragraph">Show results as text</label>
         </div>
-
       </form>
     </div>
 
 
+    <!-- Found words results -->
   </div>
   {%- if vocab_lookup -%}
+    <h2>Found words</h2>
     {%- if vocab_lookup['vocab_found'] -%}
       {%- if vocab_lookup['results_display'] == 'display-table' -%}
       <div class="results">
         <table>
           <caption>
-            Vocab words 
-            {% if vocab_lookup['file_names'] %} found in 
-            <ul>
+            {% if vocab_lookup['file_names'] %}
+            <ul>found in 
             {%- for file_name in vocab_lookup['file_names'] -%}
-            <li><i>{{ file_name }}</i></li>
+            <li class="files-searched">{{ file_name }}</li>
             {%- endfor -%}
             {% endif %}
           </ul>
@@ -141,18 +143,37 @@
           {%- endfor -%}
         </div>
         {%- endif -%}
+
+        <!-- Recognized words results -->
+        {% if vocab_lookup['known_words'] %}
         <h2>Recognized words</h2>
-        <p>
-        {% for known_word in vocab_lookup['known_words'][:-1] %}
-        {{ known_word }},
-        {% endfor %} {{ vocab_lookup['known_words'][-1] }}
-        </p>
+        <div class="table-info"><p><i>These are words that are recognized according to a wordlist, but don't have definitions available yet.</i></p>
+        </div>
+        <table>
+          {% for known_word in vocab_lookup['known_words'] %}
+            <tr>
+              <td>{{ known_word }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+
+        <!-- Unrecognized words results -->
+        {% if vocab_lookup['unknown_words'] %}
         <h2>Unrecognized words</h2>
-        <p>
-          {% for unknown_word in vocab_lookup['unknown_words'][:-1] %}
-          {{ unknown_word }},
-          {% endfor %} {{ vocab_lookup['unknown_words'][-1] }}
-        </p>
+        <div class="table-info">
+        <p><i>These are words that are found in lines of Hul’q’umi’num’ but might not be recognized for a number of reasons: morphology like affixes, misspellings, or words that just haven't been recorded yet.</i></p>
+        <p><i>See the list of unrecognized words and submit corrections <a href="https://docs.google.com/spreadsheets/d/1tjVQh6ZWGqLpxu4ewWcb2714TCCvv8INxhHaSYG87X8/edit#gid=1827529214">here</a>.</i></p>
+        </div>
+        <table>
+          {% for unknown_word in vocab_lookup['unknown_words'] %}
+          <tr>
+            <td>{{ unknown_word }}</td>
+          </tr>
+          {% endfor %}
+          </table>
+        {% endif %}
+
     </div>
       {%- endif -%}
     {%- endif -%}
