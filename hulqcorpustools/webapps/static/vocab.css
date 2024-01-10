@@ -24,3 +24,8 @@ div.table-info > * {
 .invisible {
     visibility: hidden
 }
+
+div.results {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
