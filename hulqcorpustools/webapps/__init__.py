@@ -16,5 +16,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-        if __name__ == "__main__":
-            app.run()
+    return app
+
+    if __name__ == "__main__":
+        app.run()
