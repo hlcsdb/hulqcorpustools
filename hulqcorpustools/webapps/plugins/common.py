@@ -21,14 +21,14 @@ def secure_names(_file: FileStorage):
     _file.filename = secure_filename(_file.filename)
     return _file
 
-def save_secured_allowed_files_to_path(
+def save_safe_files(
         _files: Request.files,
         _key: str,
         upload_dir: Path | str,
         ):
     """filter unacceptable filetypes, secure filenames, and save to secure path
 
-    Arguments:
+    Args:
         _files: werkzeug Request.files
         _key: request key corresponding to form file submission (i.le. from html input.name)
         upload_dir: Path or str to where the files should be saved

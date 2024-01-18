@@ -34,31 +34,33 @@
     </h2>
     <form method="post" class="user-prompt-container">
       <textarea autofocus id="input-text" name="input-text">
-        {%- if vocab_lookup['text_lookup'] -%}
-          {{ vocab_lookup['text_lookup'] }}
+        {%- if vocab_lookup_response['text_lookup'] -%}
+          {{ vocab_lookup_response['text_lookup'] }}
           {%- else -%}
-            nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws tuw’ stsekwul kws ’unthus t’at’athut.
+          hay thu t’i’t’ut’um’ ni’ tssisul’u.
+
+          ’i’ nem’ tl’e’ ’uw’ hiiw’a’lum’ hun’um’ ’u ttthu tsa’luqw.
           {%- endif -%}
       </textarea>
 
       <div class="format-row">
       <input type="radio" id="text-format-orthography" name="text-format" value="Orthography"
-        {%- if vocab_lookup['text_format'] != 'APAUnicode' -%} checked {%- endif -%}/>
+        {%- if vocab_lookup_response['text_format'] != 'APAUnicode' -%} checked {%- endif -%}/>
       <label for="text-format-orthography">Practical orthography</label>
-      <input type="radio" id="text-format-apa" name="text-format" value="APAUnicode" {%- if vocab_lookup['text_format'] == 'APAUnicode' -%} checked {%- endif -%}/>
+      <input type="radio" id="text-format-apa" name="text-format" value="APAUnicode" {%- if vocab_lookup_response['text_format'] == 'APAUnicode' -%} checked {%- endif -%}/>
       <label for="text-format-apa">APA Unicode</label>
       </div>
 
       <div class="format-row">
-        <input type="radio" id="display-table" value="display-table" name="results-display" {%- if vocab_lookup['results_display'] != 'display-paragraph' -%} checked {%- endif -%}>
+        <input type="radio" id="display-table" value="display-table" name="results-display-format" {%- if vocab_lookup_response['results_display_format'] != 'display-paragraph' -%} checked {%- endif -%}>
         <label for="return-table">Show results as table</label>
-        <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display" {%- if vocab_lookup['results_display'] == 'display-paragraph' -%} checked {%- endif -%}>
+        <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-format" {%- if vocab_lookup_response['results_display_format'] == 'display-paragraph' -%} checked {%- endif -%}>
         <label for="return-paragraph">Show results as text</label>
       </div>
       <button
         type="submit"
-        id="vocab-lookup-text"
-        name="vocab-lookup-text"
+        id="text-lookup"
+        name="text-lookup"
         value="submit">submit</button>
     </form>
   </div>
@@ -67,27 +69,27 @@
     <!-- File submission form -->
   <div class="tool">
     <form enctype="multipart/form-data" method="post" class="user-prompt-container">
-      <input type="file" name="vocab-lookup-files" multiple accept=".docx,.doc,.txt">
+      <input type="file" name="files-lookup" multiple accept=".docx,.doc,.txt">
       <button
         type="file"
-        id="vocab-lookup-files"
-        name="vocab-lookup-files"
+        id="files-lookup"
+        name="files-lookup"
         value="submit">submit file</button>
         <div class="format-row">
           <input type="radio" id="text-format-orthography" name="text-format"
           value="Orthography"
-          {%- if vocab_lookup['text_format'] != 'APAUnicode' -%} checked {%- endif -%}
+          {%- if vocab_lookup_response['text_format'] != 'APAUnicode' -%} checked {%- endif -%}
           />
           <label for="text-format-orthography">Practical orthography</label>
-          <input type="radio" id="text-format-apa" name="text-format" value="Orthography" {%- if vocab_lookup['text_format'] == 'APAUnicode' -%} checked {%- endif -%} />
+          <input type="radio" id="text-format-apa" name="text-format" value="Orthography" {%- if vocab_lookup_response['text_format'] == 'APAUnicode' -%} checked {%- endif -%} />
           <label for="text-format-orthography">APA Unicode</label>
         </div>
 
 
       <div class="format-row">
-        <input type="radio" id="display-table" value="display-table" name="results-display" {%- if vocab_lookup['results_display'] != 'display-paragraph' -%} checked {%- endif -%}>
+        <input type="radio" id="display-table" value="display-table" name="results-display-format" {%- if vocab_lookup_response['results_display_format'] != 'display-paragraph' -%} checked {%- endif -%}>
         <label for="return-table">Show results as table</label>
-        <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display" {%- if vocab_lookup['results_display'] == 'display-paragraph' -%} checked {%- endif -%}>
+        <input type="radio" id="display-paragraph" value="display-paragraph" name="results-display-format" {%- if vocab_lookup_response['results_display_format'] == 'display-paragraph' -%} checked {%- endif -%}>
         <label for="return-paragraph">Show results as text</label>
       </div>
     </form>
@@ -97,17 +99,17 @@
   </div>
 
 <!-- Found words results -->
-  {%- if vocab_lookup -%}
+  {%- if vocab_lookup_response -%}
   <h2>Found words</h2>
-  {%- if vocab_lookup['vocab_found'] -%}
-      {%- if vocab_lookup['results_display'] == 'display-table' -%}
+  {%- if vocab_lookup_response['defined_words'] -%}
+      {%- if vocab_lookup_response['results_display_format'] == 'display-table' -%}
       <div class="results">
         <button id="show-columns">Show more</button>
         <table id="known-word-results">
           <caption>
-            {% if vocab_lookup['file_names'] %}
+            {% if vocab_lookup_response['file_names'] %}
               <ul>found in 
-              {%- for file_name in vocab_lookup['file_names'] -%}
+              {%- for file_name in vocab_lookup_response['file_names'] -%}
               <li class="files-searched">{{ file_name }}</li>
               {%- endfor -%}
               {% endif %}
@@ -126,7 +128,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() %}
+          {% for vocab_word_id, vocab_word_value in vocab_lookup_response['defined_words'].items() %}
           <tr>
             <td>{{ vocab_word_id }}</td>
             <td>{{ vocab_word_value['ORTHOGRAPHY'] }}</td>
@@ -143,23 +145,23 @@
       </div>
 
 <!-- Found words in text form -->
-  {% elif vocab_lookup['results_display'] == 'display-paragraph' %}
+  {% elif vocab_lookup_response['results_display_format'] == 'display-paragraph' %}
     <div class="results">
-      {%- for vocab_word_id, vocab_word_value in vocab_lookup['vocab_found'].items() -%}
+      {%- for vocab_word_id, vocab_word_value in vocab_lookup_response['defined_words'].items() -%}
       <p><pre>{{ vocab_word_id }}&Tab;{{ vocab_word_value['ORTHOGRAPHY'] }}&Tab;{{ vocab_word_value['APAUNICODE'] }}&Tab;{{ vocab_word_value['DEFINITION'] }}&Tab;{{ vocab_word_value['COUNT'] }}</pre></p>
       {%- endfor -%}
     </div>
   {%- endif -%}
 
 <!-- Recognized words results -->
-  {% if vocab_lookup['known_words'] %}
+  {% if vocab_lookup_response['known_words'] %}
   <h2>Recognized words</h2>
     <div class="results">
     <!-- <span id="recognized-info" class="info-button">ℹ️</span> -->
     <div class="table-info"><p><i>These are words that are recognized according to a wordlist, but don't have definitions available yet.</i></p>
     </div>
     <table>
-      {% for known_word in vocab_lookup['known_words'] %}
+      {% for known_word in vocab_lookup_response['known_words'] %}
         <tr>
           <td>{{ known_word }}</td>
         </tr>
@@ -169,7 +171,7 @@
   {% endif %}
 
 <!-- Unrecognized words results -->
-  {% if vocab_lookup['unknown_words'] %}
+  {% if vocab_lookup_response['unknown_words'] %}
   <h2>Unrecognized words</h2>
     <div class="results">
           <!-- <span id="unrecognized-info" class="info-button">ℹ️</span> -->
@@ -178,7 +180,7 @@
         <p><i>See the list of unrecognized words and submit corrections <a href="https://docs.google.com/spreadsheets/d/1tjVQh6ZWGqLpxu4ewWcb2714TCCvv8INxhHaSYG87X8/edit#gid=1827529214">here</a>.</i></p>
       </div>
       <table>
-        {% for unknown_word in vocab_lookup['unknown_words'] %}
+        {% for unknown_word in vocab_lookup_response['unknown_words'] %}
         <tr>
           <td>{{ unknown_word }}</td>
         </tr>

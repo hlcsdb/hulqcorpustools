@@ -4,18 +4,35 @@ import shutil
 import subprocess
 
 class FileHandler():
-
+    """Class for dealing with lists of files which have been saved to the
+    filesystem and are accessible by Path.
+    """
     def __init__(
             self,
             files_list = (list[Path | str]),
             **kwargs):
+        """Accounts for all
 
+        Args:
+            files_list (tuple, optional): _description_. Defaults to (list[Path  |  str]).
+
+        Kwargs:
+            outdir (Path, optional): For file-saving operations (e.g. transliteration),
+            where to save those files.
+            tmpdir (Path, optional): When a temporary directory is needed, e.g.
+            for temporarily saving .doc files to convert, where that temporary
+            directory should be.
+        """
         self.doc_files = list(filter(lambda x: x.suffix =='.doc', files_list)) 
         self.docx_files = list(filter(lambda x: x.suffix == '.docx' and x.stem[0] != "~", files_list)) # type: list[Path]
         self.txt_files = list(filter(lambda x: x.suffix == '.txt', files_list))
         self.out_dir = kwargs.get('outdir')
         self.tmp_dir = kwargs.get('tmpdir')
 
+        if self.doc_files:
+            self.convert_doc_files()
+
+    def convert_doc_files(self):
         if self.doc_files != []:
             if shutil.which('soffice'):
                 soffice_convert_cmd = ['soffice', '--headless', '--convert-to', 'docx']

@@ -6,22 +6,21 @@ from werkzeug.utils import secure_filename
 
 from .plugins import vocablookupapi as vl_api
 
-
-vocablookup_bp = Blueprint('vocablookup', __name__, url_prefix= '/', static_url_path='', static_folder='')
+vocablookup_bp = Blueprint('vocablookup', __name__, url_prefix= '/vocab-lookup', static_url_path='', static_folder='')
 
 ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
-@vocablookup_bp.route("/vocab-lookup", methods=['GET', 'POST'])
+@vocablookup_bp.route("/", methods=['GET', 'POST'])
 def vocab_lookup_page():
     UPLOADS_FOLDER = current_app.config['UPLOADS_FOLDER']
     upload_dir = Path(UPLOADS_FOLDER)
-    request # type: Request
+
     if request.method == 'POST':
-        vocab_lookup = vl_api.handle_submission(
+        vocab_lookup_response = vl_api.handle_submission(
             request,
             upload_dir=upload_dir)
-
+        print(vocab_lookup_response)
     else:
-        vocab_lookup=""
+        vocab_lookup_response=""
     
-    return render_template('vocab-lookup.html', vocab_lookup=vocab_lookup)
+    return render_template('vocab-lookup.html', vocab_lookup_response=vocab_lookup_response)
