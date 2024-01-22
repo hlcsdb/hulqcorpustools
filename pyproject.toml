@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hulqcorpustools"
-version = "0.1.4"
+version = "0.1.5"
 authors = [
     { name="Zack Gilkison", email="zack.gilkison@gmail.com" },
 ]
