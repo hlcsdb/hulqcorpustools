@@ -1,12 +1,12 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&display=swap');
+
 @font-face {
-    font-family: Andika;
+    font-family: Andika, sans-serif;
     src:
         local("Andika"),
         url('Andika-Regular.ttf') format('truetype');
-    font-weight: normal;
     font-display: swap;
-    /* url('Andika-Bold.ttf') format('truetype'), */
 }
 
 @font-face {

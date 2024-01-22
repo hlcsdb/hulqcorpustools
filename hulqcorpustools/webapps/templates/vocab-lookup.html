@@ -100,17 +100,17 @@
 
 <!-- Found words results -->
   {%- if vocab_lookup_response -%}
-  <h2>Found words</h2>
   {%- if vocab_lookup_response['defined_words'] -%}
+    <h2>Found words</h2>
       {%- if vocab_lookup_response['results_display_format'] == 'display-table' -%}
       <div class="results">
         <button id="show-columns">Show more</button>
         <table id="known-word-results">
           <caption>
-            {% if vocab_lookup_response['file_names'] %}
+            {% if vocab_lookup_response['file_list'] %}
               <ul>found in 
-              {%- for file_name in vocab_lookup_response['file_names'] -%}
-              <li class="files-searched">{{ file_name }}</li>
+              {%- for file_name in vocab_lookup_response['file_list'] -%}
+                <li class="files-searched">{{ file_name }}</li>
               {%- endfor -%}
               {% endif %}
               </ul>
@@ -177,7 +177,8 @@
           <!-- <span id="unrecognized-info" class="info-button">ℹ️</span> -->
       <div class="table-info">
         <p><i>These are words that are found in lines of Hul’q’umi’num’ but might not be recognized for a number of reasons: morphology like affixes, misspellings, or words that just haven't been recorded yet.</i></p>
-        <p><i>See the list of unrecognized words and submit corrections <a href="https://docs.google.com/spreadsheets/d/1tjVQh6ZWGqLpxu4ewWcb2714TCCvv8INxhHaSYG87X8/edit#gid=1827529214">here</a>.</i></p>
+        <p><i>Submit new words or corrections <a target="_blank" rel="noopener noreferrer" href="https://forms.gle/JxSmkDc2Zo2rAdTD7">here</a>.</i><br>
+        <i>See which words have been submitted <a target="_blank" rel="noopener noreferrer" href="https://docs.google.com/spreadsheets/d/1tjVQh6ZWGqLpxu4ewWcb2714TCCvv8INxhHaSYG87X8/edit?usp=sharing">here.</a></i> </p>
       </div>
       <table>
         {% for unknown_word in vocab_lookup_response['unknown_words'] %}

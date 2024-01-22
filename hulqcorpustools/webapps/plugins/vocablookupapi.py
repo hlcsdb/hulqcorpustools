@@ -112,7 +112,6 @@ class FileSubmissionHandler(SubmissionHandler):
 
         # just for file name with no full path
         self.saved_file_paths = [_file.filename for _file in self.files_saved]
-        file_handler = FileHandler(self.saved_file_paths)
         self._response.update({
             'file_list': [_file.name for _file in self.saved_file_paths]
         })
@@ -121,7 +120,6 @@ class FileSubmissionHandler(SubmissionHandler):
             self.text_format,
             self.saved_file_paths
         )
-
     def lookup_vocab(self):
         self.vocab_finder.find_vocab_in_files()
 

@@ -19,7 +19,7 @@ def vocab_lookup_page():
         vocab_lookup_response = vl_api.handle_submission(
             request,
             upload_dir=upload_dir)
-        print(vocab_lookup_response)
+        print(vocab_lookup_response.get('file_list'))
     else:
         vocab_lookup_response=""
     
