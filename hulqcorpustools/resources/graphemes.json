@@ -143,6 +143,119 @@
     },
     {
         "orthography": {
+            "Characters": "lh",
+            "Lemma": "lh"
+        },
+        "APAUnicode": {
+            "Characters": "ł",
+            "Lemma": "ł"
+        },
+        "straight": {
+            "Characters": "®",
+            "Lemma": "®"},
+        "glottalizedResonant": false
+    },
+    {
+        "orthography": {
+            "Characters": "lh",
+            "Lemma": "lh"
+        },
+        "APAUnicode": {
+            "Characters": "ɫ",
+            "Lemma": "ł"
+        },
+        "straight": {
+            "Characters": "®",
+            "Lemma": "®"},
+        "glottalizedResonant": false
+    },
+    {
+        "orthography": {
+            "Characters": "m’",
+            "Lemma": "m’"
+        },
+        "APAUnicode": {
+            "Characters": "m̓",
+            "Lemma": "m̓"
+        },
+        "straight": {
+            "Characters": "µ",
+            "Lemma": "µ"},
+        "glottalizedResonant": true
+    },
+    {
+        "orthography": {
+            "Characters": "n’",
+            "Lemma": "n’"
+        },
+        "APAUnicode": {
+            "Characters": "n̓",
+            "Lemma": "n̓"
+        },
+        "straight": {
+            "Characters": "∫",
+            "Lemma": "∫"},
+        "glottalizedResonant": true
+    },
+    {
+        "orthography": {
+            "Characters": "l’",
+            "Lemma": "l’"
+        },
+        "APAUnicode": {
+            "Characters": "l̓",
+            "Lemma": "l̓"
+        },
+        "straight": {
+            "Characters": "¬",
+            "Lemma": "¬"},
+        "glottalizedResonant": true
+    },
+    {
+        "orthography": {
+            "Characters": "w’",
+            "Lemma": "w’"
+        },
+        "APAUnicode": {
+            "Characters": "w̓",
+            "Lemma": "w̓"
+        },
+        "straight": {
+            "Characters": "∑",
+            "Lemma": "∑"},
+        "glottalizedResonant": true
+    },
+    {
+        "orthography": {
+            "Characters": "w’",
+            "Lemma": "w’"
+        },
+        "APAUnicode": {
+            "Characters": "w̓",
+            "Lemma": "w̓"
+        },
+        "straight": {
+            "Characters": "Σ",
+            "Lemma": "Σ"},
+        "glottalizedResonant": true
+    },
+    
+    {
+        "orthography": {
+            "Characters": "y’",
+            "Lemma": "y’"
+        },
+        "APAUnicode": {
+            "Characters": "y̓",
+            "Lemma": "y̓"
+        },
+        "straight": {
+            "Characters": "¥",
+            "Lemma": "¥"},
+        "glottalizedResonant": true
+    },
+    {
+        "orthography": {
             "Characters": "aa",
             "Lemma": "aa"
         },
@@ -478,34 +591,7 @@
             "Lemma": "sh"},
         "glottalizedResonant": false
     },
-    {
-        "orthography": {
-            "Characters": "lh",
-            "Lemma": "lh"
-        },
-        "APAUnicode": {
-            "Characters": "ł",
-            "Lemma": "ł"
-        },
-        "straight": {
-            "Characters": "®",
-            "Lemma": "®"},
-        "glottalizedResonant": false
-    },
-    {
-        "orthography": {
-            "Characters": "lh",
-            "Lemma": "lh"
-        },
-        "APAUnicode": {
-            "Characters": "ɫ",
-            "Lemma": "ł"
-        },
-        "straight": {
-            "Characters": "®",
-            "Lemma": "®"},
-        "glottalizedResonant": false
-    },
+
     {
         "orthography": {
             "Characters": "h",
@@ -561,91 +647,7 @@
             "Characters": "≈ø",
             "Lemma": "≈ø"},
         "glottalizedResonant": false
-    },
-    {
-        "orthography": {
-            "Characters": "m’",
-            "Lemma": "m’"
-        },
-        "APAUnicode": {
-            "Characters": "m̓",
-            "Lemma": "m̓"
-        },
-        "straight": {
-            "Characters": "µ",
-            "Lemma": "µ"},
-        "glottalizedResonant": true
-    },
-    {
-        "orthography": {
-            "Characters": "n’",
-            "Lemma": "n’"
-        },
-        "APAUnicode": {
-            "Characters": "n̓",
-            "Lemma": "n̓"
-        },
-        "straight": {
-            "Characters": "∫",
-            "Lemma": "∫"},
-        "glottalizedResonant": true
-    },
-    {
-        "orthography": {
-            "Characters": "l’",
-            "Lemma": "l’"
-        },
-        "APAUnicode": {
-            "Characters": "l̓",
-            "Lemma": "l̓"
-        },
-        "straight": {
-            "Characters": "¬",
-            "Lemma": "¬"},
-        "glottalizedResonant": true
-    },
-    {
-        "orthography": {
-            "Characters": "w’",
-            "Lemma": "w’"
-        },
-        "APAUnicode": {
-            "Characters": "w̓",
-            "Lemma": "w̓"
-        },
-        "straight": {
-            "Characters": "∑",
-            "Lemma": "∑"},
-        "glottalizedResonant": true
-    },
-    {
-        "orthography": {
-            "Characters": "w’",
-            "Lemma": "w’"
-        },
-        "APAUnicode": {
-            "Characters": "w̓",
-            "Lemma": "w̓"
-        },
-        "straight": {
-            "Characters": "Σ",
-            "Lemma": "Σ"},
-        "glottalizedResonant": true
-    },
-    
-    {
-        "orthography": {
-            "Characters": "y’",
-            "Lemma": "y’"
-        },
-        "APAUnicode": {
-            "Characters": "y̓",
-            "Lemma": "y̓"
-        },
-        "straight": {
-            "Characters": "¥",
-            "Lemma": "¥"},
-        "glottalizedResonant": true
     }
+
     
 ]

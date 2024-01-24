@@ -7,7 +7,7 @@ import regex as re
 from ...resources.constants import FileFormat, GraphemesDict
 
 def transliterate_string_replace(
-    linestring,
+    source_string,
     source_format: FileFormat,
     target_format: FileFormat) -> str:
     '''    find all instances of a substring and replaces them in place
@@ -30,19 +30,19 @@ def transliterate_string_replace(
     # sort, then turn it to a long regex
 
     working_dict = GraphemesDict(source_format, target_format).correspondence_dict
-    substrings = sorted(working_dict, key=len, reverse=True)
-    regexp = re.compile('|'.join(map(re.escape, substrings)))
-    
+    source_substrings = sorted(working_dict, key=len, reverse=True)
+    regexp = re.compile('|'.join(map(re.escape, source_substrings)))
+    transl_string = source_string
     if source_format == FileFormat.ORTHOGRAPHY:
-        linestring = glottalized_resonant_reverter(linestring)
+        transl_string = glottalized_resonant_reverter(source_string)
 
-    transliterated_line = regexp.sub(
-        lambda match: working_dict[match.group(0)], linestring)
+    transl_string = regexp.sub(
+        lambda match: working_dict[match.group(0)], transl_string)
 
     if target_format == FileFormat.ORTHOGRAPHY:
-        transliterated_line = glottalized_resonant_mover(transliterated_line)
+        transl_string = glottalized_resonant_mover(transl_string)
 
-    return transliterated_line
+    return transl_string
     
 def glottalized_resonant_mover(linestring):
     """
@@ -93,8 +93,8 @@ def glottalized_resonant_reverter(linestring):
     """when going from orthography to APA -- move glottal stop back to
     following glottalized resonant so it is recognized"""
 
-    glot_res_revert_re = re.compile('(’)(l|m|n|w|y)')
-    swapstring_revert = glot_res_revert_re.sub(r'\2\1', linestring)
+    glot_res_revert_re = re.compile('(u|a|i|e)(’)(l|m|n|w|y)')
+    swapstring_revert = glot_res_revert_re.sub(r'\1\3\2', linestring)
 
     return swapstring_revert
 

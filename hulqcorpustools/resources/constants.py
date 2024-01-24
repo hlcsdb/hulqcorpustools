@@ -127,7 +127,8 @@ class GraphemesDict(dict):
             self.target_format_lemmas = {
                 i[self.target_format_str]['Lemma'] for i in loaded_graphemes}
             self.correspondence_dict = {
-                i[self.source_format_str]['Lemma']:i[self.target_format_str]['Characters']
+                i[self.source_format_str]['Characters']:
+                 i[self.target_format_str]['Lemma']
                 for i in loaded_graphemes}
         
         
