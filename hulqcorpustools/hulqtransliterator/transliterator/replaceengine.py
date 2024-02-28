@@ -4,18 +4,19 @@ with another
 '''
 
 import regex as re
-from ...resources.constants import FileFormat, GraphemesDict
+from hulqcorpustools.resources.constants import TextFormat, Graphemes
+
 
 def transliterate_string_replace(
     source_string,
-    source_format: FileFormat,
-    target_format: FileFormat) -> str:
-    '''    find all instances of a substring and replaces them in place
+    source_format: TextFormat,
+    target_format: TextFormat
+    ) -> str:
+    '''Find all instances of a substring and replace them in-place.
     
     copied from somewhere on Stack Overflow... don't remember where...
     thank you to whoever is out there...
 
-    
 
     Arguments:
         linestring -- the transliterand string
@@ -29,21 +30,26 @@ def transliterate_string_replace(
     # make a replacement dictionary out of the requested formats,
     # sort, then turn it to a long regex
 
-    working_dict = GraphemesDict(source_format, target_format).correspondence_dict
+    working_dict = Graphemes().correspondence_dict(
+        source_format,
+        target_format
+        )
+
     source_substrings = sorted(working_dict, key=len, reverse=True)
     regexp = re.compile('|'.join(map(re.escape, source_substrings)))
     transl_string = source_string
-    if source_format == FileFormat.ORTHOGRAPHY:
+
+    if source_format == TextFormat.ORTHOGRAPHY:
         transl_string = glottalized_resonant_reverter(source_string)
 
     transl_string = regexp.sub(
         lambda match: working_dict[match.group(0)], transl_string)
 
-    if target_format == FileFormat.ORTHOGRAPHY:
+    if target_format == TextFormat.ORTHOGRAPHY:
         transl_string = glottalized_resonant_mover(transl_string)
 
     return transl_string
-    
+
 def glottalized_resonant_mover(linestring):
     """
     moves glottal character over according to glottalized resonant 
@@ -101,4 +107,8 @@ def glottalized_resonant_reverter(linestring):
 
 if __name__ == "__main__":
     test_string = '’i ’u ch ’uy’ ’ul’'
-    tested = transliterate_string_replace(test_string, FileFormat.ORTHOGRAPHY, FileFormat.APAUNICODE)
+    tested = transliterate_string_replace(
+        test_string,
+        TextFormat.ORTHOGRAPHY,
+        TextFormat.APAUNICODE)
+    

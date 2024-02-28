@@ -1,29 +1,22 @@
-from enum import Enum, auto
+from enum import Enum, StrEnum, auto
 import json
-import os
 from pathlib import Path
-from hulqcorpustools.resources.graphemes import loaded_graphemes
+from importlib.resources import files
 
-class FileFormat(Enum):
-    """possible text formats for a doc to be in
 
-        'Straight': only as a source file, kludge characters for use with the
-        Straight font
-        'orthography': practical orthography written with conventional
-        keyboard characters 
+__package__ = "hulqcorpustools.resources"
+
+
+class TextFormat(StrEnum):
+    """The possible text formats that some doc can be in.
+
+        'Straight': Only for use as a source file. An old interim solution
+        for rendering APA characters correctly using a specific font called
+        Straight when there was no Unicode support.
+        'orthography': Practical orthography written with conventional
+        keyboard characters.
         'APAUnicode': APA (Americanist Phonetic Alphabet) written with Unicode
-        characters
-
-        Functions:
-            file_formats: returns the set of FileFormats
-            (e.g. for excluding FileFormats for some operations)
-            from_string: returns a FileFormat from text
-                Arguments: a string representaiton of a FileFormat
-            to_string: returns the string representation of a FileFormat
-                Arguments: a FileFormat
-        
-
-    
+        characters.
     """
 
     STRAIGHT = auto()
@@ -33,32 +26,13 @@ class FileFormat(Enum):
 
     @property
     def is_hulq_format(self):
+        """Returns whether or not the Text Format is in Hul’q’umi’num’.
+
+        Returns:
+            bool: True or False given whether or not the text format is a way of
+            rendering Hul’q’umi’num’.
+        """
         return self in {self.STRAIGHT, self.APAUNICODE, self.ORTHOGRAPHY}
-    
-    @property
-    def is_file_format(self):
-        return self in {self.STRAIGHT, self.APAUNICODE, self.ORTHOGRAPHY, self.ENGLISH}
-
-    @staticmethod
-    def file_formats():
-        file_formats = {FileFormat.STRAIGHT, FileFormat.APAUNICODE, FileFormat.ORTHOGRAPHY}
-        return file_formats
-
-    @classmethod
-    def from_string(cls, *args):
-        '''in case the value gets turned to a string-- 
-        turn it back to this class'''
-
-        args = [i.casefold().replace(' ', '') for i in args]
-
-        if 'straight'.casefold() in args or 'fileformat.straight'.casefold() in args:
-            cls = FileFormat.STRAIGHT
-        elif 'apaunicode'.casefold() in args or 'fileformat.apaunicode'.casefold() in args:
-            cls = FileFormat.APAUNICODE
-        elif 'orthography'.casefold() in args or 'fileformat.orthography'.casefold() in args:
-            cls = FileFormat.ORTHOGRAPHY
-
-        return cls
 
     def to_string(self):
         if self == self.APAUNICODE:
@@ -68,75 +42,90 @@ class FileFormat(Enum):
 
         return file_format_str
 
-class GraphemesDict(dict):
-    """a dict of graphemes or correspondending graphemes for
-    hul’q’umi’num’
+    @classmethod
+    def _missing_(cls, value):
+        """Case-insensitively cast strings of a TextFormat (e.g. "apaunicode")
+          to Enum
+        """
+        value = value.casefold()
+        for member in cls:
+            if member.value == value:
+                return member
+            return None
 
-    Attributes:
-        source_format: a FileFormat of the source format for some
-        correspondences
-        source_format_str: the string representation of the source format
-        (i.e. its name)
-        source_format_lemmas: a dict with all of the 'correct'
-        representations of the character in the source format
-        source_format_characters: a dict with all representations
-        of the character in the source format
+    def __str__(self):
+        return self.value
 
-        (optional attributes follow)
-        target_format: a FileFormat of the target format for
-        correspondencess
-        target_format_str: the string representaiton of the target format
-        (i.e. its name)
-        target_format: a dict with all of the 'correct'
-        representations of the character in the target format
-        target_format_characters: a dict with all representations
-        of the character in the target format
 
-        correspondence_dict: a dict of form 
-        {{source format lemma i:target format lemma i}, ...} for some 
-        corresponding graphemes
+class Grapheme(StrEnum):
+    CHARACTERS = auto()
+    LEMMA = auto()
+
+    @classmethod
+    def _missing_(cls, value):
+        """Case-insensitively cast strings of a TextFormat (e.g. "apaunicode")
+          to Enum
+        """
+        value = value.casefold()
+        for member in cls:
+            if member.value == value:
+                return member
+            return None
+        
+    def __str__(self):
+        return self.casefold()
+
+class Graphemes():
+    """Correspondence of graphemes for Hul’q’umi’num’.
     """
-    def __init__(self, source_format: FileFormat, *args):
-        """
-        Arguments:
-            source_format -- a FileFormat of a source format
-        Optional arguments:
-            target_format -- a FileFormat of the target format
-            for finding grapheme correspondences
-        """
-        self.source_format = source_format
-        self.source_format_str = source_format.to_string()
+    grapheme_file = files(__package__) / "graphemes.json"
 
-        if self.source_format is FileFormat.STRAIGHT:
-            self.source_format_lemmas = None
-        else:
-            self.source_format_lemmas = {
-                i[self.source_format_str]['Lemma'] for i in loaded_graphemes
-                }
-        self.source_format_characters = {
-            i[self.source_format_str]['Characters'] for i in loaded_graphemes
-            }
+    def text_format_graphemes(
+            self,
+            text_format: TextFormat,
+            grapheme_kind: Grapheme
+            ) -> set:
+        """Get the characters for a given TextFormat (i.e. all possible
+        renderings) of that grapheme.
 
-        # if you include as second argument for the target form: 
-        # turn those into dicts and make correspondence dict
-        if args:
-            self.target_format = args[0]
-            self.target_format_str = self.target_format.to_string()
-            self.target_format_characters = {
-                i[self.target_format_str]['Characters'] for i in loaded_graphemes}
-            self.target_format_lemmas = {
-                i[self.target_format_str]['Lemma'] for i in loaded_graphemes}
-            self.correspondence_dict = {
-                i[self.source_format_str]['Characters']:
-                 i[self.target_format_str]['Lemma']
-                for i in loaded_graphemes}
+        Args:
+            text_format (TextFormat): _description_
+        """
+        return list({
+            grapheme.get(text_format).get(grapheme_kind): None
+            for grapheme in self.graphemes
+            })
+
+    def correspondence_dict(
+            self,
+            source_format: TextFormat,
+            target_format: TextFormat
+            ):
+        """Give the correspondence of certain characters in the source format
+        to the lemma in the target. For example, if there are two ways of
+        rendering a character for whatever reason in one format, give the best
+        rendering (i.e. the lemma) of that character in the target format.
+
+        Args:
+            source_format (TextFormat): _description_
+            target_format (TextFormat): _description_
+
+        Returns:
+            _type_: _description_
+        """
         
-        
-        else:
-            self.target_format = None
-            self.target_format_str = None
-            self.target_format_characters = None
-            self.correspondence_dict = self.source_format_lemmas
+        return {
+            grapheme.get(source_format).get(Grapheme("characters")):
+            grapheme.get(target_format).get("lemma")
+            for grapheme in self.graphemes
+        }
+
+    @property
+    def graphemes(self):
+        return json.load(open(self.grapheme_file))
+
+    # def __repr__(self):
+    #     return str(self.graphemes)
 
 class TransliterandFile():
     '''a class that collects a file and its parameters for transliteration
@@ -161,11 +150,12 @@ class TransliterandFile():
         transliterated into
     '''
     def __init__(self, 
-    source_path: Path | str, 
-    source_format: FileFormat, 
-    target_format: FileFormat,
-    **kwargs):
+        source_path: Path | str, 
+        source_format: TextFormat, 
+        target_format: TextFormat,
+        **kwargs):
         source_path = Path(source_path)
+
         self.source_path = source_path
         self.source_filename = source_path.name
         self.source_dir = source_path.parent
@@ -178,24 +168,25 @@ class TransliterandFile():
 
         
     def __repr__(self):
-        info = ''.join([
-            '\nsource path: ', str(self.source_path),
-            '\nsource format: ', str(self.source_format),
-            '\ntarget format: ', str(self.target_format),
-            '\ntarget path: ', str(self.target_path)])
+        info = f"\
+            \nsource path: {str(self.source_path)}\
+            \nsource format: {str(self.source_format)}\
+            \ntarget format: {str(self.target_format)}\
+            \ntarget path: {str(self.target_path)}"
         return info
 
 
     def generate_target_filename(self):
         """generates what the filename of the file should be
         """
-        target_filename = Path(self.source_path.stem + 
-                                ' ' +
-                                self.source_format.to_string() +
-                                ' to ' +
-                                self.target_format.to_string() +
-                                ' transliterated' +
-                                self.source_path.suffix)
+        target_filename = Path(
+            # f"{self.source_path.stem} +
+            #                     self.source_format.to_string() +
+            #                     ' to ' +
+            #                     self.target_format.to_string() +
+            #                     ' transliterated' +
+            #                     self.source_path.suffix
+            )
 
         return target_filename
 
@@ -209,9 +200,9 @@ class TransliterandFile():
             self.target_dir = self.source_dir
         
         self.target_path = Path(self.target_dir / self.target_filename)
-
-        return(self.target_path)
     
 if __name__ == "__main__":
-    # print(loaded_graphemes)
-    ...
+    __package__ = "hulqcorpustools.resources"
+    print(Graphemes().correspondence_dict(
+        "orthography", "apaunicode"
+    ))

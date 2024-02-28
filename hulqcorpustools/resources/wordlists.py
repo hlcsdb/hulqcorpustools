@@ -1,7 +1,7 @@
 
 from pathlib import Path
 from importlib.resources import files
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.resources.constants import TextFormat
 
 wordlist_package = files(__package__) / 'wordlistsdata'
 wordlist_paths = {Path(wordlist_path).stem : wordlist_path for wordlist_path in wordlist_package.iterdir()}
@@ -12,14 +12,14 @@ class Wordlist():
 
     @staticmethod
     def load_wordlist_text(
-        wordlist_format: str|FileFormat) -> str:
+        wordlist_format: str|TextFormat) -> str:
         """_summary_
 
         ***REMOVED***rguments:
             wordlist_format -- _description_
         """
         
-        if type(wordlist_format) == FileFormat:
+        if type(wordlist_format) == TextFormat:
             wordlist_format = wordlist_format.to_string()
 
         if wordlist_format == 'english':

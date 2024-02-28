@@ -8,13 +8,13 @@ will be the place to pull out lines from .docx
 
 from pathlib import Path
 
+from werkzeug.datastructures import FileStorage
+
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.utils.keywordprocessors import kp
+from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.hulqtransliterator.filehandlers import docworker, txtworker
 from . import replaceengine as repl
-
-_kp = HulqKeywordProcessors(eng=True)
 
 class TransliterandFileHandler(FileHandler):
     """Class that prepares the KeywordProcessors and transliterates the list of
@@ -22,23 +22,17 @@ class TransliterandFileHandler(FileHandler):
     """
     def __init__(
             self,
-            files_list = (list[Path]),
-            source_format = (FileFormat | str | None),
-            target_format = (FileFormat | str | None),
+            files_list=(list[Path | FileStorage]),
+            source_format=(TextFormat | str | None),
+            target_format=(TextFormat | str | None),
             **kwargs):
         
         super().__init__(files_list)
 
-        self.source_format = source_format
-        self.target_format = target_format
+        self.source_format = TextFormat(source_format)
+        self.target_format = TextFormat(target_format)
         self.search_method = kwargs.get('search_method')
         self.font_search = kwargs.get('font')
-
-        if type(self.source_format) == str:
-            self.source_format = FileFormat().from_string(self.source_format)
-
-        if type(self.target_format) == str:
-            self.target_format = FileFormat().from_string(self.target_format)
 
     def transliterate_all_files(
             self,
@@ -110,8 +104,9 @@ class TransliterandFileHandler(FileHandler):
 
 def string_transliterator(
     source_string: str,
-    source_format: FileFormat,
-    target_format: FileFormat):
+    source_format: TextFormat,
+    target_format: TextFormat
+    ):
     """just transliterates a single string.
     It's a thing of beauty"""
 

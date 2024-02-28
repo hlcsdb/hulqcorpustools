@@ -1,651 +1,651 @@
 [
     {
         "orthography": {
-            "Characters": "‘",
-            "Lemma": "‘"
+            "characters": "‘",
+            "lemma": "‘"
         },
-        "APAUnicode": {
-            "Characters": "ʔ",
-            "Lemma": "ʔ"
+        "apaunicode": {
+            "characters": "ʔ",
+            "lemma": "ʔ"
         },
         "straight": {
-            "Characters": "÷",
-            "Lemma": "÷"},
+            "characters": "÷",
+            "lemma": "÷"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "‘",
-            "Lemma": "‘"
+            "characters": "‘",
+            "lemma": "‘"
         },
-        "APAUnicode": {
-            "Characters": "ʔ",
-            "Lemma": "ʔ"
+        "apaunicode": {
+            "characters": "ʔ",
+            "lemma": "ʔ"
         },
         "straight": {
-            "Characters": "÷",
-            "Lemma": "÷"},
+            "characters": "÷",
+            "lemma": "÷"},
         "glottalizedResonant": false
     },    
     {
         "orthography": {
-            "Characters": "ú",
-            "Lemma": "ú"
+            "characters": "ú",
+            "lemma": "ú"
         },
-        "APAUnicode": {
-            "Characters": "ə́",
-            "Lemma": "ə́"
+        "apaunicode": {
+            "characters": "ə́",
+            "lemma": "ə́"
         },
         "straight": {
-            "Characters": "∕",
-            "Lemma": "∕"},
+            "characters": "∕",
+            "lemma": "∕"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ɛ",
-            "Lemma": "ɛ"
+            "characters": "ɛ",
+            "lemma": "ɛ"
         },
-        "APAUnicode": {
-            "Characters": "ɛ",
-            "Lemma": "ɛ"
+        "apaunicode": {
+            "characters": "ɛ",
+            "lemma": "ɛ"
         },
         "straight": {
-            "Characters": "|",
-            "Lemma": "|"},
+            "characters": "|",
+            "lemma": "|"},
         "glottalizedResonant": false
     },   
     {
         "orthography": {
-            "Characters": "u",
-            "Lemma": "u"
+            "characters": "u",
+            "lemma": "u"
         },
-        "APAUnicode": {
-            "Characters": "ə̀",
-            "Lemma": "ə̀"
+        "apaunicode": {
+            "characters": "ə̀",
+            "lemma": "ə̀"
         },
         "straight": {
-            "Characters": "¤",
-            "Lemma": "¤"},
+            "characters": "¤",
+            "lemma": "¤"},
         "glottalizedResonant": false
     },
 
     {
         "orthography": {
-            "Characters": "à",
-            "Lemma": "à"
+            "characters": "à",
+            "lemma": "à"
         },
-        "APAUnicode": {
-            "Characters": "à",
-            "Lemma": "à"
+        "apaunicode": {
+            "characters": "à",
+            "lemma": "à"
         },
         "straight": {
-            "Characters": "ä",
-            "Lemma": "ä"},
+            "characters": "ä",
+            "lemma": "ä"},
         "glottalizedResonant": false
     },
     
     {
         "orthography": {
-            "Characters": "‘",
-            "Lemma": "‘"
+            "characters": "‘",
+            "lemma": "‘"
         },
-        "APAUnicode": {
-            "Characters": "=",
-            "Lemma": "="
+        "apaunicode": {
+            "characters": "=",
+            "lemma": "="
         },
         "straight": {
-            "Characters": "•",
-            "Lemma": "•"},
+            "characters": "•",
+            "lemma": "•"},
         "glottalizedResonant": false
     },    
     {
         "orthography": {
-            "Characters": "é",
-            "Lemma": "é"
+            "characters": "é",
+            "lemma": "é"
         },
-        "APAUnicode": {
-            "Characters": "ɛ́",
-            "Lemma": "é"
+        "apaunicode": {
+            "characters": "ɛ́",
+            "lemma": "é"
         },
         "straight": {
-            "Characters": "°",
-            "Lemma": "°"},
+            "characters": "°",
+            "lemma": "°"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "·",
-            "Lemma": "·"
+            "characters": "·",
+            "lemma": "·"
         },
-        "APAUnicode": {
-            "Characters": "·",
-            "Lemma": "·"
+        "apaunicode": {
+            "characters": "·",
+            "lemma": "·"
         },
         "straight": {
-            "Characters": "≥",
-            "Lemma": "≥"},
+            "characters": "≥",
+            "lemma": "≥"},
         "glottalizedResonant": false
     },   
     {
         "orthography": {
-            "Characters": "’",
-            "Lemma": "’"
+            "characters": "’",
+            "lemma": "’"
         },
-        "APAUnicode": {
-            "Characters": "ʔ",
-            "Lemma": "ʔ"
+        "apaunicode": {
+            "characters": "ʔ",
+            "lemma": "ʔ"
         },
         "straight": {
-            "Characters": "÷",
-            "Lemma": "÷"},
+            "characters": "÷",
+            "lemma": "÷"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "lh",
-            "Lemma": "lh"
+            "characters": "lh",
+            "lemma": "lh"
         },
-        "APAUnicode": {
-            "Characters": "ł",
-            "Lemma": "ł"
+        "apaunicode": {
+            "characters": "ł",
+            "lemma": "ł"
         },
         "straight": {
-            "Characters": "®",
-            "Lemma": "®"},
+            "characters": "®",
+            "lemma": "®"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "lh",
-            "Lemma": "lh"
+            "characters": "lh",
+            "lemma": "lh"
         },
-        "APAUnicode": {
-            "Characters": "ɫ",
-            "Lemma": "ł"
+        "apaunicode": {
+            "characters": "ɫ",
+            "lemma": "ł"
         },
         "straight": {
-            "Characters": "®",
-            "Lemma": "®"},
+            "characters": "®",
+            "lemma": "®"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "m’",
-            "Lemma": "m’"
+            "characters": "m’",
+            "lemma": "m’"
         },
-        "APAUnicode": {
-            "Characters": "m̓",
-            "Lemma": "m̓"
+        "apaunicode": {
+            "characters": "m̓",
+            "lemma": "m̓"
         },
         "straight": {
-            "Characters": "µ",
-            "Lemma": "µ"},
+            "characters": "µ",
+            "lemma": "µ"},
         "glottalizedResonant": true
     },
     {
         "orthography": {
-            "Characters": "n’",
-            "Lemma": "n’"
+            "characters": "n’",
+            "lemma": "n’"
         },
-        "APAUnicode": {
-            "Characters": "n̓",
-            "Lemma": "n̓"
+        "apaunicode": {
+            "characters": "n̓",
+            "lemma": "n̓"
         },
         "straight": {
-            "Characters": "∫",
-            "Lemma": "∫"},
+            "characters": "∫",
+            "lemma": "∫"},
         "glottalizedResonant": true
     },
     {
         "orthography": {
-            "Characters": "l’",
-            "Lemma": "l’"
+            "characters": "l’",
+            "lemma": "l’"
         },
-        "APAUnicode": {
-            "Characters": "l̓",
-            "Lemma": "l̓"
+        "apaunicode": {
+            "characters": "l̓",
+            "lemma": "l̓"
         },
         "straight": {
-            "Characters": "¬",
-            "Lemma": "¬"},
+            "characters": "¬",
+            "lemma": "¬"},
         "glottalizedResonant": true
     },
     {
         "orthography": {
-            "Characters": "w’",
-            "Lemma": "w’"
+            "characters": "w’",
+            "lemma": "w’"
         },
-        "APAUnicode": {
-            "Characters": "w̓",
-            "Lemma": "w̓"
+        "apaunicode": {
+            "characters": "w̓",
+            "lemma": "w̓"
         },
         "straight": {
-            "Characters": "∑",
-            "Lemma": "∑"},
+            "characters": "∑",
+            "lemma": "∑"},
         "glottalizedResonant": true
     },
     {
         "orthography": {
-            "Characters": "w’",
-            "Lemma": "w’"
+            "characters": "w’",
+            "lemma": "w’"
         },
-        "APAUnicode": {
-            "Characters": "w̓",
-            "Lemma": "w̓"
+        "apaunicode": {
+            "characters": "w̓",
+            "lemma": "w̓"
         },
         "straight": {
-            "Characters": "Σ",
-            "Lemma": "Σ"},
+            "characters": "Σ",
+            "lemma": "Σ"},
         "glottalizedResonant": true
     },
     
     {
         "orthography": {
-            "Characters": "y’",
-            "Lemma": "y’"
+            "characters": "y’",
+            "lemma": "y’"
         },
-        "APAUnicode": {
-            "Characters": "y̓",
-            "Lemma": "y̓"
+        "apaunicode": {
+            "characters": "y̓",
+            "lemma": "y̓"
         },
         "straight": {
-            "Characters": "¥",
-            "Lemma": "¥"},
+            "characters": "¥",
+            "lemma": "¥"},
         "glottalizedResonant": true
     },
     {
         "orthography": {
-            "Characters": "aa",
-            "Lemma": "aa"
+            "characters": "aa",
+            "lemma": "aa"
         },
-        "APAUnicode": {
-            "Characters": "a:",
-            "Lemma": "a:"
+        "apaunicode": {
+            "characters": "a:",
+            "lemma": "a:"
         },
         "straight": {
-            "Characters": "a:",
-            "Lemma": "a:"},
+            "characters": "a:",
+            "lemma": "a:"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ee",
-            "Lemma": "ee"
+            "characters": "ee",
+            "lemma": "ee"
         },
-        "APAUnicode": {
-            "Characters": "e:",
-            "Lemma": "e:"
+        "apaunicode": {
+            "characters": "e:",
+            "lemma": "e:"
         },
         "straight": {
-            "Characters": "e:",
-            "Lemma": "e:"},
+            "characters": "e:",
+            "lemma": "e:"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ii",
-            "Lemma": "ii"
+            "characters": "ii",
+            "lemma": "ii"
         },
-        "APAUnicode": {
-            "Characters": "i:",
-            "Lemma": "i:"
+        "apaunicode": {
+            "characters": "i:",
+            "lemma": "i:"
         },
         "straight": {
-            "Characters": "i:",
-            "Lemma": "i:"},
+            "characters": "i:",
+            "lemma": "i:"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ou",
-            "Lemma": "ou"
+            "characters": "ou",
+            "lemma": "ou"
         },
-        "APAUnicode": {
-            "Characters": "u",
-            "Lemma": "u"
+        "apaunicode": {
+            "characters": "u",
+            "lemma": "u"
         },
         "straight": {
-            "Characters": "u",
-            "Lemma": "u"},
+            "characters": "u",
+            "lemma": "u"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "oo",
-            "Lemma": "oo"
+            "characters": "oo",
+            "lemma": "oo"
         },
-        "APAUnicode": {
-            "Characters": "u:",
-            "Lemma": "u:"
+        "apaunicode": {
+            "characters": "u:",
+            "lemma": "u:"
         },
         "straight": {
-            "Characters": "u:",
-            "Lemma": "u:"},
+            "characters": "u:",
+            "lemma": "u:"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "u",
-            "Lemma": "u"
+            "characters": "u",
+            "lemma": "u"
         },
-        "APAUnicode": {
-            "Characters": "ə",
-            "Lemma": "ə"
+        "apaunicode": {
+            "characters": "ə",
+            "lemma": "ə"
         },
         "straight": {
-            "Characters": ";",
-            "Lemma": ";"},
+            "characters": ";",
+            "lemma": ";"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "p’",
-            "Lemma": "p’"
+            "characters": "p’",
+            "lemma": "p’"
         },
-        "APAUnicode": {
-            "Characters": "p̓",
-            "Lemma": "p̓"
+        "apaunicode": {
+            "characters": "p̓",
+            "lemma": "p̓"
         },
         "straight": {
-            "Characters": "π",
-            "Lemma": "π"},
+            "characters": "π",
+            "lemma": "π"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "t’",
-            "Lemma": "t’"
+            "characters": "t’",
+            "lemma": "t’"
         },
-        "APAUnicode": {
-            "Characters": "t̓",
-            "Lemma": "t̓"
+        "apaunicode": {
+            "characters": "t̓",
+            "lemma": "t̓"
         },
         "straight": {
-            "Characters": "†",
-            "Lemma": "†"},
+            "characters": "†",
+            "lemma": "†"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "kw",
-            "Lemma": "kw"
+            "characters": "kw",
+            "lemma": "kw"
         },
-        "APAUnicode": {
-            "Characters": "kʷ",
-            "Lemma": "kʷ"
+        "apaunicode": {
+            "characters": "kʷ",
+            "lemma": "kʷ"
         },
         "straight": {
-            "Characters": "kø",
-            "Lemma": "kø"},
+            "characters": "kø",
+            "lemma": "kø"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "kw’",
-            "Lemma": "kw’"
+            "characters": "kw’",
+            "lemma": "kw’"
         },
-        "APAUnicode": {
-            "Characters": "k̓ʷ",
-            "Lemma": "k̓ʷ"
+        "apaunicode": {
+            "characters": "k̓ʷ",
+            "lemma": "k̓ʷ"
         },
         "straight": {
-            "Characters": "˚ø",
-            "Lemma": "˚ø"},
+            "characters": "˚ø",
+            "lemma": "˚ø"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "q’",
-            "Lemma": "q’"
+            "characters": "q’",
+            "lemma": "q’"
         },
-        "APAUnicode": {
-            "Characters": "q̓",
-            "Lemma": "q̓"
+        "apaunicode": {
+            "characters": "q̓",
+            "lemma": "q̓"
         },
         "straight": {
-            "Characters": "œ",
-            "Lemma": "œ"},
+            "characters": "œ",
+            "lemma": "œ"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "qw",
-            "Lemma": "qw"
+            "characters": "qw",
+            "lemma": "qw"
         },
-        "APAUnicode": {
-            "Characters": "qʷ",
-            "Lemma": "qʷ"
+        "apaunicode": {
+            "characters": "qʷ",
+            "lemma": "qʷ"
         },
         "straight": {
-            "Characters": "qø",
-            "Lemma": "qø"},
+            "characters": "qø",
+            "lemma": "qø"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "qw’",
-            "Lemma": "qw’"
+            "characters": "qw’",
+            "lemma": "qw’"
         },
-        "APAUnicode": {
-            "Characters": "q̓ʷ",
-            "Lemma": "q̓ʷ"
+        "apaunicode": {
+            "characters": "q̓ʷ",
+            "lemma": "q̓ʷ"
         },
         "straight": {
-            "Characters": "œø",
-            "Lemma": "œø"},
+            "characters": "œø",
+            "lemma": "œø"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "tth",
-            "Lemma": "tth"
+            "characters": "tth",
+            "lemma": "tth"
         },
-        "APAUnicode": {
-            "Characters": "tᶿ",
-            "Lemma": "tᶿ"
+        "apaunicode": {
+            "characters": "tᶿ",
+            "lemma": "tᶿ"
         },
         "straight": {
-            "Characters": "©",
-            "Lemma": "©"},
+            "characters": "©",
+            "lemma": "©"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "tth’",
-            "Lemma": "tth’"
+            "characters": "tth’",
+            "lemma": "tth’"
         },
-        "APAUnicode": {
-            "Characters": "t̓ᶿ",
-            "Lemma": "t̓ᶿ"
+        "apaunicode": {
+            "characters": "t̓ᶿ",
+            "lemma": "t̓ᶿ"
         },
         "straight": {
-            "Characters": "˙",
-            "Lemma": "˙"},
+            "characters": "˙",
+            "lemma": "˙"},
         "glottalizedResonant": false
     },
     
     {
         "orthography": {
-            "Characters": "t-s",
-            "Lemma": "t-s"
+            "characters": "t-s",
+            "lemma": "t-s"
         },
-        "APAUnicode": {
-            "Characters": "ts",
-            "Lemma": "ts"
+        "apaunicode": {
+            "characters": "ts",
+            "lemma": "ts"
         },
         "straight": {
-            "Characters": "ts",
-            "Lemma": "ts"},
+            "characters": "ts",
+            "lemma": "ts"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ts",
-            "Lemma": "ts"
+            "characters": "ts",
+            "lemma": "ts"
         },
-        "APAUnicode": {
-            "Characters": "c",
-            "Lemma": "c"
+        "apaunicode": {
+            "characters": "c",
+            "lemma": "c"
         },
         "straight": {
-            "Characters": "c",
-            "Lemma": "c"},
+            "characters": "c",
+            "lemma": "c"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ts’",
-            "Lemma": "ts’"
+            "characters": "ts’",
+            "lemma": "ts’"
         },
-        "APAUnicode": {
-            "Characters": "c̓",
-            "Lemma": "c̓"
+        "apaunicode": {
+            "characters": "c̓",
+            "lemma": "c̓"
         },
         "straight": {
-            "Characters": "ç",
-            "Lemma": "ç"},
+            "characters": "ç",
+            "lemma": "ç"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ch",
-            "Lemma": "ch"
+            "characters": "ch",
+            "lemma": "ch"
         },
-        "APAUnicode": {
-            "Characters": "č",
-            "Lemma": "č"
+        "apaunicode": {
+            "characters": "č",
+            "lemma": "č"
         },
         "straight": {
-            "Characters": "∆",
-            "Lemma": "∆"},
+            "characters": "∆",
+            "lemma": "∆"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "ch’",
-            "Lemma": "ch’"
+            "characters": "ch’",
+            "lemma": "ch’"
         },
-        "APAUnicode": {
-            "Characters": "č̓",
-            "Lemma": "č̓"
+        "apaunicode": {
+            "characters": "č̓",
+            "lemma": "č̓"
         },
         "straight": {
-            "Characters": "∂",
-            "Lemma": "∂"},
+            "characters": "∂",
+            "lemma": "∂"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "tl’",
-            "Lemma": "tl’"
+            "characters": "tl’",
+            "lemma": "tl’"
         },
-        "APAUnicode": {
-            "Characters": "ƛ̓",
-            "Lemma": "ƛ̓"
+        "apaunicode": {
+            "characters": "ƛ̓",
+            "lemma": "ƛ̓"
         },
         "straight": {
-            "Characters": "√",
-            "Lemma": "√"},
+            "characters": "√",
+            "lemma": "√"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "th",
-            "Lemma": "th"
+            "characters": "th",
+            "lemma": "th"
         },
-        "APAUnicode": {
-            "Characters": "θ",
-            "Lemma": "θ"
+        "apaunicode": {
+            "characters": "θ",
+            "lemma": "θ"
         },
         "straight": {
-            "Characters": "ƒ",
-            "Lemma": "ƒ"},
+            "characters": "ƒ",
+            "lemma": "ƒ"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "sh",
-            "Lemma": "sh"
+            "characters": "sh",
+            "lemma": "sh"
         },
-        "APAUnicode": {
-            "Characters": "š",
-            "Lemma": "š"
+        "apaunicode": {
+            "characters": "š",
+            "lemma": "š"
         },
         "straight": {
-            "Characters": "ß",
-            "Lemma": "ß"},
+            "characters": "ß",
+            "lemma": "ß"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "s-h",
-            "Lemma": "s-h"
+            "characters": "s-h",
+            "lemma": "s-h"
         },
-        "APAUnicode": {
-            "Characters": "sh",
-            "Lemma": "sh"
+        "apaunicode": {
+            "characters": "sh",
+            "lemma": "sh"
         },
         "straight": {
-            "Characters": "sh",
-            "Lemma": "sh"},
+            "characters": "sh",
+            "lemma": "sh"},
         "glottalizedResonant": false
     },
 
     {
         "orthography": {
-            "Characters": "h",
-            "Lemma": "h"
+            "characters": "h",
+            "lemma": "h"
         },
-        "APAUnicode": {
-            "Characters": "h",
-            "Lemma": "h"
+        "apaunicode": {
+            "characters": "h",
+            "lemma": "h"
         },
         "straight": {
-            "Characters": "h",
-            "Lemma": "h"},
+            "characters": "h",
+            "lemma": "h"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "hw",
-            "Lemma": "hw"
+            "characters": "hw",
+            "lemma": "hw"
         },
-        "APAUnicode": {
-            "Characters": "xʷ",
-            "Lemma": "xʷ"
+        "apaunicode": {
+            "characters": "xʷ",
+            "lemma": "xʷ"
         },
         "straight": {
-            "Characters": "xø",
-            "Lemma": "xø"},
+            "characters": "xø",
+            "lemma": "xø"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "x",
-            "Lemma": "x"
+            "characters": "x",
+            "lemma": "x"
         },
-        "APAUnicode": {
-            "Characters": "x̌",
-            "Lemma": "x̌"
+        "apaunicode": {
+            "characters": "x̌",
+            "lemma": "x̌"
         },
         "straight": {
-            "Characters": "≈",
-            "Lemma": "≈"},
+            "characters": "≈",
+            "lemma": "≈"},
         "glottalizedResonant": false
     },
     {
         "orthography": {
-            "Characters": "xw",
-            "Lemma": "xw"
+            "characters": "xw",
+            "lemma": "xw"
         },
-        "APAUnicode": {
-            "Characters": "x̌ʷ",
-            "Lemma": "x̌ʷ"
+        "apaunicode": {
+            "characters": "x̌ʷ",
+            "lemma": "x̌ʷ"
         },
         "straight": {
-            "Characters": "≈ø",
-            "Lemma": "≈ø"},
+            "characters": "≈ø",
+            "lemma": "≈ø"},
         "glottalizedResonant": false
     }
 
