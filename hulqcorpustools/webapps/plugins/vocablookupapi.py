@@ -5,7 +5,7 @@ from flask import Request
 
 from .common import save_safe_files
 
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.vocablookup.vocablookup import VocabFinderFile, VocabFinder
 from hulqcorpustools.utils.files import FileHandler
 

@@ -1,29 +1,45 @@
+
+import os
 from pathlib import Path
 
+import boto3
 from werkzeug.utils import secure_filename
 from werkzeug.wrappers.request import Request
 from werkzeug.datastructures import FileStorage
 
+# from hulqcorpustools.utils.keywordprocessors import kp
+
 ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
+
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=os.getenv("S3_BUCKET_ACCESS_KEY"),
+    aws_secret_access_key=os.getenv("S3_BUCKET_SECRET_KEY"),
+    endpoint_url=os.getenv("S3_DOMAIN"),
+)
+
+
 def secure_allowed_filelist(_filelist: Request.files):
     allowed_files = filter(allowed_file, _filelist)
     secured_files = map(secure_names, allowed_files)
     secured_files = list(secured_files)
     return secured_files
 
+
 def allowed_file(_file: FileStorage):
     if Path(_file.filename).suffix in ALLOWED_EXTENSIONS:
         return True
     else:
         return False
-    
+
+
 def secure_names(_file: FileStorage):
     _file.filename = secure_filename(_file.filename)
     return _file
 
+
 def save_safe_files(
         _files: Request.files,
-        _key: str,
         upload_dir: Path | str,
         ):
     """filter unacceptable filetypes, secure filenames, and save to secure path
@@ -36,9 +52,14 @@ def save_safe_files(
     Returns:
         list of werkzeug.datastructures.FileStorage with filenames replaced with secure, full paths to where they are saved
     """
-    secured_files = secure_allowed_filelist(_files.getlist(_key))
+    secured_files = secure_allowed_filelist(_files)
     for _file in secured_files:
-        save_filename = Path(upload_dir).joinpath(_file.filename)
-        _file.filename = save_filename
-        _file.save(save_filename)
+        s3.upload_fileobj(
+            _file,
+            os.getenv("S3_BUCKET_NAME"),
+            _file.filename
+        )
+
+
     return secured_files
+

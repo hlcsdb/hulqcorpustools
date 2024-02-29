@@ -10,7 +10,7 @@ from docx.enum.style import WD_STYLE_TYPE
 from zipfile import BadZipFile
 
 from . import docxannotationdata
-from .constants import FileFormat
+from .constants import TextFormat
 from ..utils.languagesusser import determine_language_from_text
 
 class _HulqAnnotationStyles():
@@ -207,8 +207,8 @@ class _DocxCorpusParGroup():
         # self._notes = _notes
 
         self.current_line_languages = {
-            FileFormat.HULQ_FORMATS : None,
-            FileFormat.ENGLISH : None
+            TextFormat.HULQ_FORMATS : None,
+            TextFormat.ENGLISH : None
         }
 
 
@@ -238,13 +238,13 @@ class _DocxCorpusParGroup():
 
         # normalize incoming language if hulq from specific (e.g. orthography)
         # to general
-        if type(_incoming_language) == FileFormat and \
-        _incoming_language & FileFormat.HULQ_FORMATS:
-            _incoming_language = FileFormat.HULQ_FORMATS
+        if type(_incoming_language) == TextFormat and \
+        _incoming_language & TextFormat.HULQ_FORMATS:
+            _incoming_language = TextFormat.HULQ_FORMATS
 
 
         # if there is any hulq: it is always a new line
-        if _incoming_language == FileFormat.HULQ_FORMATS and \
+        if _incoming_language == TextFormat.HULQ_FORMATS and \
             self.current_line_languages.get(_incoming_language):
             self._finish_group()
 
@@ -265,8 +265,8 @@ class _DocxCorpusParGroup():
         Returns:
             finished line
         """
-        _finish_hulq = self.current_line_languages.get(FileFormat.HULQ_FORMATS)
-        _finish_eng = self.current_line_languages.get(FileFormat.ENGLISH)
+        _finish_hulq = self.current_line_languages.get(TextFormat.HULQ_FORMATS)
+        _finish_eng = self.current_line_languages.get(TextFormat.ENGLISH)
 
         # if _finish_hulq:
         #     _finish_hulq._text_par.
@@ -287,8 +287,8 @@ class _DocxCorpusParGroup():
 
 
         self.current_line_languages.update(
-            {FileFormat.HULQ_FORMATS: None,
-            FileFormat.ENGLISH: None}
+            {TextFormat.HULQ_FORMATS: None,
+            TextFormat.ENGLISH: None}
         )
 
 class CorpusDocx(docx.document.Document):

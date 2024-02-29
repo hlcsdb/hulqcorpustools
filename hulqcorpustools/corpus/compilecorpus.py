@@ -11,7 +11,7 @@ from docx.document import Document
 from docx.text import paragraph, run
 
 from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.resources.constants import TextFormat
 
 kp = HulqKeywordProcessors(eng=True)
 
@@ -168,9 +168,9 @@ class CorpusAuthorCollection():
             ...
 
     def _check_language(self, _par: paragraph.Paragraph):
-        _current_line_lang = kp.determine_language_from_text(_par.text)
+        _current_line_lang = kp.determine_language(_par.text)
 
-        if _current_line_lang == FileFormat.APAUNICODE or _current_line_lang == FileFormat.ORTHOGRAPHY:
+        if _current_line_lang == TextFormat.APAUNICODE or _current_line_lang == TextFormat.ORTHOGRAPHY:
             return 'hulq' 
         elif _current_line_lang == 'english':
             return 'eng'

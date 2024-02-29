@@ -2,17 +2,18 @@
 from collections import Counter
 import json
 from pathlib import Path
+from typing import Union
 import re
 
 from docx import Document as construct_document
 from docx.document import Document
 
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.utils.keywordprocessors import kp
+from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.resources import wordlists
 
-_kp = HulqKeywordProcessors(eng=True)
+from werkzeug.datastructures import FileStorage
 
 reg_str_pattern = re.compile(r"[\"\'\!\.\,\?\[\]\(\)\“\”\;]|LH\t|LE\t")
 
@@ -29,17 +30,17 @@ class WordCounter():
         return count_words
     
     def count_all_hulq_words_in_string(self, _str: str) -> Counter:
-        count_words_apa = Counter(_kp.apa_kp.extract_keywords(_str))
-        count_words_orthog = Counter(_kp.orthog_kp.extract_keywords(_str))
+        count_words_apa = Counter(kp.apa_kp.extract_keywords(_str))
+        count_words_orthog = Counter(kp.orthog_kp.extract_keywords(_str))
 
         return max(count_words_apa, count_words_orthog, key=len)
     
-    def count_docx_words(self, _docx: Path):
+    def count_docx_words(self, _docx: Union[Path | FileStorage]):
         docx = construct_document(_docx) # type: Document
         for par in docx.paragraphs:
             _reg_text = re.sub(reg_str_pattern, "", par.text)
-            _lang = _kp.determine_language_from_text(_reg_text)
-            if _lang == FileFormat.APAUNICODE or _lang == FileFormat.ORTHOGRAPHY:
+            _lang = kp.determine_language(_reg_text)
+            if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
                 self.total.update(_reg_text.split())
         for table in docx.tables:
             for row in table.rows:
@@ -47,8 +48,8 @@ class WordCounter():
                     for paragraph in cell.paragraphs:
                         for run in paragraph.runs:
                             _reg_text = reg_str_pattern.sub("", run.text)
-                            _lang = _kp.determine_language_from_text(_reg_text)
-                            if _lang == FileFormat.APAUNICODE or _lang == FileFormat.ORTHOGRAPHY:
+                            _lang = kp.determine_language(_reg_text)
+                            if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
                                 self.total.update(_reg_text.split())
         return self.total
 
@@ -57,8 +58,8 @@ class WordCounter():
         with open(_txt) as _txt_file:
             for _line in _txt:
                 _reg_text = reg_str_pattern.sub("", _line)
-                _lang = _kp.determine_language_from_text(_reg_text)
-                if _lang == FileFormat.APAUNICODE or _lang == FileFormat.ORTHOGRAPHY:
+                _lang = kp.determine_language(_reg_text)
+                if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
                     running_counter.update(_reg_text.split())
 
         self.total.update(running_counter)
@@ -69,7 +70,7 @@ class WordCountFileHandler(FileHandler):
 
     def __init__(
             self,
-            files_list = (list[Path])
+            files_list=(list[FileStorage])
         ):
         
         super().__init__(files_list)

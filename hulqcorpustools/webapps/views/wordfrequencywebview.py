@@ -5,9 +5,16 @@ from flask import Blueprint, current_app, request, render_template, url_for, red
 from flask.wrappers import Request, Response
 from werkzeug.utils import secure_filename
 
-from .plugins import wordfrequencyapi as wf_api
+from ..plugins import wordfrequencyapi as wf_api
+from ..plugins.common import allowed_file, save_safe_files
 
-wordfrequency_bp = Blueprint('wordfrequency', __name__, url_prefix = '/', static_url_path='', static_folder='')
+wordfrequency_bp = Blueprint(
+    'wordfrequency',
+    __name__,
+    url_prefix='/',
+    static_url_path='',
+    static_folder=''
+    )
 
 ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
@@ -21,6 +28,7 @@ def word_frequency_page():
 
     return render_template('word-frequency.html')
 
+
 def handle_word_count_request(_request: Request) -> dict:
     if _request.form.get('word-frequency-text'):
         word_count = wf_api.string_word_count(_request.form.get('input-text'))
@@ -32,6 +40,7 @@ def handle_word_count_request(_request: Request) -> dict:
         'word_count': word_count
     }
     return response_dict
+
 
 def handle_file_word_count_request(_request: Request):
     uploaded_files_list = request.files.getlist('word-count-files')
@@ -49,19 +58,14 @@ def handle_file_word_count_request(_request: Request):
 
     uploaded_file_paths = []
 
-    for _file in uploaded_files_list:
-        upload_path = Path(upload_dir.joinpath(_file.filename))
-        _file.save(upload_path)
-        uploaded_file_paths.append(upload_path)
+    save_safe_files(uploaded_files_list, upload_dir)
 
-    word_count = wf_api.file_word_count(uploaded_file_paths)
+    # for _file in uploaded_files_list:
+    #     upload(_file)
+    #     upload_path = Path(upload_dir.joinpath(_file.filename))
+    #     _file.save(upload_path)
+    #     uploaded_file_paths.append(upload_path)
 
-    return word_count
+    # word_count = wf_api.file_word_count(uploaded_file_paths)
 
-
-def allowed_file(file):
-    filename = Path(file.filename)
-    if filename.suffix in ALLOWED_EXTENSIONS:
-        return True
-    else:
-        return False
+    # return word_count

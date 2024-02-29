@@ -7,7 +7,7 @@ import regex as re
 from hulqcorpustools.resources.constants import TextFormat, Graphemes
 
 
-def transliterate_string_replace(
+def transliterate_string(
     source_string,
     source_format: TextFormat,
     target_format: TextFormat
@@ -107,8 +107,10 @@ def glottalized_resonant_reverter(linestring):
 
 if __name__ == "__main__":
     test_string = '’i ’u ch ’uy’ ’ul’'
-    tested = transliterate_string_replace(
+    tested = transliterate_string(
         test_string,
         TextFormat.ORTHOGRAPHY,
         TextFormat.APAUNICODE)
-    
+
+
+Graphemes()

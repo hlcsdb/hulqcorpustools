@@ -2,8 +2,8 @@
 from pathlib import Path
 import sys
 
-from hulqcorpustools.hulqtransliterator.transliterator import controller
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.transliterator.transliterator import controller
+from hulqcorpustools.resources.constants import TextFormat
 
 def _cli_validate_args(_transliterand_string_or_path: str,
                        _source_format: str,
@@ -11,25 +11,25 @@ def _cli_validate_args(_transliterand_string_or_path: str,
                        ):
     ...
     try:
-        FileFormat.from_string(_target_format)
+        TextFormat.from_string(_target_format)
     except TypeError:
         error = f"Uh oh! Your target format isn't right. You typed {_target_format}. Please check your spelling."
         return error
     try:
-        FileFormat.from_string(_source_format)
+        TextFormat.from_string(_source_format)
     except TypeError:
         error = f"Uh oh! Your source format isn't right. You put {_source_format}. Please check your spelling."
         return error
 
     if Path(_transliterand_string_or_path).exists:
-        _cli_transliterate_path(Path(_transliterand_string_or_path), FileFormat.from_string(_source_format), FileFormat.from_string(_target_format))
+        _cli_transliterate_path(Path(_transliterand_string_or_path), TextFormat.from_string(_source_format), TextFormat.from_string(_target_format))
 
     
     
 
     # except Error:    if Path(_transliterand_string_or_path()
 
-def _cli_transliterate_path(_path: Path, _source_format: FileFormat, _target_format: FileFormat):
+def _cli_transliterate_path(_path: Path, _source_format: TextFormat, _target_format: TextFormat):
     ...
     if _path.suffix == 'docx':
         controller.FileController({'docx': [Path(_path)]})
@@ -38,7 +38,7 @@ def _cli_transliterate_path(_path: Path, _source_format: FileFormat, _target_for
     # elif Path(_path):
     #     ...
 
-def _cli_transliterate_string(_string: str, _source_format: FileFormat, _target_format: FileFormat):
+def _cli_transliterate_string(_string: str, _source_format: TextFormat, _target_format: TextFormat):
     """transliterates string at command line
 
     Arguments:
@@ -46,7 +46,7 @@ def _cli_transliterate_string(_string: str, _source_format: FileFormat, _target_
         _source_format -- _description_
         _target_format -- _description_
     """
-    return controller.string_transliterator(_string, FileFormat.from_string(_source_format), FileFormat.from_string(_target_format))
+    return controller.string_transliterator(_string, TextFormat.from_string(_source_format), TextFormat.from_string(_target_format))
 
 if __name__ == "__main__":
     _transliterand_string_or_path = sys.argv[1]

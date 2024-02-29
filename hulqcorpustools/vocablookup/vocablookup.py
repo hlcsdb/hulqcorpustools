@@ -7,25 +7,27 @@ from docx import Document as init_doc
 from docx.document import Document
 
 from hulqcorpustools.resources import wordlists
-from hulqcorpustools.resources.constants import FileFormat
+from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
+from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors as kp
 
-_hulq_kp = HulqKeywordProcessors(eng=True)
 
 class _BaseVocabFinder():
     """Base class for vocab finding functionality. Includes pandas dataframe of
     wordlist (TODO: perhaps should be separated out later.)
     """
-    def __init__(self, text_format: FileFormat | str):
+    def __init__(self, text_format: TextFormat | str):
         if isinstance(text_format, str):
-            text_format = FileFormat.from_string(text_format)
+            text_format = TextFormat.from_string(text_format)
         self.text_format = text_format
         self.text_format_str = text_format.to_string().upper()
         self.text_format_wordlist = {i.strip() for i in wordlists.Wordlist.load_wordlist_text(self.text_format)}
 
         # Initiate Pandas dataframe of wordlist
-        self.parses_df = pd.read_csv(wordlists.wordlist_package / 'hukari-peter-parses.csv', index_col='ID', keep_default_na=False)
+        self.parses_df = pd.read_csv(
+            wordlists.wordlist_package / 'hukari-peter-parses.csv',
+            index_col='ID',
+            keep_default_na=False)
 
         # The words from the Pandas dataframe i.e. those that are defined.
         # Checking membership in set should be much faster than looking in df.
@@ -158,18 +160,13 @@ class VocabFinder(_BaseVocabFinder):
 
     def __init__(
             self,
-            text_format: FileFormat | str):
+            text_format: TextFormat | str):
         """Initialize based on text format.
-        
-
         Args:
             text_format (FileFormat | str): the text format to load dictionary
             information for. Receives FileFormat or string to deal with getting
             a string from html request.
         """
-        
-
-
         self.text_format = text_format
         super().__init__(self.text_format)
 
@@ -178,42 +175,22 @@ class VocabFinder(_BaseVocabFinder):
             _text: str,
             ) -> dict:
         """Look up all of the hulq words in a single text string.
-         
           This string could be very long, e.g., if the user copies and pastes
            a whole document into a text box form.
-        
         Args:
             _text (str): the text to find the vocab in
-
         Returns:
             dict: a dict containing the words and their dictionary data
         """
 
         self.find_hulq_words_in_multiline_string(_text)
 
-
-
-    # @property
-    # def vocab(self) -> dict:
-    #     """Return vocab list from df in class as dict.
-
-    #     Returns:
-    #         dict: _description_
-    #     """
-    #     _vocab = {
-    #         'defined_words': self.vocab_df.to_dict(orient='index'),
-    #         'known_words': self.count_known_words,
-    #         'unknown_words': self.found_unknown_words
-    #     }
-
-    #     return _vocab
-
 class VocabFinderFile(_BaseVocabFinder):
     """VocabFinder specifically for searching files for vocab words.
     """
     def __init__(
             self,
-            text_format: FileFormat | str,
+            text_format: TextFormat | str,
             file_list: list[Path]
             ):
         """Instantiate a VocabFinder based on a FileFormat and prepare to read
@@ -261,17 +238,3 @@ class VocabFinderFile(_BaseVocabFinder):
         for _file in self.file_list:
             self.find_vocab_in_file(_file)
 
-    # @property
-    # def vocab(self) -> dict:
-    #     """Return vocab list from df in class as dict.
-
-    #     Returns:
-    #         dict: _description_
-    #     """
-    #     _vocab = {
-    #         'defined_words': self.vocab_df.to_dict(orient='index'),
-    #         'known_words': self.count_known_words,
-    #         'unknown_words': self.found_unknown_words
-    #     }
-
-    #     return _vocab

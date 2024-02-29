@@ -9,7 +9,7 @@ import docx
 
 from ..utils.languagesusser import determine_language_from_text as dlt
 from ..utils.textlineannotator import TextlineAnnotation
-from ..resources.constants import FileFormat
+from ..resources.constants import TextFormat
 
 class DocxParagraphTextAnnotations(TextlineAnnotation):
     """Some of the plaintext annotations to put at the beginning of a line,

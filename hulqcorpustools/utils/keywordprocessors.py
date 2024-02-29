@@ -96,7 +96,7 @@ class HulqKeywordProcessors():
         })
         return language_counter
 
-    def determine_language_from_text(
+    def determine_language(
         self,
         _text: str) -> TextFormat | str:
         """determines which language the line is in
@@ -108,3 +108,6 @@ class HulqKeywordProcessors():
         determined_language = language_counter.most_common(1)[0][0]
 
         return determined_language
+
+
+kp = HulqKeywordProcessors()

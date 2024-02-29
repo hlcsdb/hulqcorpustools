@@ -4,13 +4,13 @@ replacing each line and writing it to file'''
 from flashtext import KeywordProcessor
 from pathlib import Path
 
-from ...resources.constants import FileFormat, TransliterandFile
-from ..transliterator import replaceengine as repl
+from ...resources.constants import TextFormat, TransliterandFile
+from . import replaceengine as repl
 
 def transliterate_txt_wordlist(
     txt_transliterand: Path,
-    source_format: FileFormat,
-    target_format: FileFormat,
+    source_format: TextFormat,
+    target_format: TextFormat,
     source_kp: KeywordProcessor,
     eng_kp: KeywordProcessor,
     **kwargs
@@ -33,7 +33,7 @@ def transliterate_txt_wordlist(
             found_eng_words = eng_kp.extract_keywords(line)
 
         if len(found_hulq_words) > len(found_eng_words) or len(found_eng_words) == 0:
-            transl_line = repl.transliterate_string_replace(line, 
+            transl_line = repl.transliterate_string(line, 
             source_format, 
             target_format)
 

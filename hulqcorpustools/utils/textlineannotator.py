@@ -2,7 +2,7 @@
 import re
 
 from .languagesusser import determine_language_from_text as dlt
-from ..resources.constants import FileFormat
+from ..resources.constants import TextFormat
 
 class TextlineAnnotation():
     """Some of the plaintext annotations to put at the beginning of a line,
@@ -55,10 +55,10 @@ class TextlineAnnotation():
         if found_bib is False:
             determined_language = dlt(textline)
             
-            if determined_language in [FileFormat.ORTHOGRAPHY, FileFormat.APA_UNICODE]:
+            if determined_language in [TextFormat.ORTHOGRAPHY, TextFormat.APA_UNICODE]:
                 new_text = f'LH\t{textline}'
 
-            elif determined_language == FileFormat.ENGLISH:
+            elif determined_language == TextFormat.ENGLISH:
                 new_text = f'LE\t{textline}'
 
             else:

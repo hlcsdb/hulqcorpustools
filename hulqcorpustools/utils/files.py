@@ -26,15 +26,15 @@ class FileHandler():
             for temporarily saving .doc files to convert, where that temporary
             directory should be.
         """
-
+        
         self.doc_files = list(filter(
-            lambda x: x.suffix == '.doc', files_list
+            lambda x: Path(x).suffix == '.doc', files_list
             ))
         self.docx_files = list(filter(
-            lambda x: x.suffix == '.docx' and x.stem[0] != "~", files_list
+            lambda x: Path(x).suffix == '.docx' and Path(x).stem[0] != "~", files_list
             ))  # type: list[Path]
         self.txt_files = list(filter(
-            lambda x: x.suffix == '.txt', files_list
+            lambda x: Path(x).suffix == '.txt', files_list
             ))
 
         self.out_dir = kwargs.get('outdir')

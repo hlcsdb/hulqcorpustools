@@ -23,52 +23,68 @@
     </header>
 
 
-    <div class="tools-container">
+<div class="tools-container">
+    <div class="tool">
+    <h2 name="string-transliterator">Text transliterator</h2>
+    <p>Transliterate all of the text that you paste here.</p>
+        <form method="post" class="user-prompt-container">
+            <div class="format-row">
+            <label for="source-format-selection">
+                Input text
+            </label>
 
-        <div class="tool">
-            <h2 name="string-transliterator">Text transliterator</h2>
-            <p>Transliterate all of the text that you paste here.</p>
-            <form method="post" class="user-prompt-container">
-                <div class="format-row">
-                    <label for="source-format-selection">
-                        Input text
-                    </label>
+            <select class="format-selection" name="source-format-selection" id="string-source-format-selection">
+                {%- for text_format, display_key in source_formats.items() -%}
+                <option value="{{ text_format }}" name="{{ text_format }}" 
+                {%- if transliterator_form.get('source_format') == text_format  -%}
+                selected
+            {%- endif -%}> 
+                    {{ display_key }}
+                </option>
+                {% endfor %}
 
-                    <select class="format-selection" name="source-format-selection" id="string-source-format-selection">
-                        {%- for format in source_formats -%}
-                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}" 
-                         {%- if
-                            transliterator_form.get('source_format') == format.get('value') -%} selected{% endif %}> 
-                            {{ format.get('name') }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                    <textarea autofocus id="input-text" name="input-text">
-            {%- if transliterator_form.get('input') -%}
-            {{ transliterator_form.get('input') }}
-            {%- else -%}’uy’ skweyul si’em’{% endif %}</textarea><br />
+            </select>
+            </div>
+            
+            <textarea autofocus id="input-text" name="input-text">
+                {%- if transliterator_form.get('input_text') -%}
+                    {{ transliterator_form.get('input_text') }}
+                {%- else -%}’uy’ skweyul si’em’
+                {%- endif -%}
+            </textarea>
 
-                    <div class="format-row">
-                    <label for="target-format-selection">
-                        Output text
-                    </label><br />
-                    <select class="format-selection" name="target-format-selection" id="target-format-selection">
-                        {%- for format in target_formats -%}
-                        <option value="{{ format.get('value') }}" name="{{ format.get('name') }}"
-                        {%- if
-                            transliterator_form.get('target_format') == format.get('value') -%} selected{% endif %}>
-                            {{ format.get('name') }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                    <textarea id="output-text" type="transliterated-text"
-                        readonly>{%- if transliterator_form.get('output') -%}{{ transliterator_form.get('output') }}{%- else -%}{% endif %}</textarea><br />
+            <div class="format-row">
+            <label for="target-format-selection">
+                Output text
+            </label>
+            <select class="format-selection" name="target-format-selection" id="target-format-selection">
+                {%- for text_format, display_key in target_formats.items() -%}
+                <option value="{{ text_format }}" name="{{ text_format }}"
+                    {%- if transliterator_form.get('target_format') == text_format -%} selected
+                    {% elif text_format == "apaunicode" %}
+                    selected
+                    {% endif %}>
+                        {{ display_key }}
+                </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <textarea id="output-text" type="transliterated-text"
+                        readonly>
+                        {%- if transliterator_form.get('output') -%}
+                        {{ transliterator_form.get('output') }}
+                        {%- else -%}
+                        {% endif %}
+            </textarea>
 
-                    <button
-                    type="submit"
-                    id="string-transliterate"
-                    name="string-transliterate"
-                    value="string-transliterate">Transliterate</button>
+            <button
+                type="submit"
+                id="string-transliterate"
+                name="string-transliterate"
+                value="string-transliterate">
+            Transliterate
+            </button>
 
 
                     
@@ -103,15 +119,15 @@
                     class="format-selection"
                     name="source-format-selection"
                     id="file-source-format-selection">
-                    {%- for format in source_formats -%}
+                    {%- for text_format, display_key in source_formats.items() -%}
                         <option
-                            value="{{ format.get('value') }}"
-                            name="{{ format.get('name') }}"
+                            value="{{ text_format }}"
+                            name="{{ text_format }}"
                             {%- if
-                                transliterator_form.get('source_format') == format.get('value') -%}
+                                transliterator_form.get('source_format') == text_format -%}
                             selected
                             {% endif %}>
-                        {{ format.get('name') }}</option>
+                        {{ display_key }}</option>
                     {% endfor %}
                     </select>
                 </div>
@@ -121,15 +137,16 @@
                     class="format-selection"
                     name="target-format-selection"
                     id="target-format-selection">
-                        {%- for format in target_formats -%}
+                        {%- for text_format, display_key in target_formats.items() -%}
                         <option
-                            value="{{ format.get('value') }}"
-                            name="{{ format.get('name') }}"
-                            {%- if
-                                transliterator_form.get("target_format") == format.get("value") -%}
+                            value="{{ text_format }}"
+                            name="{{ text_format }}"
+                    {%- if transliterator_form.get("target_format") == text_format -%}
                             selected
-                            {% endif%}>
-                        {{ format.get('name') }}</option>
+                    {%- elif text_format == "apaunicode" %}
+                            selected
+                    {% endif%}>
+                        {{ display_key }}</option>
                     {% endfor %}
                     </select>
                     </div>
