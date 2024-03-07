@@ -1,17 +1,19 @@
 
-from collections import Counter
-from pathlib import Path
+from flask import Request
 
-from hulqcorpustools.wordfrequency import WordCounter, WordCountFileHandler
-from werkzeug.datastructures import FileStorage
+from hulqcorpustools.wordfrequency import WordCounter, FileWordCounter
 
-def string_word_count(input_text: str) -> Counter:
-    _word_counter = WordCounter()
-    _word_count = _word_counter.count_all_hulq_words_in_string(input_text).most_common()
+def handle_request(request: Request) -> dict:
 
-    return _word_count
+    if request.form.get("input") == "string":
+        word_counter = WordCounter()
+        word_counter.count_words(request.form.get("input-string"))
 
-def file_word_count(_files: list[FileStorage]) -> Counter:
-    _file_counter = WordCountFileHandler(_files)
-    _word_count = _file_counter.counter.total.most_common()
-    return _word_count
+    elif request.form.get("input") == "files":
+        word_counter = FileWordCounter(request.files.getlist("files"))
+        word_counter.count_file_words()
+    
+    response = {
+        "word_count": word_counter.total
+    }
+    return response, 200

@@ -1,0 +1,24 @@
+{
+  "textFormats": {
+    "straight": {
+      "displayKey": "Straight",
+      "targetFormat": false,
+      "languageFormat": true
+    },
+    "apaunicode": {
+      "displayKey": "APA Unicode",
+      "targetFormat": true,
+      "languageFormat": true
+    },
+    "orthography": {
+      "displayKey": "Orthography",
+      "targetFormat": true,
+      "languageFormat": true
+    },
+    "english": {
+      "displayKey": "English",
+      "targetFormat": false,
+      "languageFormat": false
+    }
+  }
+}

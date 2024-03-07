@@ -1,5 +1,8 @@
 
+from io import BytesIO
+from functools import partial
 from pathlib import Path
+import mimetypes
 import shutil
 import subprocess
 
@@ -12,38 +15,45 @@ class FileHandler():
     """
     def __init__(
             self,
-            files_list=(list[Path | str | FileStorage]),
+            files_list=list[Path | str | FileStorage],
             **kwargs):
-        """
 
-        Args:
-            files_list (tuple, optional): _description_. Defaults to (list[Path  |  str]).
-
-        Kwargs:
-            outdir (Path, optional): For file-saving operations (e.g. transliteration),
-            where to save those files.
-            tmpdir (Path, optional): When a temporary directory is needed, e.g.
-            for temporarily saving .doc files to convert, where that temporary
-            directory should be.
-        """
-        
-        self.doc_files = list(filter(
-            lambda x: Path(x).suffix == '.doc', files_list
-            ))
+        self.files_list = files_list
         self.docx_files = list(filter(
-            lambda x: Path(x).suffix == '.docx' and Path(x).stem[0] != "~", files_list
-            ))  # type: list[Path]
+            partial(self.filter_suffix, ".docx"), self.files))  # type: list[FileStorage]
         self.txt_files = list(filter(
-            lambda x: Path(x).suffix == '.txt', files_list
+            partial(self.filter_suffix, ".txt"), self.files))  # type: list[FileStorage]
+        self.doc_files = list(filter(
+            partial(self.filter_suffix, ".doc"), self.files))  # type: list[FileStorage]
+
+        if self.doc_files:
+            map(self.convert_doc, filter(
+                partial(self.filter_suffix, ".doc"), self.files
             ))
 
         self.out_dir = kwargs.get('outdir')
         self.tmp_dir = kwargs.get('tmpdir')
 
-        if self.doc_files:
-            self.convert_doc_files()
+    @property
+    def files(self):
+        _files = []
+        for _file in self.files_list:
+            if isinstance(_file, Path | str):
+                _file = FileStorage(
+                    BytesIO(open(_file, "rb")),
+                    Path(_file))
 
-    def convert_doc_files(self):
+            _files.append(_file)
+
+        return _files
+
+
+    def filter_suffix(self, key_suffix: str, file: FileStorage):
+        _suffix = Path(file.filename).suffix
+        if _suffix == key_suffix:
+            return True
+
+    def convert_doc(self, doc_file: FileStorage):
         if not shutil.which('soffice'):
             print('libreoffice not installed! Skipping .doc files...')
             return
@@ -58,18 +68,15 @@ class FileHandler():
 
         # construct command
         soffice_convert_cmd.extend([
-            '--outdir', _doc_convert_tmpdir
+            '--outdir', _doc_convert_tmpdir, str(doc_file.key)
             ])
-        soffice_convert_cmd.extend((
-            str(_doc_file) for _doc_file in self.doc_files
-            ))
         subprocess.run(soffice_convert_cmd)
 
-        _new_docx_files = [
-            _doc_convert_tmpdir.joinpath(
-                _doc_file.with_suffix('.docx')) for _doc_file in self.doc_files
-            ]
-
-        # add converted .doc to list of .docx
-        self.docx_files.extend(_new_docx_files)
-        return
+        converted_docx_path = _doc_convert_tmpdir.joinpath(
+            Path(doc_file.key).with_suffix(".docx"))
+        converted = FileStorage(
+            BytesIO(open(converted_docx_path, "rb")),
+            converted_docx_path,
+            mimetypes.types_map[".docx"])
+        
+        self.docx_files.extend(converted)

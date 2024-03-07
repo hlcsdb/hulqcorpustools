@@ -3,11 +3,11 @@ from collections import Counter
 
 from flashtext import KeywordProcessor
 
-from hulqcorpustools.resources.wordlists import wordlist_paths
+from hulqcorpustools.resources.wordlists import Wordlist
 from hulqcorpustools.resources.constants import TextFormat, Graphemes, Grapheme
 
 
-class HulqKeywordProcessors():
+class TextFormatKeywordProcessors():
 
     def _init_kp(
             text_format: TextFormat
@@ -20,49 +20,25 @@ class HulqKeywordProcessors():
         Returns:
             KeywordProcessor: The KeywordProcessor for that wordlist.
         """
-        text_format_wordlist_name = f"hulq-wordlist-{text_format}"
-        wordlist_path = wordlist_paths.get(text_format_wordlist_name)
-        text_format_characters = Graphemes().text_format_graphemes(
-            text_format, Grapheme("characters")
-        )
+        wordlist = Wordlist(text_format)
+        _kp = KeywordProcessor()
 
-        hulq_keywordprocessor = KeywordProcessor()
-        hulq_keywordprocessor.set_non_word_boundaries(
-            text_format_characters
+        if text_format is not TextFormat.ENGLISH:
+            text_format_characters = Graphemes().text_format_graphemes(
+                text_format,
+                Grapheme("characters")
             )
+            _kp.set_non_word_boundaries(
+                text_format_characters
+                )
 
-        hulq_keywordprocessor.add_keyword_from_file(wordlist_path)
-        return hulq_keywordprocessor
-
-    def _init_eng_kp() -> KeywordProcessor:
-        """Initialize English keyword processor.
-
-        Returns:
-            KeywordProcessor: The KeywordProcessor for the English wordlist.
-        """
-        eng_wordlist_filepath = wordlist_paths.get(
-            "words_alpha_vowels_longer_words"
-            )
-
-        eng_keywordprocessor = KeywordProcessor()
-        eng_keywordprocessor.add_keyword_from_file(eng_wordlist_filepath)
-
-        return eng_keywordprocessor
-
+        _kp.add_keyword_from_file(wordlist.path)
+        return _kp
+    
     apa_kp = _init_kp(TextFormat.APAUNICODE)
     orthog_kp = _init_kp(TextFormat.ORTHOGRAPHY)
     straight_kp = _init_kp(TextFormat.STRAIGHT)
-    eng_kp = _init_eng_kp()
-
-    def get_kp(self, file_format: TextFormat):
-        """get a KeywordProcessor based on file_format"""
-
-        if file_format == TextFormat.APAUNICODE:
-            return self.apa_kp
-        if file_format == TextFormat.ORTHOGRAPHY:
-            return self.orthog_kp
-        if file_format == TextFormat.STRAIGHT:
-            return self.straight_kp
+    eng_kp = _init_kp(TextFormat.ENGLISH)
 
     def get_all_lang_words(
             self,
@@ -96,9 +72,9 @@ class HulqKeywordProcessors():
         })
         return language_counter
 
-    def determine_language(
+    def determine_text_format(
         self,
-        _text: str) -> TextFormat | str:
+        _text: str) -> TextFormat:
         """determines which language the line is in
         """
 
@@ -107,7 +83,7 @@ class HulqKeywordProcessors():
 
         determined_language = language_counter.most_common(1)[0][0]
 
-        return determined_language
+        return TextFormat(determined_language)
 
 
-kp = HulqKeywordProcessors()
+kp = TextFormatKeywordProcessors()

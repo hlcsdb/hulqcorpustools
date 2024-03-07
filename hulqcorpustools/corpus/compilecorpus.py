@@ -10,10 +10,10 @@ from docx import Document as construct_doc
 from docx.document import Document
 from docx.text import paragraph, run
 
-from hulqcorpustools.utils.keywordprocessors import HulqKeywordProcessors
+from hulqcorpustools.utils.keywordprocessors import TextFormatKeywordProcessors
 from hulqcorpustools.resources.constants import TextFormat
 
-kp = HulqKeywordProcessors(eng=True)
+kp = TextFormatKeywordProcessors(eng=True)
 
 
 class _CorpusMetadata():
@@ -168,7 +168,7 @@ class CorpusAuthorCollection():
             ...
 
     def _check_language(self, _par: paragraph.Paragraph):
-        _current_line_lang = kp.determine_language(_par.text)
+        _current_line_lang = kp.determine_text_format(_par.text)
 
         if _current_line_lang == TextFormat.APAUNICODE or _current_line_lang == TextFormat.ORTHOGRAPHY:
             return 'hulq' 

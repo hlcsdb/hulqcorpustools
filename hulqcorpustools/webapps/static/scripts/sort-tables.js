@@ -25,15 +25,16 @@ function sortTable(table) {
   const tBody = table.tBodies[0];
   const rows= Array.from(tBody.rows);
   const headerCells = table.tHead.rows[0].cells;
-
   for (const th of headerCells) {
     const sortArrow = th.querySelector('.sort-arrow')
     let otherSortArrows = table.querySelectorAll(".sort-arrow")
-    otherSortArrows = Array.from(otherSortArrows).filter(arrow => arrow !== sortArrow)
+    otherSortArrows = Array.from(otherSortArrows).filter(arrow => arrow !== sortArrow);
+    let otherHeaders = Array.from(headerCells).filter(header => header !== th);
 
     const cellIndex = th.cellIndex;
 
     th.addEventListener("click", () => {
+
       if (th.classList.contains("descending"))
       {
         rows.sort((tr1, tr2) => {
@@ -60,13 +61,23 @@ function sortTable(table) {
         sortArrow.classList.add("invisible")
       })
       sortArrow.classList.remove("invisible")
-      
+
+      otherHeaders.forEach(header => {
+        header.classList.remove("ascending");
+        header.classList.remove("descending");
+      });
       tBody.append(...rows);
     });
   }
 }
 
-const recognizedResults = document.querySelector("#known-word-results")
-sortTable(recognizedResults)
+// const definedWordsResults = document.querySelector("#defined-results");
+// const definedWordsSort = sortTable(definedWordsResults);
+
+const recognizedWordsResults = document.querySelector("#recognized-results");
+const recognizedWordsSort = sortTable(recognizedWordsResults);
+
+const unrecognizedWordsResults = document.querySelector("#unrecognized-results");
+const unrecognizedWordsSort = sortTable(unrecognizedWordsResults);
 
 const infoBoxes = document.querySelectorAll('.info-button');

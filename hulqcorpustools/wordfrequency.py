@@ -1,17 +1,16 @@
 
 from collections import Counter
+from collections.abc import Iterable
 import json
 from pathlib import Path
-from typing import Union
 import re
 
-from docx import Document as construct_document
+from docx import Document as init_docx
 from docx.document import Document
 
 from hulqcorpustools.utils.files import FileHandler
 from hulqcorpustools.utils.keywordprocessors import kp
 from hulqcorpustools.resources.constants import TextFormat
-from hulqcorpustools.resources import wordlists
 
 from werkzeug.datastructures import FileStorage
 
@@ -23,64 +22,46 @@ class WordCounter():
     def __init__(self):
         self.total = Counter()
 
-    def count_all_words_in_string(self, _str: str) -> Counter:
-        reg_str = re.sub(reg_str_pattern, "", _str)
-        count_words = Counter((i for i in reg_str.split()))
+    def iter_count_words(self, line_list: Iterable[str]):
+        for line in line_list:
+            if kp.determine_text_format(line) != TextFormat.ENGLISH:
+                words = (reg_str_pattern.sub("", word) for word in line.split())
+                self.total.update(words)
 
-        return count_words
-    
-    def count_all_hulq_words_in_string(self, _str: str) -> Counter:
-        count_words_apa = Counter(kp.apa_kp.extract_keywords(_str))
-        count_words_orthog = Counter(kp.orthog_kp.extract_keywords(_str))
-
-        return max(count_words_apa, count_words_orthog, key=len)
-    
-    def count_docx_words(self, _docx: Union[Path | FileStorage]):
-        docx = construct_document(_docx) # type: Document
-        for par in docx.paragraphs:
-            _reg_text = re.sub(reg_str_pattern, "", par.text)
-            _lang = kp.determine_language(_reg_text)
-            if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
-                self.total.update(_reg_text.split())
-        for table in docx.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for paragraph in cell.paragraphs:
-                        for run in paragraph.runs:
-                            _reg_text = reg_str_pattern.sub("", run.text)
-                            _lang = kp.determine_language(_reg_text)
-                            if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
-                                self.total.update(_reg_text.split())
-        return self.total
-
-    def count_txt_words(self, _txt: Path):
-        running_counter = Counter()
-        with open(_txt) as _txt_file:
-            for _line in _txt:
-                _reg_text = reg_str_pattern.sub("", _line)
-                _lang = kp.determine_language(_reg_text)
-                if _lang == TextFormat.APAUNICODE or _lang == TextFormat.ORTHOGRAPHY:
-                    running_counter.update(_reg_text.split())
-
-        self.total.update(running_counter)
-
-        return running_counter
-    
-class WordCountFileHandler(FileHandler):
-
-    def __init__(
-            self,
-            files_list=(list[FileStorage])
-        ):
-        
-        super().__init__(files_list)
-        self.counter = WordCounter()
-        self.count_all_words_in_files()
+    def count_words(self, _str: str):
+        str_lines = _str.split("\n")
+        self.iter_count_words(str_lines)
 
 
-    def count_all_words_in_files(self):
-        for _file in self.docx_files:
-            self.counter.count_docx_words(_file)
+class FileWordCounter(WordCounter):
+
+    def __init__(self, files_list: list[FileStorage]):
+        super().__init__()
+        self.file_list = FileHandler(files_list)
+
+    def count_txt_words(self):
+        for _file in self.file_list.txt_files:
+            with open(_file) as _txt:
+                self.iter_count_words(_txt)
+
+    def count_docx_words(self):
+        par_text_lines = []
+        for _file in self.file_list.docx_files:
+            _docx = init_docx(_file)  # type: Document
+            for _par in _docx.paragraphs:
+                par_text_lines.append(_par.text)
+
+            for table in _docx.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for _par in cell.paragraphs:
+                            par_text_lines.append(_par.text)
+
+        self.iter_count_words(par_text_lines)
+
+    def count_file_words(self):
+        self.count_txt_words()
+        self.count_docx_words()
 
 
 

@@ -1,14 +1,41 @@
+
 from pathlib import Path
+
+from flask import current_app, Request
 
 from hulqcorpustools.transliterator import controller
 from hulqcorpustools.resources.constants import TextFormat
+from hulqcorpustools.webapps.plugins import common
 
+from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 from werkzeug.utils import secure_filename
 
+def request_handler(request: Request) -> tuple[dict, int]:
+    source_format = TextFormat(request.form.get("source-format"))
+    target_format = TextFormat(request.form.get("target-format"))
+
+    if request.form.get("transliterate-input") == "string":
+        response = transliterate_string(
+            request.form.get("input-string"),
+            source_format,
+            target_format
+        )
+
+    elif request.form.get("transliterate-input") == "files":
+        response = transliterate_file_list(
+            request.files.getlist("files"),
+            source_format,
+            target_format,
+            font_search=request.form.get("font-search")
+        )
+    else:
+        response = ({"error": "request not understood"}, 400) 
+    return response
+
 def transliterate_string(
-        hulq_string: str,
-        source_format=(TextFormat | str),
-        target_format=(TextFormat | str)
+        string: str,
+        source_format: TextFormat,
+        target_format: TextFormat
         ) -> str:
     """Transliterate a single string to return to the webpage.
 
@@ -22,14 +49,21 @@ def transliterate_string(
     Returns:
         A single transliterated string.
     """
-    print(hulq_string, source_format, target_format)
-    return controller.string_transliterator(
-        hulq_string,
+    transliterated = controller.string_transliterator(
+        string,
         source_format,
-        target_format)
+        target_format
+        )
+    return ({
+        "input_string": string,
+        "source_format": source_format,
+        "target_format": target_format,
+        "output_string": transliterated},
+        200)
+
 
 def transliterate_file_list(
-        file_list: list[Path | str],
+        file_list: list[FileStorage],
         source_format=(TextFormat | str),
         target_format=(TextFormat | str),
         **kwargs) -> dict[str: list[Path]]:
@@ -48,40 +82,40 @@ def transliterate_file_list(
         corresponding each to a list of paths to the newly transliterated files
 
     """
- 
-    for _file in uploaded_files_list:
-        _file.filename = secure_filename(_file.filename)
-
     ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
+    UPLOADS = current_app.config['UPLOADS']
 
-    uploaded_files_list = [
-        _file for _file in uploaded_files_list
-        if Path(_file.filename).suffix in ALLOWED_EXTENSIONS
-        ]
+    try:
+        common.check_saveable()
+    except FileNotFoundError:
+        return ({
+            "error": "Uploaded files are not currently accepted."},
+            501
+        )
 
-    UPLOADS_FOLDER = current_app.config['UPLOADS_FOLDER']
-    upload_dir = Path(UPLOADS_FOLDER)
+    file_list = [_file for _file in file_list if Path(_file.filename).suffix in ALLOWED_EXTENSIONS]
 
-    uploaded_file_paths = []
-
-    for i in uploaded_files_list:
-        upload_path = Path(upload_dir.joinpath(i.filename))
-        i.save(upload_path)
-        uploaded_file_paths.append(upload_path)
-    for file in file_list:
-        print(file)
+    for _file in file_list:
+        _file.filename = secure_filename(_file.filename)
 
     file_controller = controller.TransliterandFileHandler(
         file_list,
         source_format=source_format,
         target_format=target_format,
-        font=kwargs.get('font')
+        font=kwargs.get('font-search')
         )
     
     transliterated_files = file_controller.transliterated
-    ...
-    transliterated_files_dict = {
-        i.name: str(i) for i in transliterated_files
-    }
+
+    if UPLOADS == "s3":
+        served_files = common.s3_save(transliterated_files)
+    else:
+        served_files = common.hosted_save(transliterated_files)
     
-    return transliterated_files_dict
+    response = {"input_files": file_list,
+            "source_format": str(source_format),
+            "target_format": str(target_format),
+            "output_files": served_files,
+            "output_location": UPLOADS}
+
+    return response, 200

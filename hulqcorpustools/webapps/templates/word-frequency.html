@@ -27,34 +27,46 @@
       <h2>Word frequency in text</h2>
       <p>Copy some text and paste it here.</p>
     <form method="post" class="user-prompt-container">
-      <textarea autofocus id="input-text" name="input-text">{%- if word_frequency_text -%}{{ word_frequency_text }}{%- else -%}nuts’a’ nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws kws kws tuw’ stsekwul kws ’unthus t’at’athut.{% endif %}</textarea>
+      <textarea autofocus id="input-string" name="input-string">{%- if word_frequency_text -%}{{ word_frequency_text }}{%- else -%}nuts’a’ nuts’a’ skweyul tsu st’e kw’u xwqwul’qwul’iwun niin kws kws kws tuw’ stsekwul kws ’unthus t’at’athut.{% endif %}</textarea>
       <button
         type="submit"
-        id="word-frequency-text"
-        name="word-frequency-text"
-        value="word-frequency-text">submit</button>
+        id="string"
+        name="input"
+        value="string">submit</button>
       </form>
   </div>
 
   <div class="tool">
     <h2>Word frequency in file</h2>
     <p>Upload a file here.</p>
-  <form enctype="multipart/form-data" method="post" class="user-prompt-container">
-    <input type="file" name="word-count-files" accept=".docx,.txt,.doc" multiple>
-    <button type="submit"
-      id="word-frequency-file"
-      name="word-frequency-file"
-      value="word-frequency-file">submit file</button>
+  <form
+    enctype="multipart/form-data"
+    method="post"
+    class="user-prompt-container">
+    <input
+      type="file"
+      id="file-count"
+      name="files">
+      <button
+        type="submit"
+        id="upload-count"
+        name="input"
+        value="files">
+        Submit file
+      </button>
   </div>
 </form>
   </div>
-          {%- if word_count %}
+    {%- if word_count %}
   <div class="tool">
     <h2>Frequency results</h2>
     <div class="user-prompt-container">
       <table>
-      <th>Word</th><th>Count</th>
-        {%- for word, count in word_count -%}
+        <thead>
+          <tr><th>Word</th></tr>
+          <tr><th>Count</th></tr>
+        </thead>
+        {%- for word, count in word_count.items() -%}
         <tr><td>{{ word }}</td>
         <td>{{ count }}</td></tr>
         {%- endfor -%}
@@ -64,5 +76,6 @@
             {%- endif -%}
 </menu>
 <footer>v{{ current_version }}</footer>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/vocab-lookup.js') }}"></script>
 </body>
 </html>

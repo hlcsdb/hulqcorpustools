@@ -7,7 +7,8 @@ will be the place to pull out lines from .docx
 """
 
 from functools import partial
-import os
+from io import BytesIO
+import mimetypes
 from pathlib import Path
 
 from werkzeug.datastructures import FileStorage
@@ -20,38 +21,44 @@ from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.utils.files import FileHandler
 from hulqcorpustools.utils.keywordprocessors import kp
 
+
 class TransliterandFile():
     """_summary_
     """
     def __init__(
             self, 
-            file: Path | str | FileStorage, 
+            _file: FileStorage, 
             source_format: TextFormat, 
             target_format: TextFormat,
+            search_method=None,
             **kwargs):
 
-        if isinstance(file, (Path, str)):
-            self.source_path = Path(file)
-        elif isinstance(file, FileStorage):
-            self.source_path = Path(file.filename)
+        self.name = Path(_file.filename)
 
-        self.file = file
-        self.name = self.source_path.name
+        self._file = _file
         self.source_format = source_format
         self.target_format = target_format
+        self.search_method = search_method
         if (outdir := kwargs.get("outdir")):
             self.out_path = Path(outdir).joinpath(self.out_filename)
+        self.file_type = Path(self.name).suffix
+
+    def transliterated(self):
+        if self.file_type == ".docx":
+            return docx_tr.transliterate(self)
+        elif self.file_type == ".txt":
+            return txt_tr.transliterate(self)
 
     @property
     def out_filename(self):
-        return Path(
-            f"{self.source_path.stem} - \
-                {self.source_format} to {self.target_format}\
-                {self.source_path.suffix}"
-            )
+        return Path((
+            f"{self.name.stem} - "
+            f"{self.source_format} to {self.target_format}"
+            f"{self.name.suffix}"
+            ))
     
     def __fspath__(self):
-        return str(self.file)
+        return str(self.name)
 
 
 class TransliterandFileHandler(FileHandler):
@@ -60,71 +67,32 @@ class TransliterandFileHandler(FileHandler):
     """
     def __init__(
             self,
-            transliterand_files: list[TransliterandFile],
+            files_list: list[Path | str | FileStorage],
             **kwargs):
 
-        self.transliterand_files = transliterand_files
+        super().__init__(files_list)
+
         self.search_method = kwargs.get('search_method')
+        self.transliterand_files = [
+            TransliterandFile(
+                _file,
+                source_format=kwargs.get("source_format"),
+                target_format=kwargs.get("target_format"),
+                search_method=self.search_method
+                )
+            for _file in self.files
+            ]
+
         if (source_format := kwargs.get("source_format")):
             for file in self.transliterand_files:
-                file.source_format = source_formatA
+                file.source_format = source_format
         if (target_format := kwargs.get("target_format")):
             for file in self.transliterand_files:
                 file.target_format = target_format
-        super().__init__(self.transliterand_files)
 
-        for i in args:
-            print(i)
-
-    @property
-    def transliterated_docx(self):
-        return [
-            DocxTransliterator().transliterate(transliterand)
-            for transliterand in self.docx_files
+        self.transliterated = [
+            _file.transliterated() for _file in self.transliterand_files
         ]
-    
-    @property
-    def transliterated_txt(self):
-        return [
-            TxtTransliterator().transliterate(transliterand)
-            for transliterand in self.txt_files
-        ]
-
-    @property
-    def transliterated(self):
-        return self.transliterate_all()
-
-    def transliterate_all(self, **kwargs):
-
-        all_transliterated_files = []
-        all_transliterated_files.extend(
-            self.transliterated_docx
-            )
-        all_transliterated_files.extend(
-            self.transliterated_txt
-            )
-
-        return all_transliterated_files
-
-    def transliterate_txt_files(
-        self
-        ):
-        """transliterate a list of txt files
-        """
-
-        transliterated_txt_files = [
-            # txt.transliterate_txt_wordlist(
-            #     _txt_file,
-            #     self.source_format,
-            #     self.target_format,
-            #     _kp.get_kp(self.source_format),
-            #     _kp.eng_kp,
-            #     outdir=self.out_dir
-            # )
-
-            # for _txt_file in self.txt_files
-        ]
-        return transliterated_txt_files
 
 
 class DocxTransliterator():
@@ -146,7 +114,7 @@ class DocxTransliterator():
         par_text_parts = par.text.split('\t')
 
         for par_text_part in par_text_parts:
-            if kp.determine_language(par_text_part) != 'english':
+            if kp.determine_text_format(par_text_part) != 'english':
                 par_text_part = repl.transliterate_string(
                     par_text_part,
                     source_format,
@@ -181,7 +149,7 @@ class DocxTransliterator():
         self,
         transliterand: TransliterandFile,
         **kwargs
-        ) -> Document:
+        ) -> BytesIO:
         """delegate transliteration based on wordlist or font search
 
         Args:
@@ -189,8 +157,7 @@ class DocxTransliterator():
             source_format (TextFormat): _description_
             target_format (TextFormat): _description_
         """
-        
-        document = load_docx(transliterand)
+        _docx = load_docx(transliterand._file)  # type: Document
         if kwargs.get("search_format") == "font":
             _tr_fn = partial(
                 self._transliterate_paragraph_font,
@@ -203,16 +170,22 @@ class DocxTransliterator():
                 target_format=transliterand.target_format
             )
 
-        for par in document.paragraphs:
+        for par in _docx.paragraphs:
             _tr_fn(par)
 
-        for table in document.tables:
+        for table in _docx.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    for paragraph in cell.paragraphs:
-                        _tr_fn(paragraph)
+                    for par in cell.paragraphs:
+                        _tr_fn(par)
+        fileobj = BytesIO()
+        _docx.save(fileobj)
+        fileobj.seek(0)
 
-        return document
+        return FileStorage(
+            fileobj,
+            transliterand.out_filename,
+            content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     # def update_new_wordlist(
     #     source_format: TextFormat,
@@ -249,6 +222,8 @@ class TxtTransliterator():
         else:
             out_dir = txt_transliterand.parent
 
+        def transliterate():
+            ...
         # out_filename = f"{txt_transliterand.stem}-{source_format}-to-{target_format}-transliterated.txt"
         # out_path = out_dir.joinpath(out_filename)
         # with (
@@ -274,44 +249,14 @@ def string_transliterator(
     ):
     """just transliterates a single string.
     It's a thing of beauty"""
-
     transliterated_string = repl.transliterate_string(
         source_string,
         source_format,
         target_format)
     return transliterated_string
 
+docx_tr = DocxTransliterator()
+txt_tr = TxtTransliterator()
 
 if __name__ == "__main__":
     ...
-    # cool = TransliterandFile(
-    #     Path("tests/resources/docx/collection_numbered.docx"),
-    #     TextFormat.ORTHOGRAPHY,
-    #     TextFormat.APAUNICODE
-    # )
-    # great = TransliterandFile(
-    #     Path("tests/resources/docx/collection_with_codes.docx"),
-    #     TextFormat.ORTHOGRAPHY,
-    #     TextFormat.APAUNICODE
-    # )
-    # awesome_file = FileStorage(
-    #     open("tests/resources/docx/samuel_tom.docx")
-    # ).filename
-    # awesome = TransliterandFile(
-    #     awesome_file,
-    #     TextFormat.ORTHOGRAPHY,
-    #     TextFormat.APAUNICODE)
-    # my_files = TransliterandFileHandler([cool, great, awesome])
-
-    # for i in my_files.transliterated:
-    #     for j in i.paragraphs:
-    #         print(j.text)
-    # # for i in load_docx(cool.file).paragraphs:
-    # #     print(i.text)
-
-    # # tr_cool = DocxTransliterator().transliterate(cool)
-    # # for i in tr_cool.paragraphs:
-    # #     print(i.text)
-
-    # ...
-    

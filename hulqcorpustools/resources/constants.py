@@ -24,12 +24,8 @@ class TextFormat(StrEnum):
     ENGLISH = auto()
 
     @property
-    def is_hulq_format(self):
-        """Returns whether or not the Text Format is in Hul’q’umi’num’.
-
-        Returns:
-            bool: True or False given whether or not the text format is a way of
-            rendering Hul’q’umi’num’.
+    def is_lang_format(self):
+        """Returns whether or not the Text Format is in a language other than English.
         """
         return self in {self.STRAIGHT, self.APAUNICODE, self.ORTHOGRAPHY}
 
