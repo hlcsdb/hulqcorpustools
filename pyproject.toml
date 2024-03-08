@@ -18,7 +18,9 @@ dependencies = [
     "gunicorn",
     "python-docx",
     "regex",
-    "pandas"
+    "pandas",
+    "python-dotenv",
+    "boto3"
     ]
 
 [project.optional-dependencies]

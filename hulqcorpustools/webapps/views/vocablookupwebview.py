@@ -13,6 +13,7 @@ vocablookup_bp = Blueprint(
     static_folder=''
     )
 
+
 @vocablookup_bp.route("/", methods=['GET', 'POST'])
 def vocab_lookup_page():
 

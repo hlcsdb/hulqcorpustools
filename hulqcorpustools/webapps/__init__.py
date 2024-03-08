@@ -1,9 +1,8 @@
 from importlib import metadata
-from logging.config import dictConfig
+import logging
 from dotenv import dotenv_values
 
-from flask import Flask, render_template, g
-from hulqcorpustools.utils.keywordprocessors import kp
+from flask import Flask, render_template
 from hulqcorpustools.vocablookup.vocablookup import Vocab
 from .views import (
     transliteratorwebview,
@@ -13,23 +12,10 @@ from .views import (
 
 def create_app(test_config=None):
 
-    dictConfig({
-        'version': 1,
-        'formatters': {'default': {
-            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-        }},
-        'handlers': {'wsgi': {
-            'class': 'logging.StreamHandler',
-            'stream': 'ext://flask.logging.wsgi_errors_stream',
-            'formatter': 'default'
-        }},
-        'root': {
-            'level': 'INFO',
-            'handlers': ['wsgi']
-        }
-    })
-
     app = Flask(__name__)#, instance_relative_config=True)
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.info("gunicorn started")
     
     for env_key, env_value in dotenv_values().items():
         app.config[env_key] = env_value
