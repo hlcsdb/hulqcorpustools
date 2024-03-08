@@ -180,13 +180,9 @@
                 {%- if response.get("output_files") -%}
                         <b>transliterated:</b>
                     {%- for _file in response.get("output_files"): -%}
-                        {%- if response.get("output_location") == "s3" -%}
-                            <a href="{{ _file[1] }}">
-                        {%- else -%}
-                        <a href="{{ url_for(".download_file", file=file[1]) }}">
-                        {% endif %}
-                    {{ _file[0] }}
-                    </a>
+                        <a href="{{ _file[1] }}">
+                        {{ _file[0] }}
+                        </a>
                     {% endfor %}
                     {% endif %}
             </form>

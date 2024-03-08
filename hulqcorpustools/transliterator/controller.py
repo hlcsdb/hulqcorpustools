@@ -242,7 +242,7 @@ class TxtTransliterator():
 
         #         opened_target_file.write(line)
 
-def string_transliterator(
+def string_transliterate(
     source_string: str,
     source_format: TextFormat,
     target_format: TextFormat

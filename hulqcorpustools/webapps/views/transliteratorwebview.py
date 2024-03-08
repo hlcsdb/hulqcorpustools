@@ -38,7 +38,6 @@ def transliterator_page():
     anchor = ""
     source_formats = source_display_keys
     target_formats = target_display_keys
-    
     if request.method == 'POST':
         with current_app.app_context():
             response = tr_api.request_handler(request)
