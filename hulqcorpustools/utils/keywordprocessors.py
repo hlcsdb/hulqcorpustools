@@ -11,7 +11,7 @@ class TextFormatKeywordProcessors():
 
     def _init_kp(
             text_format: TextFormat
-            ) -> KeywordProcessor:
+            ):
         """Initialize a KeywordProcessor from a wordlist associated with text format.
 
         Args:
@@ -21,7 +21,7 @@ class TextFormatKeywordProcessors():
             KeywordProcessor: The KeywordProcessor for that wordlist.
         """
         wordlist = Wordlist(text_format)
-        _kp = KeywordProcessor()
+        _kp = KeywordProcessor(case_sensitive=True)
 
         if text_format is not TextFormat.ENGLISH:
             text_format_characters = Graphemes().text_format_graphemes(
@@ -35,20 +35,21 @@ class TextFormatKeywordProcessors():
         _kp.add_keyword_from_file(wordlist.path)
         return _kp
     
-    apa_kp = _init_kp(TextFormat.APAUNICODE)
-    orthog_kp = _init_kp(TextFormat.ORTHOGRAPHY)
-    straight_kp = _init_kp(TextFormat.STRAIGHT)
-    eng_kp = _init_kp(TextFormat.ENGLISH)
+    apa_kp = Wordlist(TextFormat.APAUNICODE).words
+    orthog_kp = Wordlist(TextFormat.ORTHOGRAPHY).words # _init_kp(TextFormat.ORTHOGRAPHY)
+    straight_kp = Wordlist(TextFormat.STRAIGHT).words
+    eng_kp = Wordlist(TextFormat.ENGLISH).words
+    # eng_kp = _init_kp(TextFormat.ENGLISH)
 
     def get_all_lang_words(
             self,
             _text: str
             ) -> dict[TextFormat: list[str]]:
 
-        found_straight_words = self.straight_kp.extract_keywords(_text)
-        found_apa_words = self.apa_kp.extract_keywords(_text)
-        found_orthog_words = self.orthog_kp.extract_keywords(_text)
-        found_english_words = self.eng_kp.extract_keywords(_text)
+        found_straight_words = Counter(map(lambda x: x in self.straight_kp, _text.split()))
+        found_apa_words = Counter(map(lambda x: x in self.apa_kp, _text.split()))
+        found_orthog_words = Counter(map(lambda x: x in self.orthog_kp, _text.split())) # self.orthog_kp.extract_keywords(_text)
+        found_english_words = Counter(map(lambda x: x in self.eng_kp, _text.split()))
 
         found_words = {
             TextFormat.STRAIGHT: found_straight_words,
