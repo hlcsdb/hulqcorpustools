@@ -7,14 +7,13 @@ from pathlib import Path
 import boto3
 import dotenv
 from flask import Flask, render_template
-from werkzeug.middleware.profiler import ProfilerMiddleware
 
 from hulqcorpustools.transliterator.controller import Transliterator
 from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.resources.wordlists import Wordlists
 from hulqcorpustools.resources.graphemes import Graphemes
 from hulqcorpustools.utils.textcounter import TextCounter
-# from hulqcorpustools.vocablookup.vocablookup import Vocab
+from hulqcorpustools.vocablookup.vocablookup import Vocab
 
 from hulqcorpustools.webapps.plugins.common import Upload
 from hulqcorpustools.webapps.views import (

@@ -1,12 +1,9 @@
 
 from collections import Counter
-import os
-from pathlib import Path
 
 from docx import Document as load_docx
 from docx.document import Document
 import pandas as pd
-from dotenv import load_dotenv
 from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 
 from hulqcorpustools.resources.wordlists import Wordlist
@@ -64,7 +61,6 @@ class VocabFinder():
         """
         self.text_format = text_format
         self.vocab = vocab
-        self.vocab_df = self.vocab.vocab_df
         self.defined = self.vocab.defined(self.text_format)
         self.recognized = self.vocab.recognized(self.text_format)
         self.count_defined = Counter()

@@ -63,7 +63,7 @@ def download_file(file: dict, filename: Path) -> str:
     Returns:
         str: appropriate url to download file
     """
-    print("hmmm")
+    
     send = send_from_directory(
             current_app.config.get("UPLOADS"),
             file["path"],

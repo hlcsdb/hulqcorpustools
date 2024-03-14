@@ -97,8 +97,8 @@ class Upload():
 
             saved_files.append(
                 {"filename": _file.name,
-                 "path": _out_path.relative_to(self.upload_path),
-                 "url": _out_path
+                 "url": _out_path# .relative_to(self.upload_path),
+                #  "url": _out_path
                 }
             )
         return saved_files
