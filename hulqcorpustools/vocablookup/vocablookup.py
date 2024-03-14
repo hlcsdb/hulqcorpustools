@@ -3,13 +3,10 @@ from collections import Counter
 from pathlib import Path 
 
 from docx import Document as load_docx
-from docx.document import Document
 import pandas as pd
-from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 
 from hulqcorpustools.resources.wordlists import Wordlist
 from hulqcorpustools.resources.constants import TextFormat
-from hulqcorpustools.utils.files import FileHandler
 from hulqcorpustools.utils.textcounter import TextCounter
 
 
@@ -55,7 +52,7 @@ class VocabFinder():
             self,
             text_format: TextFormat,
             vocab: Vocab,
-            text_search: TextCounter
+            text_counter: TextCounter
             ):
         """Initialize based on text format.
         Args:
@@ -65,7 +62,7 @@ class VocabFinder():
         self.text_format = TextFormat(text_format)
         self.vocab = vocab
         self.vocab_df = vocab.vocab_df
-        self.text_search = text_search
+        self.text_search = text_counter
         self.defined = self.vocab.defined(self.text_format)
         self.recognized = self.vocab.recognized(self.text_format)
         self.count_defined = Counter()
@@ -113,6 +110,32 @@ class VocabFinder():
         self.defined_df['count'] = self.defined_df[self.text_format].map(self.count_defined)
         self.defined_df.sort_values('count', inplace=True, ascending=False)
 
+    def find_vocab_file(
+            self,
+            file_list: list[Path],
+            ) -> dict:
+        
+        docx_files = filter(lambda x: Path(x.filename).suffix == ".docx", file_list)
+        txt_files = filter(lambda x: Path(x.filename).suffix == ".txt", file_list)
+        # _fh = FileHandler(file_list)
+        text_list = []
+        for _file in docx_files:
+            file_docx = load_docx(_file) # type: Document
+            text_list.extend([
+                par.text for par in file_docx.paragraphs])
+
+            for table in file_docx.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        text_list.extend([cell.text])
+
+        for _file in txt_files:
+            with open(_file) as _open_file:
+                text_list = [_line for _line in _open_file]
+
+        self.find_vocab_list(text_list)
+
+
     @property
     def results(self) -> dict:
         """Return vocab list from df in class as dict.
@@ -121,7 +144,7 @@ class VocabFinder():
             dict: _description_
         """
         self.update_dataframe_counts()
-
+        
         return {
             "defined": self.defined_df.to_dict(orient="index"),
             "recognized": self.count_recognized,
@@ -136,51 +159,3 @@ class VocabFinder():
             _type_: _description_
         """
         ...
-
-
-class VocabFinderFile(VocabFinder):
-    """VocabFinder specifically for searching files for vocab words.
-    """
-    def __init__(
-            self,
-            text_format: TextFormat,
-            vocab: Vocab,
-            text_counter: TextCounter,
-            file_list: list[FileStorage],
-            ):
-        """Instantiate a VocabFinder based on a FileFormat and prepare to read
-        from a file list.
-
-        Args:
-            text_format (FileFormat | str): _description_
-            files_list (list[Path]): _description_
-        """
-        self.file_list = file_list
-        self.text_format = text_format
-        self.vocab = vocab
-        self.text_counter = text_counter
-        super().__init__(self.text_format, self.vocab)
-        self._find_vocab = self.find_vocab
-        self.file_handler = FileHandler(self.file_list)
-
-    def find_vocab(
-            self,
-            file_list: list[Path],
-            ) -> dict:
-
-        text_list = []
-        for _file in self.file_handler.docx_files:
-            file_docx = load_docx(_file) # type: Document
-            text_list.extend([
-                par.text for par in file_docx.paragraphs])
-
-            for table in file_docx.tables:
-                for row in table.rows:
-                    for cell in row.cells:
-                        text_list.extend([cell.text])
-
-        for _file in self.file_handler.txt_files:
-            with open(_file) as _open_file:
-                text_list = [_line for _line in _open_file]
-
-        self.find_vocab_list(text_list)

@@ -8,6 +8,7 @@ from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.webapps.plugins import common
 from hulqcorpustools.transliterator.controller import (
     Transliterator as transl,
+    TransliterandFile,
     TransliterandFileHandler as transl_fh)
 
 from werkzeug.datastructures import FileStorage, ImmutableMultiDict
@@ -80,7 +81,7 @@ def tr_string_request(
 def tr_file_list_request(
         file_list: list[FileStorage],
         upload: common.Upload,
-        _tr: transl,
+        tr: transl,
         source_format=(TextFormat | str),
         target_format=(TextFormat | str),
         tmp=Path,
@@ -102,39 +103,30 @@ def tr_file_list_request(
     """
     ALLOWED_EXTENSIONS = {'.txt', '.docx', '.doc'}
 
-    # time.sleep(5)
-    file_list = [
-        _file for _file in file_list
-        if Path(_file.filename).suffix in ALLOWED_EXTENSIONS]
+    file_list = [_file for _file in file_list if Path(_file.filename).suffix in ALLOWED_EXTENSIONS]
+    tmp_files = []
+    for _f in file_list:
+        tmp_path = tmp.joinpath(secure_filename(_f.filename))
+        _f.save(tmp_path)
 
-    for _file in file_list:
-        _file.filename = secure_filename(_file.filename)
-        _file_path = Path(tmp / _file.filename)
-        _file.save(_file_path)
-        _file = _file_path
+        tmp_files.append(TransliterandFile(
+            tmp_path,
+            source_format,
+            target_format,
+            search_method=kwargs.get("search_method"),
+            out=tmp
+            ))
 
-    # time.sleep(5)
-    file_handler = transl_fh(
-        file_list,
-        _tr,
-        source_format=source_format,
-        target_format=target_format,
-        font=kwargs.get('font-search'),
-        out=tmp
-        )
-    
-    # time.sleep(5)
-    transliterated = file_handler.transliterated()
+    transliterated = [tr.transliterate_file(_tmp) for _tmp in tmp_files]
 
-    # time.sleep(5)
     served_files = upload.save(transliterated)
     
     if upload.upload_type != "s3":
         for _file in served_files:
-            _file["url"] = current_app.url_for(
+            _file_url = current_app.url_for(
                 ".download_file",
-                file=_file,
-                filename=_file["path"])
+                file=_file)
+            _file["url"]
 
     response = {"input_files": file_list,
                 "source_format": str(source_format),

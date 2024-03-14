@@ -1,5 +1,4 @@
 
-import psutil
 import sys
 from collections import Counter
 from collections.abc import Iterable

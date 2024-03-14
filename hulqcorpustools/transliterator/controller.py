@@ -7,13 +7,11 @@ will be the place to pull out lines from .docx
 """
 
 from functools import partial
-from io import BytesIO
-import mimetypes
 from pathlib import Path
 
 from werkzeug.datastructures import FileStorage
 from docx import Document as load_docx
-from docx.document import Document
+# from docx.document import Document
 from docx.text import paragraph
 
 from hulqcorpustools.transliterator import replaceengine as repl
@@ -28,14 +26,14 @@ class TransliterandFile():
     """
     def __init__(
             self, 
-            _file: FileStorage, 
+            _file: Path, 
             source_format: TextFormat, 
             target_format: TextFormat,
             search_method=None,
             out=Path | None,
             **kwargs):
 
-        self.name = Path(_file.filename)
+        self.name = Path(_file.name)
 
         self._file = _file
         self.source_format = source_format
@@ -93,10 +91,10 @@ class DocxTransliterator():
         par_text_parts = par.text.split('\t')
 
         for par_text_part in par_text_parts:
-            if self.text_counter.determine_text_format(par_text_part) != 'english':
+            if (text_format := self.text_counter.determine_text_format(par_text_part)[0]) != TextFormat.ENGLISH:
                 par_text_part = repl.transliterate_string(
                     par_text_part,
-                    source_format,
+                    text_format,
                     target_format,
                     self.graphemes
                 )
@@ -104,6 +102,8 @@ class DocxTransliterator():
 
             # reassemble tab-separated parts
             par.text = '\t'.join(new_par_text_parts)
+
+        return
 
     def _transliterate_paragraph_font(
         self,
@@ -127,6 +127,8 @@ class DocxTransliterator():
                         target_format,
                         self.graphemes
                     )
+
+        return
 
     def transliterate(
         self,
@@ -239,6 +241,7 @@ class Transliterator():
             return self.docx_transliterator.transliterate(_file)
         elif _file.file_type == ".txt":
             return self.txt_transliterator.transliterate_txt_wordlist(_file)
+        
 
     # def update_new_wordlist(
     #     source_format: TextFormat,
@@ -270,10 +273,14 @@ class TransliterandFileHandler(FileHandler):
             files_list: list[Path | str | FileStorage],
             transliterator: Transliterator,
             out=Path | None,
+            tmp=Path | None,
             **kwargs):
 
-        super().__init__(files_list)
-
+        self.transliterator = transliterator
+        self.tmp = tmp
+        self.out = out
+        self.files_list = files_list 
+        super().__init__(files_list, out=self.out, tmp=self.tmp)
         self.search_method = kwargs.get('search_method')
         self.transliterand_files = [
             TransliterandFile(
@@ -285,7 +292,6 @@ class TransliterandFileHandler(FileHandler):
                 )
             for _file in self.files
             ]
-        self.transliterator = transliterator
 
         if (source_format := kwargs.get("source_format")):
             for file in self.transliterand_files:

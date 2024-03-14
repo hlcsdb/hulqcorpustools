@@ -7,6 +7,7 @@ import shutil
 import subprocess
 
 from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
 
 
 class FileHandler():
@@ -16,6 +17,8 @@ class FileHandler():
     def __init__(
             self,
             files_list=list[Path | str | FileStorage],
+            out=Path | None,
+            tmp=Path | None,
             **kwargs):
 
         self.files_list = files_list
@@ -31,26 +34,32 @@ class FileHandler():
                 partial(self.filter_suffix, ".doc"), self.files
             ))
 
-        self.out_dir = kwargs.get('outdir')
-        self.tmp_dir = kwargs.get('tmpdir')
+        self.out = out
+        self.tmp = tmp
 
     @property
     def files(self):
         _files = []
         for _file in self.files_list:
-            _file.save
-            if isinstance(_file, Path | str):
-                _file = FileStorage(
-                    BytesIO(open(_file, "rb")),
-                    Path(_file))
+            tmp_file = Path(self.tmp).joinpath(secure_filename(_file.filename))
+            if isinstance(_file, FileStorage):
+                _file.seek(0)
+                _file.save(tmp_file)
+            else:
+                with open(_file) as f, open(tmp_file, "w") as tmp:
+                    _file.write(tmp)
+            # if isinstance(_file, Path | str):
+            #     _file = FileStorage(
+            #         BytesIO(open(_file, "rb")),
+            #         Path(_file))
 
-            _files.append(_file)
+            _files.append(tmp_file)
 
         return _files
 
 
     def filter_suffix(self, key_suffix: str, file: FileStorage):
-        _suffix = Path(file.filename).suffix
+        _suffix = Path(file.name).suffix
         if _suffix == key_suffix:
             return True
 
@@ -62,8 +71,8 @@ class FileHandler():
         soffice_convert_cmd = [
             'soffice', '--headless', '--convert-to', 'docx'
             ]
-        if self.tmp_dir:
-            _doc_convert_tmpdir = self.tmp_dir
+        if self.tmp:
+            _doc_convert_tmpdir = self.tmp
         else:
             _doc_convert_tmpdir = self.doc_files[0].parent
 

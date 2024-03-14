@@ -25,6 +25,6 @@ class Wordlist():
     def __init__(self, text_format: TextFormat):
         self.filename = f"{text_format}-wordlist.txt"
         self.path = self.paths.joinpath(self.filename) # type: Path
-        self.file = open(self.paths.joinpath(self.filename))
-        self.words = {word.strip() for word in self.file}
+        with open(self.path, "r") as f:
+            self.words = {word.strip() for word in f}
         self.text_format = text_format

@@ -72,7 +72,7 @@ def create_app(test_config=None):
 
 
     with app.app_context():
-        app.config["CURRENT_VERSION"] = metadata.version
+        app.config["CURRENT_VERSION"] = metadata.version("hulqcorpustools")
         app.config["TMP"] = Path(os.getenv("TMP"))
 
         app.upload = get_upload()

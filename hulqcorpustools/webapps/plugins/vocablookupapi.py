@@ -1,9 +1,7 @@
 
 from flask import Request, current_app
 
-from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.vocablookup.vocablookup import (
-  VocabFinderFile,
   VocabFinder,
   Vocab
     )
@@ -13,27 +11,23 @@ def handle_submission(request: Request, **kwargs):
     text_counter = current_app.text_counter
     text_format = request.form.get("text-format")
     response = dict()
+    vocab_finder = VocabFinder(
+        text_format,
+        vocab_db,
+        text_counter
+        )
 
     if request.form.get("lookup-method") == "string":
-        vocab_finder = VocabFinder(
-            text_format,
-            vocab_db,
-            text_counter)
         vocab_finder.find_vocab(request.form.get("input-string"))
         response.update({
             "input_string": request.form.get("input-string")
         })
 
     elif request.form.get("lookup-method") == "files":
-        files_list = request.files.getlist("files")
-        vocab_finder = VocabFinderFile(
-            text_format,
-            vocab_db,
-            text_counter,
-            files_list)
-        vocab_finder.find_vocab()
+        file_list = request.files.getlist("files")
+        vocab_finder.find_vocab_file(file_list)
         response.update({
-            "files": [file.filename for file in vocab_finder.file_list]
+            "files": [file.filename for file in file_list]
         })
         
     response.update(vocab_finder.results)
