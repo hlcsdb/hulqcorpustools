@@ -63,13 +63,11 @@ class TextCounter():
 
     def determine_text_format(
         self,
-        _text: str) -> TextFormat:
+        _text: str) -> tuple[TextFormat, Counter]:
         """determines which language the line is in
         """
         all_lang_words = self.count_all_text_formats(_text)
         return max(all_lang_words.items(), key=lambda x: x[1].total())
 
 if __name__ == "__main__":
-    cool = TextCounter(TextFormat)
-    words = "lhilhq’a’ultsuptul’ ts’u, tthu qwuni’ ’i’ tu spaal’ .pizza great great cool excellent "
-    print(cool.determine_text_format(words))
+    ...

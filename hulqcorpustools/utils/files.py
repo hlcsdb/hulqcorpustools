@@ -38,6 +38,7 @@ class FileHandler():
     def files(self):
         _files = []
         for _file in self.files_list:
+            _file.save
             if isinstance(_file, Path | str):
                 _file = FileStorage(
                     BytesIO(open(_file, "rb")),

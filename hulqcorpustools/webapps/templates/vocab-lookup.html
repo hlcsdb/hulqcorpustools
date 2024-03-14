@@ -273,6 +273,8 @@ unknown/misspelled words:
 </div>
   <footer>v{{ current_version }}</footer>
   <script type="text/javascript" src="{{ url_for('static', filename='scripts/sort-tables.js') }}">
+  </script>
+  <script>
     const definedWordsResults = document.querySelector("#defined-results");
     const definedWordsSort = sortTable(definedWordsResults);
   </script>

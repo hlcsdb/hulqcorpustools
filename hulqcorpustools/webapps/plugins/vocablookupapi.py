@@ -10,11 +10,15 @@ from hulqcorpustools.vocablookup.vocablookup import (
 
 def handle_submission(request: Request, **kwargs):
     vocab_db = current_app.vocab_db  # type: Vocab
+    text_counter = current_app.text_counter
     text_format = request.form.get("text-format")
     response = dict()
 
     if request.form.get("lookup-method") == "string":
-        vocab_finder = VocabFinder(text_format, vocab_db)
+        vocab_finder = VocabFinder(
+            text_format,
+            vocab_db,
+            text_counter)
         vocab_finder.find_vocab(request.form.get("input-string"))
         response.update({
             "input_string": request.form.get("input-string")
@@ -22,7 +26,11 @@ def handle_submission(request: Request, **kwargs):
 
     elif request.form.get("lookup-method") == "files":
         files_list = request.files.getlist("files")
-        vocab_finder = VocabFinderFile(text_format, vocab_db, files_list)
+        vocab_finder = VocabFinderFile(
+            text_format,
+            vocab_db,
+            text_counter,
+            files_list)
         vocab_finder.find_vocab()
         response.update({
             "files": [file.filename for file in vocab_finder.file_list]

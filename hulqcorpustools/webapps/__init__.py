@@ -45,7 +45,6 @@ def get_upload(
     else:
         try:
             _upload_path = Path(_upload_config)
-            print(_upload_config)
             if _upload_path.exists():
                 return Upload(_upload_path)
         except TypeError as e:
@@ -82,8 +81,7 @@ def create_app(test_config=None):
         app.wordlists = Wordlists(TextFormat)
         app.text_counter = TextCounter(TextFormat, app.wordlists, app.graphemes)
         app.transliterator = Transliterator(app.text_counter, app.graphemes, app.wordlists)
-
-        # app.vocab_db = Vocab(app.config.get("VOCAB_DB"))
+        app.vocab_db = Vocab(app.config.get("VOCAB_DB"))
 
         if not isinstance(app.upload, Upload):
             app.logger.error("Error with configuring uploads.")

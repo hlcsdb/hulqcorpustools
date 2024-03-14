@@ -1,5 +1,6 @@
 
 from collections import Counter
+from pathlib import Path 
 
 from docx import Document as load_docx
 from docx.document import Document
@@ -53,14 +54,18 @@ class VocabFinder():
     def __init__(
             self,
             text_format: TextFormat,
-            vocab: Vocab):
+            vocab: Vocab,
+            text_search: TextCounter
+            ):
         """Initialize based on text format.
         Args:
             text_format (FileFormat): the text format to load dictionary
             information for.
         """
-        self.text_format = text_format
+        self.text_format = TextFormat(text_format)
         self.vocab = vocab
+        self.vocab_df = vocab.vocab_df
+        self.text_search = text_search
         self.defined = self.vocab.defined(self.text_format)
         self.recognized = self.vocab.recognized(self.text_format)
         self.count_defined = Counter()
@@ -70,9 +75,9 @@ class VocabFinder():
     def find_vocab_list(self, text_list: list):
 
         for text_line in text_list:
-            _main_format = kp.determine_text_format(text_line)
-
-            if _main_format == self.text_format:
+            _line_format = self.text_search.determine_text_format(text_line)
+            _format = _line_format[0]
+            if _format == self.text_format:
                 for _word in text_line.split():
                     _word = self.vocab.normalize(_word)
                     if _word in self.defined:
@@ -140,6 +145,7 @@ class VocabFinderFile(VocabFinder):
             self,
             text_format: TextFormat,
             vocab: Vocab,
+            text_counter: TextCounter,
             file_list: list[FileStorage],
             ):
         """Instantiate a VocabFinder based on a FileFormat and prepare to read
@@ -152,12 +158,14 @@ class VocabFinderFile(VocabFinder):
         self.file_list = file_list
         self.text_format = text_format
         self.vocab = vocab
+        self.text_counter = text_counter
         super().__init__(self.text_format, self.vocab)
         self._find_vocab = self.find_vocab
         self.file_handler = FileHandler(self.file_list)
 
     def find_vocab(
             self,
+            file_list: list[Path],
             ) -> dict:
 
         text_list = []
