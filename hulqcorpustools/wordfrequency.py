@@ -9,7 +9,6 @@ from docx import Document as init_docx
 from docx.document import Document
 
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import kp
 from hulqcorpustools.resources.constants import TextFormat
 
 from werkzeug.datastructures import FileStorage
@@ -47,15 +46,16 @@ class FileWordCounter(WordCounter):
     def count_docx_words(self):
         par_text_lines = []
         for _file in self.file_list.docx_files:
-            _docx = init_docx(_file)  # type: Document
-            for _par in _docx.paragraphs:
-                par_text_lines.append(_par.text)
+            with open(_file):
+                _docx = init_docx(_file)  # type: Document
+                for _par in _docx.paragraphs:
+                    par_text_lines.append(_par.text)
 
-            for table in _docx.tables:
-                for row in table.rows:
-                    for cell in row.cells:
-                        for _par in cell.paragraphs:
-                            par_text_lines.append(_par.text)
+                for table in _docx.tables:
+                    for row in table.rows:
+                        for cell in row.cells:
+                            for _par in cell.paragraphs:
+                                par_text_lines.append(_par.text)
 
         self.iter_count_words(par_text_lines)
 

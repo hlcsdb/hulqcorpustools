@@ -52,8 +52,8 @@ def transliterator_page():
         current_version=current_app.config['CURRENT_VERSION']
         )
 
-@transliterator_bp.route("/uploads/<file>", methods=['GET', 'POST'])
-def download_file(file: str) -> str:
+@transliterator_bp.route("/uploads/<path:filename>", methods=['GET', 'POST'])
+def download_file(file: dict, filename: Path) -> str:
     """Generate download link for a file, rendering it
     relative to upload folder if needed
 
@@ -63,7 +63,10 @@ def download_file(file: str) -> str:
     Returns:
         str: appropriate url to download file
     """
-    return send_from_directory(
+    print("hmmm")
+    send = send_from_directory(
             current_app.config.get("UPLOADS"),
-            file,
+            file["path"],
             as_attachment=True)
+
+    return send

@@ -12,14 +12,17 @@ from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 from hulqcorpustools.resources.wordlists import Wordlist
 from hulqcorpustools.resources.constants import TextFormat
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import kp
+from hulqcorpustools.utils.textcounter import TextCounter
 
 
 class Vocab():
     """Base class for vocab finding functionality. Includes pandas dataframe of
     wordlist
     """
-    def __init__(self, vocab_db=None):
+    def __init__(
+            self,
+            vocab_db=None,
+            ):
         
         self.vocab_db = vocab_db
         self.vocab_df = pd.read_csv(

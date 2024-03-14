@@ -180,8 +180,8 @@
                 {%- if response.get("output_files") -%}
                         <b>transliterated:</b>
                     {%- for _file in response.get("output_files"): -%}
-                        <a href="{{ _file[1] }}">
-                        {{ _file[0] }}
+                        <a href="{{ _file['url'] }}">
+                        {{ _file["filename"] }}
                         </a>
                     {% endfor %}
                     {% endif %}

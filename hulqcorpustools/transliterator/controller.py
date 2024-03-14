@@ -18,8 +18,9 @@ from docx.text import paragraph
 
 from hulqcorpustools.transliterator import replaceengine as repl
 from hulqcorpustools.resources.constants import TextFormat
+from hulqcorpustools.resources.graphemes import Graphemes
 from hulqcorpustools.utils.files import FileHandler
-from hulqcorpustools.utils.keywordprocessors import kp
+from hulqcorpustools.utils.textcounter import TextCounter
 
 
 class TransliterandFile():
@@ -31,6 +32,7 @@ class TransliterandFile():
             source_format: TextFormat, 
             target_format: TextFormat,
             search_method=None,
+            out=Path | None,
             **kwargs):
 
         self.name = Path(_file.filename)
@@ -39,63 +41,40 @@ class TransliterandFile():
         self.source_format = source_format
         self.target_format = target_format
         self.search_method = search_method
-        if (outdir := kwargs.get("outdir")):
-            self.out_path = Path(outdir).joinpath(self.out_filename)
+        self.out = out
         self.file_type = Path(self.name).suffix
 
-    def transliterated(self):
-        if self.file_type == ".docx":
-            return docx_tr.transliterate(self)
-        elif self.file_type == ".txt":
-            return txt_tr.transliterate(self)
-
     @property
-    def out_filename(self):
+    def out_name(self):
         return Path((
             f"{self.name.stem} - "
             f"{self.source_format} to {self.target_format}"
             f"{self.name.suffix}"
             ))
+
+    @property
+    def out_path(self):
+        if self.out is not None:
+            out_path = Path(self.out).joinpath(self.out_name)
+        else:
+            out_path = self.out_name
+        
+        return out_path
+
     
     def __fspath__(self):
         return str(self.name)
 
 
-class TransliterandFileHandler(FileHandler):
-    """Class to hold all files to transliterate and transliterates them upon
-    request.
-    """
+class DocxTransliterator():
+
     def __init__(
             self,
-            files_list: list[Path | str | FileStorage],
-            **kwargs):
+            text_counter: TextCounter,
+            graphemes: Graphemes):
 
-        super().__init__(files_list)
-
-        self.search_method = kwargs.get('search_method')
-        self.transliterand_files = [
-            TransliterandFile(
-                _file,
-                source_format=kwargs.get("source_format"),
-                target_format=kwargs.get("target_format"),
-                search_method=self.search_method
-                )
-            for _file in self.files
-            ]
-
-        if (source_format := kwargs.get("source_format")):
-            for file in self.transliterand_files:
-                file.source_format = source_format
-        if (target_format := kwargs.get("target_format")):
-            for file in self.transliterand_files:
-                file.target_format = target_format
-
-        self.transliterated = [
-            _file.transliterated() for _file in self.transliterand_files
-        ]
-
-
-class DocxTransliterator():
+        self.text_counter = text_counter
+        self.graphemes = graphemes
 
     def _transliterate_paragraph_wordlist(
         self,
@@ -114,11 +93,12 @@ class DocxTransliterator():
         par_text_parts = par.text.split('\t')
 
         for par_text_part in par_text_parts:
-            if kp.determine_text_format(par_text_part) != 'english':
+            if self.text_counter.determine_text_format(par_text_part) != 'english':
                 par_text_part = repl.transliterate_string(
                     par_text_part,
                     source_format,
-                    target_format
+                    target_format,
+                    self.graphemes
                 )
             new_par_text_parts.append(par_text_part)
 
@@ -126,6 +106,7 @@ class DocxTransliterator():
             par.text = '\t'.join(new_par_text_parts)
 
     def _transliterate_paragraph_font(
+        self,
         par: paragraph,
         target_format: TextFormat
         ):
@@ -134,7 +115,8 @@ class DocxTransliterator():
             par.text = repl.transliterate_string(
                 par.text,
                 TextFormat("straight"),
-                target_format)
+                target_format,
+                self.graphemes)
 
         else:
             for run in par.runs:
@@ -142,14 +124,15 @@ class DocxTransliterator():
                     run.text = repl.transliterate_string(
                         run.text,
                         TextFormat("straight"),
-                        target_format
+                        target_format,
+                        self.graphemes
                     )
 
     def transliterate(
         self,
         transliterand: TransliterandFile,
         **kwargs
-        ) -> BytesIO:
+        ) -> Path:
         """delegate transliteration based on wordlist or font search
 
         Args:
@@ -178,37 +161,16 @@ class DocxTransliterator():
                 for cell in row.cells:
                     for par in cell.paragraphs:
                         _tr_fn(par)
-        fileobj = BytesIO()
-        _docx.save(fileobj)
-        fileobj.seek(0)
 
-        return FileStorage(
-            fileobj,
-            transliterand.out_filename,
-            content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        _docx.save(transliterand.out_path)
 
-    # def update_new_wordlist(
-    #     source_format: TextFormat,
-    #     current_keywordprocessor: KeywordProcessor,
-    #     new_keywords: list,
-    #     keywordprocessors_dict: dict):
-    #     """update the running wordlist with things that were transliterated
-
-    #     Arguments:
-    #         source_format -- the current source format (to get base wordlist folder)
-    #         current_keywordprocessor -- the current keyword processor (to get the keywords)
-    #         new_keywords -- all the found 
-    #     """
-    #     working_wordlist_filepath = Path(__file__).parent / ('resources/wordlists/new-hulq-wordlist-' +
-    #                                                     source_format.to_string() +
-    #                                                         '.txt')
-
-    #     current_keywords = current_keywordprocessor.get_all_keywords()
-        
-    #     set(new_keywords.get_all_keywords().keys())
+        return transliterand.out_path
 
 
 class TxtTransliterator():
+
+    def __init__(self, text_counter: TextCounter, graphemes: Graphemes):
+        ...
 
     def transliterate_txt_wordlist(
         txt_transliterand: Path,
@@ -242,21 +204,103 @@ class TxtTransliterator():
 
         #         opened_target_file.write(line)
 
-def string_transliterate(
-    source_string: str,
-    source_format: TextFormat,
-    target_format: TextFormat
-    ):
-    """just transliterates a single string.
-    It's a thing of beauty"""
-    transliterated_string = repl.transliterate_string(
-        source_string,
-        source_format,
-        target_format)
-    return transliterated_string
 
-docx_tr = DocxTransliterator()
-txt_tr = TxtTransliterator()
+class Transliterator():
+
+    def __init__(
+            self,
+            text_counter: TextCounter,
+            graphemes: Graphemes,
+            wordlists=None
+    ):
+        self.text_counter = text_counter
+        self.graphemes = graphemes
+        self.docx_transliterator = DocxTransliterator(self.text_counter, self.graphemes)
+        self.txt_transliterator = TxtTransliterator(self.text_counter, self.graphemes)
+
+    def transliterate_string(
+        self,
+        source_string: str,
+        source_format: TextFormat,
+        target_format: TextFormat,
+        ):
+        """just transliterates a single string.
+        It's a thing of beauty"""
+
+        transliterated_string = repl.transliterate_string(
+            source_string,
+            source_format,
+            target_format,
+            self.graphemes)
+        return transliterated_string
+
+    def transliterate_file(self, _file: TransliterandFile):
+        if _file.file_type == ".docx":
+            return self.docx_transliterator.transliterate(_file)
+        elif _file.file_type == ".txt":
+            return self.txt_transliterator.transliterate_txt_wordlist(_file)
+
+    # def update_new_wordlist(
+    #     source_format: TextFormat,
+    #     current_keywordprocessor: KeywordProcessor,
+    #     new_keywords: list,
+    #     keywordprocessors_dict: dict):
+    #     """update the running wordlist with things that were transliterated
+
+    #     Arguments:
+    #         source_format -- the current source format (to get base wordlist folder)
+    #         current_keywordprocessor -- the current keyword processor (to get the keywords)
+    #         new_keywords -- all the found 
+    #     """
+    #     working_wordlist_filepath = Path(__file__).parent / ('resources/wordlists/new-hulq-wordlist-' +
+    #                                                     source_format.to_string() +
+    #                                                         '.txt')
+
+    #     current_keywords = current_keywordprocessor.get_all_keywords()
+        
+    #     set(new_keywords.get_all_keywords().keys())
+
+
+class TransliterandFileHandler(FileHandler):
+    """Class to hold all files to transliterate and transliterates them upon
+    request.
+    """
+    def __init__(
+            self,
+            files_list: list[Path | str | FileStorage],
+            transliterator: Transliterator,
+            out=Path | None,
+            **kwargs):
+
+        super().__init__(files_list)
+
+        self.search_method = kwargs.get('search_method')
+        self.transliterand_files = [
+            TransliterandFile(
+                _file,
+                source_format=kwargs.get("source_format"),
+                target_format=kwargs.get("target_format"),
+                search_method=self.search_method,
+                out=out
+                )
+            for _file in self.files
+            ]
+        self.transliterator = transliterator
+
+        if (source_format := kwargs.get("source_format")):
+            for file in self.transliterand_files:
+                file.source_format = source_format
+        if (target_format := kwargs.get("target_format")):
+            for file in self.transliterand_files:
+                file.target_format = target_format
+
+    def transliterated(self) -> list[Path]:
+
+        return [
+            self.transliterator.transliterate_file(_file)
+            for _file in self.transliterand_files
+            ]
+
 
 if __name__ == "__main__":
     ...

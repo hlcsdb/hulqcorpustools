@@ -9,7 +9,13 @@ import dotenv
 from flask import Flask, render_template
 from werkzeug.middleware.profiler import ProfilerMiddleware
 
-from hulqcorpustools.vocablookup.vocablookup import Vocab
+from hulqcorpustools.transliterator.controller import Transliterator
+from hulqcorpustools.resources.constants import TextFormat
+from hulqcorpustools.resources.wordlists import Wordlists
+from hulqcorpustools.resources.graphemes import Graphemes
+from hulqcorpustools.utils.textcounter import TextCounter
+# from hulqcorpustools.vocablookup.vocablookup import Vocab
+
 from hulqcorpustools.webapps.plugins.common import Upload
 from hulqcorpustools.webapps.views import (
     transliteratorwebview,
@@ -40,6 +46,7 @@ def get_upload(
     else:
         try:
             _upload_path = Path(_upload_config)
+            print(_upload_config)
             if _upload_path.exists():
                 return Upload(_upload_path)
         except TypeError as e:
@@ -58,19 +65,29 @@ def create_app(test_config=None):
         app.logger.setLevel(gunicorn_logger)
         app.logger.info("gunicorn started")
 
-    if os.getenv("PROFILE") == "True":
-        app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
+    # if os.getenv("PROFILE") == "True":
+    #     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
+
+    # app.logger.debug(f"app config:\n{app.config}")
         
     app.config.from_file(os.getenv("CONFIG_JSON"), load=json.load)
-    app.config["CURRENT_VERSION"] = metadata.version
-    # app.logger.debug(f"app config:\n{app.config}")
+
 
     with app.app_context():
+        app.config["CURRENT_VERSION"] = metadata.version
+        app.config["TMP"] = Path(os.getenv("TMP"))
+
         app.upload = get_upload()
+
+        app.graphemes = Graphemes(TextFormat)
+        app.wordlists = Wordlists(TextFormat)
+        app.text_counter = TextCounter(TextFormat, app.wordlists, app.graphemes)
+        app.transliterator = Transliterator(app.text_counter, app.graphemes, app.wordlists)
+
+        # app.vocab_db = Vocab(app.config.get("VOCAB_DB"))
 
         if not isinstance(app.upload, Upload):
             app.logger.error("Error with configuring uploads.")
-        app.vocab_db = Vocab(app.config.get("VOCAB_DB"))
         app.register_blueprint(transliteratorwebview.transliterator_bp)
         app.register_blueprint(wordfrequencywebview.wordfrequency_bp)
         app.register_blueprint(vocablookupwebview.vocablookup_bp)

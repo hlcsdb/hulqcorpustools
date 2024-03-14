@@ -4,13 +4,15 @@ with another
 '''
 
 import regex as re
-from hulqcorpustools.resources.constants import TextFormat, Graphemes
+from hulqcorpustools.resources.constants import TextFormat
+from hulqcorpustools.resources.graphemes import Graphemes
 
 
 def transliterate_string(
     source_string,
     source_format: TextFormat,
-    target_format: TextFormat
+    target_format: TextFormat,
+    graphemes: Graphemes
     ) -> str:
     '''Find all instances of a substring and replace them in-place.
     
@@ -30,7 +32,7 @@ def transliterate_string(
     # make a replacement dictionary out of the requested formats,
     # sort, then turn it to a long regex
 
-    working_dict = Graphemes().correspondence_dict(
+    working_dict = graphemes.correspondence(
         source_format,
         target_format
         )
@@ -112,5 +114,3 @@ if __name__ == "__main__":
         TextFormat.ORTHOGRAPHY,
         TextFormat.APAUNICODE)
 
-
-Graphemes()
